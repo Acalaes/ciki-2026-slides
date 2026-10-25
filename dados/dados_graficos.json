@@ -1,0 +1,35 @@
+{
+  "_meta": {"gerado_em": "2026-10-25", "obs": "Valores conferidos em fontes; ver fontes.md para status. Campos com null = NAO CONFIRMADO."},
+  "alucinacao": {
+    "llm_geral_dahl_2024": {"min_pct": 58, "max_pct": 88, "nota": "arXiv v2 (jun/2024): 58% (ChatGPT 4) a 88% (Llama 2). Pagina Stanford Law/J. Legal Analysis: 69% (ChatGPT 3.5) a 88%. Escolher uma e citar a mesma versao.", "alternativa_versao_periodico": {"min_pct": 69, "max_pct": 88}, "fonte": "Dahl et al., 2024"},
+    "rag_juridico_magesh_2025": {"min_pct": 17, "max_pct": 33, "nota": "17-33% e do preprint arXiv (v1, mai/2024). Pagina Stanford Law da versao JELS 2025 diz 'more than 17%'; 33% NAO confirmado na versao do periodico.", "fonte": "Magesh et al., 2025"}
+  },
+  "casos_charlotin": {
+    "data_consulta": "2026-10-25",
+    "total": 2217,
+    "brasil": 41,
+    "por_tipo_de_autor_global": {"Pro Se Litigant": 1275, "Lawyer": 879, "Judge": 32, "Expert": 17, "Prosecutor": 5, "Government Lawyer": 3, "Paralegal": 2, "Arbitrator": 1, "Federal Defender": 1},
+    "por_tipo_de_autor_brasil": null,
+    "fonte": "Charlotin, 2026"
+  },
+  "arxiv_harness_por_ano": {
+    "consulta": "ti:harness AND abs:agent via API arXiv (export.arxiv.org), 25/10/2026; filtro adicional: palavra 'harness'/'harnesses' no titulo (exclui 'harnessing')",
+    "bruto_api_ti_harness_abs_agent": {"2020": 1, "2021": 4, "2022": 1, "2023": 6, "2024": 13, "2025": 23, "2026": 498, "total": 546},
+    "titulo_com_palavra_harness": {"2021": 1, "2023": 0, "2024": 0, "2025": 4, "2026": 446},
+    "no_sentido_de_agente_estimado": {"2023": 0, "2024": 0, "2025": 3, "2026": 446},
+    "nota_estimativa": "2025: 3 de 4 conferidos um a um (excluido o acronimo HARNESS de seguranca). 2026: todos os 446 tem agent/LLM no resumo; amostra de 25 titulos lida: todos sentido agente/LLM (ex.: 'Agent Harnesses'). 2026 parcial ate 25/out.",
+    "serie_mensal_2026": {"2026-01": 2, "2026-02": 3, "2026-03": 8, "2026-04": 16, "2026-05": 40, "2026-06": 45, "2026-07": 53, "2026-08": 65, "2026-09": 111, "2026-10": 103},
+    "fonte": "arXiv API, 2026"
+  },
+  "cmu_harness": {"desempenho_pct_do_llm": 89.7, "custo_pct_do_llm": 4, "fonte": "Yang et al., 2026 (arXiv 2607.08938)"},
+  "capex_big4_usd_bi": {
+    "2025": {"valor": 410, "tipo": "real, aproximado", "fonte": "Silicon Canals, 2026 (secundaria)"},
+    "2026": {"valor_central": 725, "faixa": [695, 750], "tipo": "guidance (abr-jul/2026)", "fonte": "Sherwood, 2026; Silicon Canals, 2026"},
+    "NAO_CONFIRMADO": "valores por empresa e fechamento 2025 em fonte primaria; guidance pos-resultados de out/2026 nao encontrado"
+  },
+  "gasto_ia_gartner": {"2026_usd_tri": 2.67, "crescimento_pct": 49.5, "previsoes_anteriores_usd_tri": {"2026-01": 2.52, "2026-05": 2.59}, "implicito_2025_usd_tri_calculo_proprio": 1.79, "fonte": "Gartner, 2026 (via Techstrong; pagina Gartner bloqueada 403)"},
+  "outros": {
+    "mit_nanda_pct_sem_retorno": 95, "mit_nanda_investimento_usd_bi": [30, 40],
+    "stanford_ai_index_queda_custo_inferencia_x": 280, "stanford_periodo": "nov/2022 a out/2024 (nivel GPT-3.5)"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "v": 4,
+  "createdOnFiles": {"v": 1, "at": "2026-10-25T22:12:00Z"},
+  "lists": "css",
+  "title": "CIKI 2026 — IA Neurossimbólica e Estado Auditável",
+  "cover": "cover",
+  "order": ["cover", "problema", "magnitude", "setores", "lacuna", "solucao", "funcionamento", "estado", "evidencia", "acontece", "hnv", "demo", "viabilidade", "escala", "futuro", "limites", "obrigado", "r1-perguntas", "r2-metodo", "r3-referencias", "r4-tese"],
+  "sections": {
+    "s1": {"description": "Problema: alucinação compromete decisões públicas e direitos", "start": "cover"},
+    "s2": {"description": "Artigo: CALAIS e arquitetura neurossimbólica auditável", "start": "lacuna"},
+    "s3": {"description": "Fronteira: Harness Neurossimbólico Vertical como próximo passo", "start": "acontece"},
+    "s4": {"description": "Fecho: limites, próximos passos, agradecimento", "start": "limites"},
+    "s5": {"description": "Reserva para perguntas", "start": "r1-perguntas"}
+  },
+  "faces": {
+    "space-grotesk": {"family": "Space Grotesk", "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&display=swap"},
+    "ibm-plex-sans": {"family": "IBM Plex Sans", "href": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap"},
+    "jetbrains-mono": {"family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"}
+  },
+  "designSystems": []
+}
