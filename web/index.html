@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditabilidade por construção · CIKI 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="deck.css">
+<style>
+.bg{filter:grayscale(.75) brightness(.9)}
+.tint{position:absolute;inset:0;background:#0A1B4A;mix-blend-mode:color;opacity:.85}
+.chip{font:600 52px var(--fd);border:3px solid var(--hi);border-radius:60px;padding:8px 36px;background:rgba(7,12,25,.65)}
+.chip.s{font-size:44px}
+.pill{position:absolute;height:92px;display:flex;align-items:center;padding:0 34px;border:3px solid var(--hi);border-radius:22px;background:rgba(12,21,48,.88);font:600 46px var(--fd)}
+.pill.amb{border-color:var(--amb)}
+.pill.r{color:var(--hi);border-style:dashed}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 CAPA -->
+<section class="slide" data-title="Capa" data-t="25">
+<div class="bg" style="background-image:url(img/planalto.jpg)"></div><div class="tint"></div><div class="veil"></div>
+<div class="c">
+<p class="k" data-a style="--i:0">CIKI · ICKM · GFIC 2026 · Virtual Room 5</p>
+<h1 class="h1" data-a style="--i:1">Auditabilidade<br><span class="hi">por construção</span></h1>
+<p class="cap" data-a style="--i:3">IA neurossimbólica</p>
+<p data-a style="--i:4;font:600 46px var(--fd)">Alexandre Pinto Calaes · PPGEGC/UFSC</p>
+</div>
+<p class="src">Neurosymbolic Artificial Intelligence and Knowledge Engineering: Beyond Hallucinations and Auditable Decisions in the Intelligent State · Foto: L. N. Ciuffo, CC BY 2.0</p>
+<div class="notes">[0:25] Boa tarde. Sou Alexandre Pinto Calaes, doutorando do PPGEGC da UFSC. A pergunta que trago é simples: uma IA que decide algo importante precisa poder ser auditada. A minha tese, hoje, é que isso não se consegue explicando o modelo depois. Consegue-se construindo a IA auditável desde o desenho.</div>
+</section>
+
+<!-- 2 PROBLEMA -->
+<section class="slide" data-title="Problema: a IA inventa" data-t="45">
+<div class="bg" style="background-image:url(img/stf.jpg)"></div><div class="tint"></div><div class="veil v2"></div>
+<div class="c">
+<p class="k" data-a style="--i:0">01 · Problema</p>
+<h1 class="h1" data-a="zoom" style="--i:1;font-size:215px">A IA <span class="err">inventa</span>.</h1>
+<p class="cap" data-a style="--i:3">e decide direitos</p>
+</div>
+<button class="hot" data-open="d2" style="left:130px;top:860px" data-a="fade"><b>+</b><span>2.217 casos</span></button>
+<p class="src">Foto: STF, Dasfour2022, CC BY-SA 4.0</p>
+<div class="panel" id="d2"><span class="px">Esc · fechar</span>
+<h2 class="pt">Casos em tribunais</h2>
+<div class="row" style="align-items:flex-end;gap:70px">
+<div><div class="big hi" data-count="2217">2.217</div><p class="lab" data-src="charlotin">decisões com conteúdo alucinado por IA · 25/10/2026</p></div>
+<div class="card" style="flex:none;width:420px"><b>Brasil</b><p>41 casos</p></div>
+<div class="card" style="flex:none;width:420px"><b>EUA</b><p>1.514 casos</p></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:26px;margin-top:10px">
+<p class="lab" style="color:var(--ink)">Taxa de erro em perguntas jurídicas verificáveis</p>
+<div><p class="lab" data-src="dahl">LLM geral · 58–88%</p><div class="bar"><i class="a" style="left:58%;width:30%"></i></div></div>
+<div><p class="lab" data-src="magesh">Ferramentas jurídicas com RAG · 17–33%</p><div class="bar"><i style="left:17%;width:16%"></i></div></div>
+</div>
+<p class="psrc">Charlotin, AI Hallucination Cases Database · Dahl et al. (2024) e Magesh et al. (2025), versões preprint (arXiv). Escala de 0 a 100%.</p>
+</div>
+<div class="notes">[0:45] A IA inventa. Não é detalhe: a base de Damien Charlotin registra 2.217 decisões judiciais com conteúdo alucinado por IA, 41 delas no Brasil. Em perguntas jurídicas, modelos gerais erram de 58 a 88 por cento. E ferramentas jurídicas comerciais com RAG ainda erram de 17 a 33. Buscar documentos ajuda, mas não basta. (Clique no mais para ver os gráficos.)</div>
+</section>
+
+<!-- 3 TESE -->
+<section class="slide" data-title="Tese: explicar depois × construir auditável" data-t="50">
+<div class="c">
+<p class="k" data-a style="--i:0">02 · Tese</p>
+<h1 class="h2" data-a style="--i:1"><span class="strike">Explicar depois</span></h1>
+<svg data-a="fade" style="--i:3" width="120" height="110" viewBox="0 0 120 110"><path d="M60 6 V90 M24 56 L60 94 L96 56" fill="none" stroke="#BFD6FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<h1 class="h2 hi" data-a="zoom" style="--i:4">Construir auditável</h1>
+</div>
+<button class="hot" data-open="d3a" style="left:130px;top:880px" data-a="fade"><b>+</b><span>Por que falha</span></button>
+<button class="hot" data-open="d3b" style="left:760px;top:880px" data-a="fade"><b>+</b><span>Comparação</span></button>
+<div class="panel" id="d3a"><span class="px">Esc · fechar</span>
+<h2 class="pt">Explicar depois não basta</h2>
+<div class="row">
+<div class="card"><b>Fidelidade</b><p>A explicação pós-hoc pode não refletir o que o modelo realmente fez.</p></div>
+<div class="card"><b>Alto risco</b><p data-src="rudin">Em decisões de alto impacto, explicação posterior não substitui mecanismos verificáveis (Rudin, 2019).</p></div>
+<div class="card"><b>Desenho</b><p>Auditar exige evidência, regras, processo rastreável e responsáveis desde o projeto.</p></div>
+</div>
+<p class="psrc">Artigo #160, Seção 2 e Tabela 1 · Rudin (2019), Nature Machine Intelligence · Busuioc (2021) · Kroll et al. (2017)</p>
+</div>
+<div class="panel" id="d3b"><span class="px">Esc · fechar</span>
+<h2 class="pt">Quatro requisitos, cinco paradigmas</h2>
+<table class="t"><tr><th></th><th>Evidência</th><th>Normas</th><th>Rastro</th><th>Humano</th></tr>
+<tr><td>LLM puro</td><td><i class="dot"></i></td><td><i class="dot"></i></td><td><i class="dot"></i></td><td><i class="dot d1"></i></td></tr>
+<tr><td>XAI pós-hoc</td><td><i class="dot"></i></td><td><i class="dot"></i></td><td><i class="dot d1"></i></td><td><i class="dot d1"></i></td></tr>
+<tr><td>RAG</td><td><i class="dot d1"></i></td><td><i class="dot"></i></td><td><i class="dot d1"></i></td><td><i class="dot d1"></i></td></tr>
+<tr><td>Simbólico puro</td><td><i class="dot d1"></i></td><td><i class="dot d2"></i></td><td><i class="dot d2"></i></td><td><i class="dot d1"></i></td></tr>
+<tr><td>Neurossimbólico</td><td><i class="dot d1"></i></td><td><i class="dot d1"></i></td><td><i class="dot d1"></i></td><td><i class="dot d1"></i></td></tr>
+<tr class="me"><td>Arquitetura proposta</td><td><i class="dot d2"></i></td><td><i class="dot d2"></i></td><td><i class="dot d2"></i></td><td><i class="dot d2"></i></td></tr></table>
+<p class="psrc">Leitura visual qualitativa da Tabela 1 do artigo #160 (vazio = não inerente · metade = parcial ou depende · cheio = forte ou explícito). Fontes da tabela: Rudin (2019), Lewis et al. (2020), Moreau e Missier (2013), Garcez e Lamb (2023).</p>
+</div>
+<div class="notes">[0:50] Aqui está a tese. A resposta dominante é explicar o modelo depois que ele decidiu. Mas explicação posterior pode não refletir o que o modelo fez, e para decisões de alto impacto isso não basta. O caminho que defendo é outro: construir a IA auditável desde o desenho. (Clique em "Comparação" para a tabela dos cinco paradigmas: nenhum isolado cobre os quatro requisitos.)</div>
+</section>
+
+<!-- 4 REQUISITOS -->
+<section class="slide" data-title="Quatro requisitos E N T H" data-t="50">
+<div class="c" style="justify-content:flex-start;padding-top:110px">
+<p class="k" data-a style="--i:0">03 · Auditável por desenho exige</p>
+</div>
+<svg class="ov" viewBox="0 0 1920 1080">
+<g fill="none" stroke="#BFD6FF" stroke-width="6">
+<circle class="draw" cx="335" cy="420" r="150"/><circle class="draw" cx="755" cy="420" r="150"/><circle class="draw" cx="1175" cy="420" r="150"/><circle class="draw" cx="1595" cy="420" r="150"/></g>
+<g font-family="Space Grotesk,Arial" font-weight="700" font-size="170" fill="#F3F6FB" text-anchor="middle">
+<text x="335" y="480">E</text><text x="755" y="480">N</text><text x="1175" y="480">T</text><text x="1595" y="480">H</text></g></svg>
+<p data-a="zoom" style="--i:2;position:absolute;left:130px;top:620px;width:410px;text-align:center;font:700 68px var(--fd)">Evidência</p>
+<p data-a="zoom" style="--i:3;position:absolute;left:550px;top:620px;width:410px;text-align:center;font:700 68px var(--fd)">Normas</p>
+<p data-a="zoom" style="--i:4;position:absolute;left:970px;top:620px;width:410px;text-align:center;font:700 68px var(--fd)">Rastro</p>
+<p data-a="zoom" style="--i:5;position:absolute;left:1390px;top:620px;width:410px;text-align:center;font:700 68px var(--fd)">Humano</p>
+<button class="hot" data-open="d4a" style="left:293px;top:760px" data-a="fade"><b>+</b></button>
+<button class="hot" data-open="d4b" style="left:713px;top:760px" data-a="fade"><b>+</b></button>
+<button class="hot" data-open="d4c" style="left:1133px;top:760px" data-a="fade"><b>+</b></button>
+<button class="hot" data-open="d4d" style="left:1553px;top:760px" data-a="fade"><b>+</b></button>
+<div class="panel" id="d4a"><span class="px">Esc · fechar</span><h2 class="pt">E · Evidência</h2><div class="row"><div class="card"><b>Exige</b><p>Documentos externos recuperados e ligados à resposta.</p></div><div class="card"><b>Sistema faz</b><p>Recuperação sobre a coleção (RAG) antes de gerar.</p></div></div><p class="psrc">Artigo #160, Tabela 1 e Figura 1 · Lewis et al. (2020)</p></div>
+<div class="panel" id="d4b"><span class="px">Esc · fechar</span><h2 class="pt">N · Normas</h2><div class="row"><div class="card"><b>Exige</b><p>Regras explícitas que a resposta precisa cumprir.</p></div><div class="card"><b>Sistema faz</b><p>Regras verificam a resposta e podem bloqueá-la e devolvê-la para correção.</p></div></div><p class="psrc">Artigo #160, Figura 1 e Equação 2</p></div>
+<div class="panel" id="d4c"><span class="px">Esc · fechar</span><h2 class="pt">T · Rastro</h2><div class="row"><div class="card"><b>Exige</b><p>Reconstruir o caminho: fontes, verificações e decisões.</p></div><div class="card"><b>Sistema faz</b><p>Registro de proveniência no padrão W3C PROV-DM.</p></div></div><p class="psrc">Artigo #160, Seção 3 · Moreau e Missier (2013)</p></div>
+<div class="panel" id="d4d"><span class="px">Esc · fechar</span><h2 class="pt">H · Humano</h2><div class="row"><div class="card"><b>Exige</b><p>Responsável identificado pela decisão final.</p></div><div class="card"><b>Sistema faz</b><p>Aprovação humana nos fluxos relevantes; a decisão final não é delegada à IA.</p></div></div><p class="psrc">Artigo #160, Conclusão</p></div>
+<div class="notes">[0:50] Auditável por desenho exige quatro coisas, que o artigo resume em E, N, T, H. Evidência: a resposta se apoia em documentos. Normas: regras explícitas verificam e podem bloquear. Rastro: dá para reconstruir o caminho. Humano: alguém responde pela decisão final. Nenhum paradigma isolado cobre os quatro. (Os quatro botões abrem o detalhe de cada um.)</div>
+</section>
+
+<!-- 5 ARQUITETURA -->
+<section class="slide" data-title="Arquitetura neurossimbólica" data-t="75">
+<div class="c" style="justify-content:flex-start;padding-top:110px">
+<p class="k" data-a style="--i:0">04 · Arquitetura · CALAIS</p>
+<h1 class="h3" data-a style="--i:1">Recuperar · Gerar · Verificar · Aprovar</h1>
+</div>
+<div class="nodes" style="left:185px;top:330px" data-a="zoom"><b style="--i:0">Recuperar</b><span>Documentos</span></div>
+<div class="nodes" style="left:505px;top:330px" data-a="zoom" ><b>Gerar</b><span>Neural</span></div>
+<div class="nodes amb" style="left:825px;top:330px" data-a="zoom"><b>Verificar</b><span>Simbólico</span></div>
+<div class="nodes" style="left:1145px;top:330px" data-a="zoom"><b>Registrar</b><span>Proveniência</span></div>
+<div class="nodes" style="left:1465px;top:330px" data-a="zoom"><b>Aprovar</b><span>Humano</span></div>
+<svg class="ov" viewBox="0 0 1920 1080"><defs><marker id="ah" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#BFD6FF"/></marker><marker id="aa" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#F59E0B"/></marker></defs>
+<g fill="none" stroke="#BFD6FF" stroke-width="5" marker-end="url(#ah)"><path class="draw" d="M463 435 H497"/><path class="draw" d="M783 435 H817"/><path class="draw" d="M1103 435 H1137"/><path class="draw" d="M1423 435 H1457"/></g>
+<path class="draw" d="M960 548 C960 700 640 700 640 556" fill="none" stroke="#F59E0B" stroke-width="6" stroke-dasharray="14 12" marker-end="url(#aa)" style="stroke-dasharray:14 12;stroke-dashoffset:0"/></svg>
+<p data-a="fade" style="--i:6;position:absolute;left:690px;top:700px;width:220px;text-align:center;font:700 50px var(--fd);color:var(--amb)">bloqueia</p>
+<p class="eq" data-a style="--i:7;position:absolute;left:185px;top:820px">Adm = E ∧ N ∧ T</p>
+<p class="eq" data-a style="--i:8;position:absolute;left:860px;top:820px">Liberação = Adm ∧ H</p>
+<button class="hot" data-open="d5" style="left:1700px;top:826px" data-a="fade"><b>+</b></button>
+<div class="panel" id="d5"><span class="px">Esc · fechar</span>
+<h2 class="pt">Duas equações</h2>
+<div class="row" style="flex-direction:column;gap:30px">
+<p class="eq" style="align-self:flex-start">Adm = E ∧ N ∧ T</p>
+<p class="lab" style="color:var(--ink);font-size:40px">Admissível: tem evidência E, passa nas normas N e permite reconstruir o caminho T.</p>
+<p class="eq" style="align-self:flex-start;border-color:var(--hi2)">Liberação = Adm ∧ H</p>
+<p class="lab" style="color:var(--ink);font-size:40px">Liberada somente com a aprovação humana H.</p>
+</div>
+<p class="psrc">Artigo #160, Equações 2 e 3: especificação da arquitetura, não garantia experimental de legalidade ou correção. Moreau e Missier (2013), W3C PROV-DM.</p>
+</div>
+<div class="notes">[1:15] Como funciona. Recupera documentos. O modelo neural gera a resposta. A parte simbólica verifica: se uma regra falha, bloqueia e devolve para correção — a seta tracejada. Tudo é registrado no padrão de proveniência e a liberação é humana. As duas equações resumem. Atenção ao limite: é uma especificação da arquitetura, não uma garantia experimental.</div>
+</section>
+
+<!-- 6 CITARE -->
+<section class="slide" data-title="Prova 1: Citāre (academia)" data-t="50">
+<div class="bg" style="background-image:url(img/biblioteca.jpg)"></div><div class="tint"></div><div class="veil"></div>
+<div class="c">
+<p class="k" data-a style="--i:0">05 · Prova 1</p>
+<h1 class="h1" data-a="zoom" style="--i:1;font-size:230px">Citāre</h1>
+<p class="cap" data-a style="--i:2">Escrita acadêmica</p>
+<div style="display:flex;gap:28px;margin-top:30px;--i:3" data-a><span class="chip">Autoria</span><span class="chip">Ano</span><span class="chip">DOI</span><span class="chip" style="border-color:var(--ink)">Revisão humana</span></div>
+</div>
+<button class="hot" data-open="d6" style="left:130px;top:870px" data-a="fade"><b>+</b><span>Como opera</span></button>
+<p class="src">Foto: biblioteca da TUHH, J. Muth, CC0</p>
+<div class="panel" id="d6"><span class="px">Esc · fechar</span>
+<h2 class="pt">Citāre · como opera</h2>
+<div class="row"><div class="card"><b>Coleção do autor</b><p>A geração é guiada pelas fontes da coleção do autor (RAG).</p></div><div class="card"><b>Regras</b><p>Autoria, ano e DOI exigidos em cada citação.</p></div><div class="card"><b>Humano</b><p>Conteúdo e citações revisados e aprovados pelo autor.</p></div></div>
+<p class="lab" style="color:var(--ink);font-size:38px" data-src="art-citare">Este artigo foi redigido com apoio do Citāre sob supervisão humana, conforme a declaração de uso de IA do próprio artigo.</p>
+<p class="psrc">Artigo #160, declaração de uso de IA. Os resultados quantitativos do artigo vêm de aplicações anteriores e não avaliam o Citāre.</p>
+</div>
+<div class="notes">[0:50] Primeira prova: o Citāre, o sistema de referência do artigo, no domínio da escrita acadêmica. Ele gera a partir da coleção do próprio autor e aplica regras: autoria, ano e DOI em cada citação, com revisão humana. É o mesmo mecanismo — evidência, regra, humano — num domínio diferente. Registro honesto: o artigo não avalia o Citāre quantitativamente.</div>
+</section>
+
+<!-- 7 CBMSC -->
+<section class="slide" data-title="Prova 2: CBMSC (operação)" data-t="50">
+<div class="bg" style="background-image:url(img/bombeiros.jpg)"></div><div class="tint"></div><div class="veil"></div>
+<div class="c">
+<p class="k" data-a style="--i:0">06 · Prova 2</p>
+<h1 class="h1" data-a="zoom" style="--i:1;font-size:230px">CBMSC</h1>
+<p class="cap" data-a style="--i:2">Operação real</p>
+<div style="display:flex;gap:90px;margin-top:20px;align-items:baseline;--i:3" data-a><div><span class="big hi" style="font-size:130px" data-count="191">191</span><span class="cap"> dias</span></div><div><span class="big hi" style="font-size:130px" data-count="9054">9.054</span><span class="cap"> registros</span></div></div>
+</div>
+<button class="hot" data-open="d7" style="left:130px;top:870px" data-a="fade"><b>+</b><span>Evidência exploratória</span></button>
+<p class="src">Foto: quartel do CBMSC em Capinzal, DAR7, CC0</p>
+<div class="panel" id="d7"><span class="px">Esc · fechar</span>
+<h2 class="pt">CBMSC · evidência exploratória</h2>
+<div class="row" style="gap:60px">
+<div style="flex:1;display:flex;flex-direction:column;gap:22px">
+<div class="card"><b data-src="art-logs">9.054 registros de envio</b><p>28/01 a 07/08/2026, cerca de 191 dias.</p></div>
+<div class="card"><b>2.813 sem sucesso</b><p>Não equivalem a bloqueio. Nenhum bloqueio explícito localizado; isso não é risco zero.</p></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:18px">
+<p class="lab" style="color:var(--ink);font-size:38px" data-src="art-nasa">Raw NASA-TLX · 6 registros · esforço percebido, escala 0 a 100</p>
+<div style="position:relative;height:230px;background:var(--bg2);border:1px solid var(--line);border-radius:18px">
+<i class="dot d2" style="position:absolute;left:3.5%;top:96px;width:26px;height:26px"></i>
+<i class="dot d2" style="position:absolute;left:10%;top:96px;width:26px;height:26px"></i>
+<i class="dot d2" style="position:absolute;left:19.5%;top:96px;width:26px;height:26px"></i>
+<i class="dot d2" style="position:absolute;left:43%;top:96px;width:26px;height:26px;border-color:var(--hi2)"></i>
+<i class="dot d2" style="position:absolute;left:48%;top:96px;width:26px;height:26px"></i>
+<i class="dot d2" style="position:absolute;left:48%;top:50px;width:26px;height:26px"></i>
+<div style="position:absolute;left:3%;right:3%;bottom:34px;border-top:3px solid var(--line)"></div>
+</div>
+<p class="lab" style="font-size:36px">Média 6,94 · mediana 4,17 · faixa 0 a 15,83</p>
+<p class="chip s" style="align-self:flex-start;border-color:var(--amb);color:var(--amb)">exploratório · sem inferência</p>
+</div></div>
+<p class="psrc">Artigo #160, Seção de resultados e Tabela 4. Os seis registros pertencem a dois identificadores e são tarefas, não seis participantes. Eixo recortado em 0 a 32.</p>
+</div>
+<div class="notes">[0:50] Segunda prova: o CBMSC, operação real. Em quase 191 dias, 9.054 registros de envio. Foram 2.813 sem sucesso, o que não equivale a bloqueio, e nenhum bloqueio explícito foi localizado. O esforço percebido teve média 6,94 numa escala de 0 a 100, em seis registros de dois identificadores. É evidência exploratória: mostra os componentes funcionando juntos, não prova ganho de eficiência. O artigo diz isso com todas as letras.</div>
+</section>
+
+<!-- 8 DEMO -->
+<section class="slide" data-title="Prova 3: demonstração (direito)" data-t="90">
+<div class="c" style="justify-content:flex-start;padding-top:70px;gap:6px">
+<p class="k" data-a style="--i:0">07 · Prova 3 · demonstração ilustrativa · execução real</p>
+<h1 class="h3" data-a style="--i:1"><span class="err">Inventa</span> → Bloqueia → Corrige</h1>
+</div>
+<iframe class="demo" data-src="demo/index.html" title="Replay da demonstração do HNV"></iframe>
+<button class="hot" data-open="d8" style="left:1590px;top:96px" data-a="fade"><b>+</b></button>
+<div class="panel" id="d8"><span class="px">Esc · fechar</span>
+<h2 class="pt">Como o hook decide</h2>
+<div class="row"><div class="card"><b>1 · Gera</b><p>O modelo escreve o parecer.</p></div><div class="card"><b>2 · Confere</b><p>Cada citação é buscada na ontologia validada.</p></div><div class="card"><b style="color:var(--amb)">3 · Bloqueia</b><p>Saída com código 2 devolve o erro ao modelo.</p></div><div class="card"><b>4 · Corrige</b><p>Parecer admissível, com log PROV.</p></div></div>
+<p class="lab" style="color:var(--ink);font-size:38px">Status final: aguardando aprovação humana. O sistema nunca libera sozinho.</p>
+<p class="lab" style="font-size:34px">Limites: o verificador confere citações, não o raciocínio. Bloqueado não significa falso: fonte real fora da ontologia também é barrada.</p>
+<p class="psrc">Demonstração de 25/10/2026: Claude Code com skill e hook, modelo local qwen2.5:3b (Ollama), 18 fontes reais pendentes de validação do especialista. Repositório privado hnv-demo.</p>
+</div>
+<div class="notes">[1:30] Prova três, direito. Pedido: o secretário municipal quer nomear o sobrinho da esposa para cargo em comissão. Sem harness, o modelo pequeno inventou o "art. 37, inciso XXXIII" da Constituição, que não existe: o art. 37 vai até o XXII. Com o harness vertical, o hook confere cada citação na ontologia, bloqueia, devolve o erro, o modelo corrige, e o parecer sai com registro de proveniência, aguardando aprovação humana. É uma demonstração ilustrativa: cenário montado, execução real. No bônus, o modelo pequeno não convergiu em três rodadas, e o harness simplesmente não liberou.</div>
+</section>
+
+<!-- 9 FRONTEIRA -->
+<section class="slide" data-title="Fronteira 2026: harness" data-t="45">
+<div class="c">
+<p class="k" data-a style="--i:0">08 · Fronteira · 2026</p>
+<h1 class="h2" data-a style="--i:1;font-size:112px">Agente = Modelo + <span class="hi">Harness</span></h1>
+<div style="display:flex;flex-direction:column;gap:26px;margin-top:30px;width:1500px;--i:3" data-a>
+<div style="display:flex;align-items:center;gap:30px"><span style="font:500 52px var(--fm);color:var(--mut);width:140px">2025</span><div class="bar" style="flex:1"><i class="g" style="left:0;width:1%"></i></div><span class="big hi" style="font-size:96px;width:170px;text-align:right" data-src="arxiv-count" data-count="3">3</span></div>
+<div style="display:flex;align-items:center;gap:30px"><span style="font:500 52px var(--fm);color:var(--ink);width:140px">2026</span><div class="bar" style="flex:1"><i style="left:0;width:100%"></i></div><span class="big hi" style="font-size:96px;width:170px;text-align:right" data-count="446">446</span></div>
+</div>
+<p style="font-size:44px;color:var(--mut);--i:4" class="cap" data-a>trabalhos no arXiv com "harness" no título</p>
+</div>
+<button class="hot" data-open="d9" style="left:130px;top:900px" data-a="fade"><b>+</b><span>O que é harness</span></button>
+<div class="panel" id="d9"><span class="px">Esc · fechar</span>
+<h2 class="pt">O que é um harness</h2>
+<p class="lab" style="color:var(--ink);font-size:48px">Tudo no agente que não é o modelo.</p>
+<div style="display:flex;flex-wrap:wrap;gap:24px"><span class="chip">Ferramentas</span><span class="chip">Laços</span><span class="chip">Hooks</span><span class="chip">Skills</span><span class="chip">Memória</span><span class="chip">Permissões</span></div>
+<p class="lab" style="font-size:40px">Exemplos: Claude Code · Codex · Cursor</p>
+<p class="psrc">Contagem do autor na API do arXiv (título contendo "harness" ou "harnesses", resumo com agent ou LLM; 2025 inteiro e 2026 até 25/10; amostra de títulos conferida). Fontes: Böckeler (2026); Galster et al. (2026), arXiv 2602.14690; OpenAI (2026).</p>
+</div>
+<div class="notes">[0:45] Agora a fronteira. Em 2026 a indústria passou a dizer que agente é modelo mais harness: tudo o que fica em volta do modelo — ferramentas, laços, hooks, skills, memória, permissões. Como no Claude Code. No arXiv, trabalhos com "harness" no título saíram de 3 em 2025 para 446 em 2026, contagem minha. A pergunta que trago: o que o harness é, do ponto de vista da Engenharia do Conhecimento?</div>
+</section>
+
+<!-- 10 HNV -->
+<section class="slide" data-title="HNV: hipótese" data-t="75">
+<div class="c" style="justify-content:flex-start;padding-top:110px;width:760px">
+<p class="k" data-a style="--i:0">09 · Hipótese</p>
+<h1 class="h1" data-a="zoom" style="--i:1;font-size:250px">HNV</h1>
+<p class="cap" data-a style="--i:2;font-size:54px">Harness Neurossimbólico Vertical</p>
+</div>
+<div class="pill" style="left:900px;top:250px;width:380px" data-a="left"><span style="--i:1">Skills</span></div><div class="pill r" style="left:1360px;top:250px;width:420px" data-a="fade">Guia macio</div>
+<div style="left:900px;top:390px;width:380px;--i:2" class="pill amb" data-a="left"><span>Hooks</span></div><div class="pill r amb" style="left:1360px;top:390px;width:420px;color:var(--amb)" data-a="fade">Regra dura</div>
+<div class="pill" style="left:900px;top:530px;width:380px" data-a="left"><span>Ontologia</span></div><div class="pill r" style="left:1360px;top:530px;width:420px" data-a="fade">Especialista</div>
+<div class="pill" style="left:900px;top:670px;width:380px" data-a="left"><span>Log PROV</span></div><div class="pill r" style="left:1360px;top:670px;width:420px" data-a="fade">Rastro</div>
+<div class="pill" style="left:900px;top:810px;width:380px" data-a="left"><span>Permissão</span></div><div class="pill r" style="left:1360px;top:810px;width:420px" data-a="fade">Humano</div>
+<svg class="ov" viewBox="0 0 1920 1080"><g fill="none" stroke="#BFD6FF" stroke-width="4"><path class="draw" d="M1284 296 H1356"/><path class="draw" d="M1284 436 H1356" stroke="#F59E0B"/><path class="draw" d="M1284 576 H1356"/><path class="draw" d="M1284 716 H1356"/><path class="draw" d="M1284 856 H1356"/></g></svg>
+<button class="hot" data-open="d10" style="left:130px;top:880px" data-a="fade"><b>+</b><span>Mapa completo</span></button>
+<div class="panel" id="d10"><span class="px">Esc · fechar</span>
+<h2 class="pt">Harness ↔ neurossimbólico</h2>
+<table class="t" style="font-size:38px"><tr><th style="text-align:left">Parte do harness</th><th>Natureza</th><th style="text-align:left">Função</th><th>Req.</th></tr>
+<tr><td>Skills e instruções</td><td>inferencial</td><td style="text-align:left">orienta formato e fontes</td><td>—</td></tr>
+<tr><td>Hooks e verificador</td><td>computacional</td><td style="text-align:left">bloqueia citação fora da ontologia</td><td>N</td></tr>
+<tr><td>Ontologia</td><td>simbólica</td><td style="text-align:left">saber definido por especialistas</td><td>E</td></tr>
+<tr><td>Log de proveniência</td><td>registro</td><td style="text-align:left">reconstrói o caminho</td><td>T</td></tr>
+<tr><td>Permissão e aprovação</td><td>humana</td><td style="text-align:left">libera a resposta</td><td>H</td></tr></table>
+<p class="lab" style="color:var(--ink);font-size:38px">Hipótese de pesquisa. A demonstração ilustra; não avalia.</p>
+<p class="psrc">Distinção entre controles computacionais e inferenciais: Böckeler (2026). Neurossimbólico: Garcez e Lamb (2023). Vertical: configurado por domínio, evidências, regras e responsáveis (artigo #160).</p>
+</div>
+<div class="notes">[1:15] Esta é a hipótese: o Harness Neurossimbólico Vertical. Um harness não é neurossimbólico por si só; ele vira quando a camada simbólica é explícita e verificável. Skills são guias macios, que o modelo interpreta. Hooks são regras duras, código que bloqueia — por isso em âmbar. A ontologia é o saber definido por especialistas do domínio. O log é o rastro, e a permissão é o humano. Vertical porque é de um domínio. É hipótese de pesquisa: a demo ilustra, não avalia.</div>
+</section>
+
+<!-- 11 VIABILIDADE -->
+<section class="slide" data-title="Viabilidade: pequeno + harness" data-t="45">
+<div class="c">
+<p class="k" data-a style="--i:0">10 · Viabilidade</p>
+<h1 class="h2" data-a style="--i:1">Pequeno + harness</h1>
+<div style="display:flex;flex-direction:column;gap:22px;width:1500px;margin-top:20px;--i:3" data-a>
+<div style="display:flex;align-items:center;gap:30px"><span style="font:600 42px var(--fd);width:300px">Desempenho</span><div style="flex:1;display:flex;flex-direction:column;gap:10px"><div class="bar" style="height:44px"><i class="g" style="left:0;width:100%"></i></div><div class="bar" style="height:44px"><i style="left:0;width:89.7%"></i></div></div><span class="big hi" style="font-size:90px;width:230px;text-align:right" data-src="cmu" data-count="89.7" data-dec="1">89,7</span><span style="font:600 50px var(--fd)">%</span></div>
+<div style="display:flex;align-items:center;gap:30px"><span style="font:600 42px var(--fd);width:300px">Custo</span><div style="flex:1;display:flex;flex-direction:column;gap:10px"><div class="bar" style="height:44px"><i class="g" style="left:0;width:100%"></i></div><div class="bar" style="height:44px"><i style="left:0;width:4%"></i></div></div><span class="big hi" style="font-size:90px;width:230px;text-align:right" data-count="4">4</span><span style="font:600 50px var(--fd)">%</span></div>
+<p class="lab" style="font-size:40px">barra cinza: modelo grande · barra clara: modelo pequeno com harness otimizado</p>
+</div>
+</div>
+<button class="hot" data-open="d11" style="left:130px;top:920px" data-a="fade"><b>+</b><span>Custo e bolha</span></button>
+<div class="panel" id="d11"><span class="px">Esc · fechar</span>
+<h2 class="pt">Custo, bolha e soberania</h2>
+<div class="row">
+<div class="card"><b>Capex das 4 big techs</b><p data-src="capex">cerca de US$ 410 bi em 2025 e cerca de US$ 725 bi previstos para 2026 (valores aproximados, imprensa).</p></div>
+<div class="card"><b>Retorno</b><p data-src="mit">95% das organizações sem retorno mensurável (MIT NANDA, 2025, relatório preliminar).</p></div>
+<div class="card"><b>Saída</b><p>Modelo pequeno, local e vertical: mais barato, auditável e sob controle da instituição.</p></div>
+</div>
+<p class="psrc">Yang, Kästner et al. (2026), arXiv 2607.08938: o melhor modelo pequeno recupera 89,7% do desempenho do modelo grande a 4% do custo. Capex: CNBC (2026) e estimativas de analistas. Inferência 280 vezes mais barata entre 2022 e 2024 (Stanford AI Index, 2025).</p>
+</div>
+<div class="notes">[0:45] Por que é viável agora. Pesquisa da Carnegie Mellon de 2026: um modelo pequeno com harness otimizado recupera 89,7% do desempenho do modelo grande a 4% do custo. Enquanto isso, o investimento em infraestrutura saltou de uns 410 bilhões para uma previsão de uns 725 bilhões, e um estudo do MIT apontou que 95% das organizações ainda não veem retorno. Se houver correção, sobrevive o caminho barato e auditável: modelos menores, locais, com harness vertical.</div>
+</section>
+
+<!-- 12 QUEM LIDERA -->
+<section class="slide" data-title="Quem lidera" data-t="35">
+<div class="c" style="justify-content:flex-start;padding-top:110px">
+<p class="k" data-a style="--i:0">11 · Quem lidera</p>
+<h1 class="h2" data-a style="--i:1">Especialistas definem</h1>
+</div>
+<div style="position:absolute;left:130px;top:430px;width:520px;height:340px;border:3px solid var(--hi);border-radius:28px;background:rgba(12,21,48,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px" data-a="zoom" ><svg width="150" height="120" viewBox="0 0 150 120" fill="none" stroke="#BFD6FF" stroke-width="6" stroke-linejoin="round"><path d="M10 40 L75 12 L140 40 L75 68 Z"/><path d="M36 54 V86 C36 100 114 100 114 86 V54"/><path d="M140 40 V80"/></svg><p style="font:700 84px var(--fd)">Academia</p></div>
+<div style="position:absolute;left:700px;top:430px;width:520px;height:340px;border:3px solid var(--hi);border-radius:28px;background:rgba(12,21,48,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;--i:2" data-a="zoom"><svg width="150" height="120" viewBox="0 0 150 120" fill="none" stroke="#BFD6FF" stroke-width="6" stroke-linejoin="round"><path d="M10 40 L75 10 L140 40 Z"/><path d="M28 48 V92 M62 48 V92 M88 48 V92 M122 48 V92 M12 104 H138"/></svg><p style="font:700 84px var(--fd)">Estado</p></div>
+<div style="position:absolute;left:1270px;top:430px;width:520px;height:340px;border:3px solid var(--hi);border-radius:28px;background:rgba(12,21,48,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;--i:3" data-a="zoom"><svg width="150" height="120" viewBox="0 0 150 120" fill="none" stroke="#BFD6FF" stroke-width="6" stroke-linejoin="round"><path d="M14 104 V74 H44 V104 M58 104 V48 H88 V104 M102 104 V18 H132 V104 M8 106 H142"/></svg><p style="font:700 84px var(--fd)">Mercado</p></div>
+<button class="hot" data-open="d12" style="left:130px;top:880px" data-a="fade"><b>+</b><span>Quem exatamente</span></button>
+<div class="panel" id="d12"><span class="px">Esc · fechar</span>
+<h2 class="pt">Quem constrói e quem adota</h2>
+<div class="row"><div class="card"><b>Academia</b><p>Engenharia do Conhecimento · Direito · Políticas públicas</p></div><div class="card"><b>Estado</b><p>Tribunais de contas · Procuradorias · Controladorias</p></div><div class="card"><b>Mercado</b><p>GovTech · LegalTech · RegTech</p></div></div>
+<p class="lab" style="color:var(--ink);font-size:40px">A ontologia é definida por especialistas do domínio; o harness vira modelo reutilizável.</p>
+<p class="psrc">Proposição do autor, ainda sem avaliação empírica.</p>
+</div>
+<div class="notes">[0:35] Quem lidera? Quem define a ontologia são os especialistas do domínio. Na academia, a Engenharia do Conhecimento — este congresso —, o Direito e as Políticas Públicas. No Estado, tribunais de contas, procuradorias e controladorias. No mercado, GovTech, LegalTech e RegTech. É uma proposição minha, ainda sem avaliação empírica.</div>
+</section>
+
+<!-- 13 PROXIMO PASSO -->
+<section class="slide" data-title="Limites e próximo passo" data-t="35">
+<div class="c">
+<p class="k" data-a style="--i:0">12 · Próximo passo</p>
+<h1 class="h2" data-a style="--i:1">Estudo pareado</h1>
+<p class="cap" data-a style="--i:2">Manual · LLM · RAG · Arquitetura</p>
+<div style="display:flex;gap:26px;margin-top:40px;flex-wrap:wrap;--i:3" data-a><span class="chip">Fidelidade</span><span class="chip">Conformidade</span><span class="chip">Tempo</span><span class="chip">Custo</span><span class="chip">Retrabalho</span></div>
+</div>
+<button class="hot" data-open="d13" style="left:130px;top:900px" data-a="fade"><b>+</b><span>Limites</span></button>
+<div class="panel" id="d13"><span class="px">Esc · fechar</span>
+<h2 class="pt">Limites declarados</h2>
+<div class="row"><div class="card"><b>Evidência situada</b><p>Processos observados em Santa Catarina.</p></div><div class="card"><b>Sem comparação</b><p>Sem condição manual de controle nem medidas comparáveis.</p></div><div class="card"><b>Sem inferência</b><p>Análise descritiva e exploratória.</p></div><div class="card"><b>HNV</b><p>Hipótese de pesquisa, não resultado.</p></div></div>
+<p class="psrc">Artigo #160, Discussão e Conclusão: trabalhos futuros com estudos pareados (manual, LLM puro, RAG e arquitetura completa) e critérios predefinidos.</p>
+</div>
+<div class="notes">[0:35] Limites, com clareza: a evidência é situada em Santa Catarina, sem comparação manual e sem inferência estatística, e o HNV é hipótese. O próximo passo é um estudo pareado: mesmas tarefas feitas manualmente, com LLM puro, com RAG e com a arquitetura completa, medindo fidelidade de citação, conformidade, tempo, custo e retrabalho.</div>
+</section>
+
+<!-- 14 OBRIGADO -->
+<section class="slide" data-title="Obrigado" data-t="15">
+<div class="bg" style="background-image:url(img/noite.jpg)"></div><div class="tint"></div><div class="veil"></div>
+<div class="c">
+<h1 class="h1" data-a="zoom" style="--i:0;font-size:250px">Obrigado</h1>
+<p class="cap" data-a style="--i:2;font-size:80px">Gracias · Thank you</p>
+<p data-a style="--i:3;font:500 42px var(--fb);color:var(--ink);margin-top:20px">alexandre.calaes@posgrad.ufsc.br</p>
+</div>
+<div data-a="zoom" style="--i:4;position:absolute;right:140px;top:380px;width:380px;height:380px;border-radius:26px;background:#F3F6FB;display:flex;align-items:center;justify-content:center;color:#0A1B4A;font:700 64px var(--fd)">QR</div>
+<p class="src">Apoio CAPES, Código de Financiamento 001 · Orientação: Prof. Dr. Fernando A. O. Gauthier · Foto: H. Stockebrand, NOIRLab, CC BY 4.0</p>
+<div class="notes">[0:15] Muito obrigado. Agradeço ao professor Fernando Gauthier, à organização do CIKI e à CAPES. No QR code estão o resumo do artigo, a demonstração e o meu contato. Fico à disposição para perguntas.</div>
+</section>
+
+<!-- RESERVA 1 -->
+<section class="slide reserve" data-title="Reserva: perguntas difíceis" data-t="0">
+<div class="c" style="justify-content:flex-start;padding-top:100px">
+<p class="k" data-a style="--i:0">Reserva · perguntas difíceis</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:20px">
+<div class="card" data-a style="--i:1"><b>O artigo testou harness?</b><p>Não. HNV é hipótese; a demo ilustra; o próximo passo é o estudo pareado.</p></div>
+<div class="card" data-a style="--i:2"><b>Por que não só RAG?</b><p>RAG jurídico ainda erra 17–33% e não executa norma.</p></div>
+<div class="card" data-a style="--i:3"><b>Ontologia custa caro?</b><p>Definida uma vez pelo especialista, versionada e reutilizável.</p></div>
+<div class="card" data-a style="--i:4"><b>O hook substitui o humano?</b><p>Não. Liberação = Adm ∧ H. Quem libera é a pessoa.</p></div>
+</div></div>
+<div class="notes">Usar só se perguntarem. 1) O artigo não testou harness: o HNV é hipótese, a demo é ilustrativa. 2) RAG traz documentos, não garante fidelidade nem executa norma. 3) A ontologia é feita uma vez e reutilizada. 4) O hook só barra o que não tem base; a liberação é humana.</div>
+</section>
+
+<!-- RESERVA 2 -->
+<section class="slide reserve" data-title="Reserva: método DSR" data-t="0">
+<div class="c" style="justify-content:flex-start;padding-top:100px">
+<p class="k" data-a style="--i:0">Reserva · método</p>
+<h1 class="h3" data-a style="--i:1">Design Science Research</h1>
+<div style="display:flex;gap:18px;margin-top:40px;align-items:stretch">
+<div class="card" data-a style="--i:2"><b>1</b><p>Problema</p></div><div class="card" data-a style="--i:3"><b>2</b><p>Requisitos</p></div><div class="card" data-a style="--i:4"><b>3</b><p>Projeto</p></div><div class="card" data-a style="--i:5"><b>4</b><p>Demonstração</p></div><div class="card" data-a style="--i:6"><b>5</b><p>Avaliação</p></div><div class="card" data-a style="--i:7"><b>6</b><p>Refinamento</p></div></div></div>
+<p class="src">Peffers et al. (2007). Revisão orientada ao artefato, não sistemática (artigo #160).</p>
+<div class="notes">Método: Design Science Research em seis ciclos (Peffers et al., 2007). A revisão de literatura foi orientada ao artefato e não sistemática; o artigo declara isso.</div>
+</section>
+
+<!-- RESERVA 3 -->
+<section class="slide reserve" data-title="Reserva: referências" data-t="0">
+<div class="c" style="justify-content:flex-start;padding-top:90px;gap:16px">
+<p class="k">Reserva · referências principais</p>
+<div style="display:flex;gap:70px;font:400 32px/1.45 var(--fb);color:var(--hi)">
+<div><p class="k" style="color:var(--ink);font-size:28px">Artigo</p>Garcez e Lamb (2023) · Neurosymbolic AI<br>Lewis et al. (2020) · RAG<br>Moreau e Missier (2013) · PROV-DM<br>Rudin (2019) · Black boxes<br>Busuioc (2021) · Accountable AI<br>Kroll et al. (2017) · Accountable algorithms<br>Peffers et al. (2007) · DSR<br>Hart e Staveland (1988) · NASA-TLX</div>
+<div><p class="k" style="color:var(--ink);font-size:28px">Fronteira 2024–2026</p>Zaharia et al. (2024) · Compound AI<br>Galster et al. (2026) · Harness engineering<br>Yang, Kästner et al. (2026) · Better harnesses<br>Sunny e Sivan-Sevilla (2026) · FAccT<br>Böckeler (2026) · Harness engineering<br>Dahl et al. (2024) · Large legal fictions<br>Magesh et al. (2025) · Hallucination-free?<br>Charlotin · AI Hallucination Cases</div></div></div>
+<div class="notes">Referências, caso peçam. À esquerda, as do artigo; à direita, a literatura de 2024 a 2026 que sustenta a ponte para o HNV.</div>
+</section>
+
+<!-- RESERVA 4 -->
+<section class="slide reserve" data-title="Reserva: direção de pesquisa" data-t="0">
+<div class="c">
+<p class="k" data-a style="--i:0">Reserva · direção em construção com o orientador</p>
+<h1 class="h3" data-a style="--i:1;width:1500px">Harnesses verticais neurossimbólicos: Engenharia do Conhecimento para IA auditável</h1>
+<p class="cap" data-a style="--i:2;font-size:40px;color:var(--mut);width:1400px">Vertical Neurosymbolic Harnesses: Knowledge Engineering for Auditable AI</p>
+</div>
+<div class="notes">Só se perguntarem sobre a tese: é uma direção ainda em construção com o orientador, o professor Gauthier. Testar se harnesses verticais com ontologias de especialistas, inclusive com modelos pequenos locais, tornam decisões auditáveis.</div>
+</section>
+
+<div id="prog"></div><div id="notes"></div>
+</div>
+<div id="pres"></div>
+<script src="deck.js"></script>
+</body>
+</html>
