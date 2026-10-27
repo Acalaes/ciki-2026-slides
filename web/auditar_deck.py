@@ -111,9 +111,14 @@ abertos = set(re.findall(r'data-open="([^"]+)"', html))
 for i in sorted(abertos):
     if i not in PAINEIS:
         erro(f"data-open sem painel em HNV_PANELS: {i}")
+# Os heróis da camada 1 também são montados por deck.js/matrix8.js/pict.js: ids literais ou prefixos (ex.: "s4-pino" + letra).
+import pathlib as _pl
+_js = "".join((_pl.Path(__file__).parent / n).read_text(encoding="utf-8") for n in ("deck.js", "matrix8.js", "pict.js") if (_pl.Path(__file__).parent / n).exists())
+_prefixos = set(re.findall(r'data-open=\?"([a-z0-9-]+)', _js))
 for pid in PAINEIS:
-    if pid not in abertos and not pid.startswith("r"):  # r3-* abre pela tecla R (reservas)
-        erro(f"painel sem data-open no index.html: {pid}")
+    aberto = pid in abertos or pid in _js or any(pid.startswith(pf) for pf in _prefixos)
+    if not aberto and not pid.startswith("r"):  # r3-* abre pela tecla R (reservas)
+        erro(f"painel sem data-open no index.html nem no deck.js: {pid}")
 for pid in OBRIGATORIOS:
     if pid not in PAINEIS:
         erro(f"painel obrigatório ausente: {pid}")
