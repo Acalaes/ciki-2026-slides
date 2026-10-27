@@ -81,3 +81,10 @@
 .panel-body .refs h3 { break-after: avoid; margin: 6px 0 12px; }
 .panel-body .refs a { color: var(--teal2); text-decoration: underline; word-break: break-all; }
 .panel-body .refs .selo, .panel-body .refs .fonte { text-indent: 0; margin-left: 8px; font-size: 20px; padding: 3px 10px; }
+.panel-body .refs.refs3 { column-count: 3; column-gap: 36px; }
+.panel-body .refs.refs3 p { padding-left: 0; text-indent: 0; }
+.panel-body .refs.refscroll { display: grid; grid-template-columns: repeat(3, 1fr); column-count: auto; column-gap: 32px; row-gap: 4px; align-items: start; max-height: 800px; overflow-y: auto; padding-right: 14px; scrollbar-width: auto; scrollbar-color: #14b8a6 #15181f; }
+.panel-body .refs.refscroll::-webkit-scrollbar { width: 14px; }
+.panel-body .refs.refscroll::-webkit-scrollbar-track { background: #15181f; border-radius: 8px; }
+.panel-body .refs.refscroll::-webkit-scrollbar-thumb { background: #14b8a6; border-radius: 8px; }
+.panel-body .refs.refscroll p { margin-bottom: 14px; line-height: 1.3; }

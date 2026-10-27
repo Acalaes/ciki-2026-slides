@@ -71,7 +71,8 @@
       K.text({ x: 910, y: 261, t: 'PPGEGC / UFSC', size: 28, tone: 'nevoa' }) +
       K.icon('db', { x: 800, y: 340, s: 80, step: 8 }) +
       K.text({ x: 910, y: 382, t: 'CBMSC · ESAG/UDESC', size: 44, weight: 'b' }) +
-      K.text({ x: 910, y: 426, t: 'evidência exploratória, em Santa Catarina', size: 28, tone: 'nevoa' }),
+      K.text({ x: 910, y: 424, t: 'Corpo de Bombeiros Militar de Santa Catarina', size: 26, tone: 'nevoa' }) +
+      K.text({ x: 910, y: 456, t: 'Escola Superior de Administração e Gerência (UDESC)', size: 26, tone: 'nevoa' }),
       'Ficha do artigo: três níveis de contribuição, autor e casos'),
     'Modelo, arquitetura e sistema de referência; evidência exploratória de dois casos.',
     [F('art-dsr', 'Artigo: método DSR'), F('art-escopo', 'Artigo: escopo')], { cred: 'Título e dados do artigo #160 (versão final).' });
@@ -79,7 +80,7 @@
     '<dl class="ficha"><dt>Título (EN)</dt><dd><em>Neurosymbolic Artificial Intelligence and Knowledge Engineering: Beyond Hallucinations and Auditable Decisions in the Intelligent State</em></dd>' +
     '<dt>Artigo</dt><dd>#160 · CIKI 2026 · apresentação em 28/10/2026</dd><dt>Autor</dt><dd>Alexandre Pinto Calaes · PPGEGC/UFSC</dd>' +
     '<dt>Método</dt><dd>Design Science Research (DSR), em seis ciclos rastreáveis</dd>' +
-    '<dt>Evidência</dt><dd>Aplicações prévias no CBMSC e na ESAG/UDESC: exploratória, em Santa Catarina</dd><dt>Apoio</dt><dd>CAPES, Finance Code 001</dd></dl>',
+    '<dt>Evidência</dt><dd>Aplicações prévias no Corpo de Bombeiros Militar de Santa Catarina (CBMSC) e na Escola Superior de Administração e Gerência (ESAG/UDESC): exploratória, em Santa Catarina</dd><dt>Apoio</dt><dd>CAPES, Finance Code 001</dd></dl>',
     [F('art-dsr', 'Artigo: método DSR'), F('art-escopo', 'Artigo: escopo')]);
 
   /* s1-paleta: quatro pinos + legenda de cores */
@@ -159,7 +160,7 @@
       g += K.bar({ x: 1180, y: 70 + i * 66, w: 330, h: 42, v: pr[i], max: 0.6, t: a[0], val: pct(pr[i]) + '%', step: 1 + i, tone: i === 0 ? 'err' : 'gelo' });
     });
     g += K.text({ x: 0, y: 300, t: 'plausível, mas sem fonte', size: 30, tone: 'err' });
-    panel('s2-softmax', 'Por que o modelo alucina', K.svg(W, 420, g, 'Fórmula softmax e barras de probabilidade com uma barra âmbar'),
+    panel('s2-softmax', 'Por que o modelo alucina', K.svg(W, 420, g, 'Fórmula softmax e barras de probabilidade com uma barra vermelha'),
       'O modelo escolhe o provável, não o verdadeiro. Valores ilustrativos.',
       [F('huang2025', 'Huang et al. (2025)'), F('softmax', 'Definição da softmax')], { selos: [sel('ilustrativo', 'sol')] });
     det('s2-softmax', 'Softmax: detalhes',
@@ -223,17 +224,16 @@
   panel('s3-rudin', 'Explicar depois não basta',
     K.svg(W, 400,
       K.lane({ x: 0, y: 0, w: W, h: 170, t: '', step: 1 }) + K.lane({ x: 0, y: 220, w: W, h: 170, t: '', step: 5 }) +
-      K.box({ x: 60, y: 45, w: 330, h: 80, t: 'decide', step: 2, tone: 'nevoa' }) + K.arrow({ pts: [[390, 85], [560, 85]], step: 3, tone: 'nevoa' }) +
-      K.box({ x: 560, y: 45, w: 330, h: 80, t: 'dano', step: 3, tone: 'err' }) + K.arrow({ pts: [[890, 85], [1060, 85]], step: 4, tone: 'nevoa' }) +
-      K.box({ x: 1060, y: 45, w: 420, h: 80, t: 'explica depois', step: 4, tone: 'nevoa' }) +
-      K.box({ x: 60, y: 265, w: 330, h: 80, t: 'verifica antes', step: 6, fill: true }) + K.arrow({ pts: [[390, 305], [560, 305]], step: 7 }) +
-      K.box({ x: 560, y: 265, w: 330, h: 80, t: 'assina', step: 8, fill: 'solid' }),
-      'Duas linhas do tempo: explicar depois e verificar antes'),
-    'Em decisão de alto impacto, a prova vem antes da assinatura (Rudin, 2019).',
-    [F('rudin', 'Rudin (2019)'), F('art-tab1', 'Artigo: Tabela 1')]);
+      K.box({ x: 60, y: 45, w: 380, h: 80, t: 'caixa-preta decide', step: 2, tone: 'nevoa', size: 28 }) + K.arrow({ pts: [[440, 85], [600, 85]], step: 3, tone: 'nevoa' }) +
+      K.box({ x: 600, y: 45, w: 420, h: 80, t: 'explica depois', step: 4, tone: 'nevoa', size: 28 }) +
+      K.box({ x: 60, y: 265, w: 560, h: 80, t: 'modelo interpretável desde o início', step: 6, fill: true, size: 28 }) + K.arrow({ pts: [[620, 305], [780, 305]], step: 7 }) +
+      K.box({ x: 780, y: 265, w: 330, h: 80, t: 'decisão', step: 8, fill: 'solid', size: 28 }),
+      'Duas linhas do tempo: caixa-preta explicada depois e modelo interpretável desde o início'),
+    'Rudin (2019): em decisões de alto risco, usar modelos interpretáveis desde o início, em vez de explicar caixas-pretas depois.',
+    [F('rudin', 'Rudin (2019)'), F('art-tab1', 'Artigo: Tabela 1')], { cred: 'O artigo cita Rudin para sustentar que a explicação posterior não basta; o remédio proposto aqui é verificar antes da liberação.' });
   det('s3-rudin', 'Rudin (2019): detalhes',
-    '<p class="quote">“Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead.”</p><p class="nota">Nature Machine Intelligence, 1, 206–215. A autora recomenda modelos interpretáveis; o artigo usa o argumento sobre a fidelidade das explicações para defender mecanismos verificáveis.</p>' +
-    '<ul class="pt-list"><li>Explicações a posteriori podem não representar a lógica real da caixa-preta em contextos críticos.</li><li>Em decisões de alto impacto, elas não substituem mecanismos verificáveis.</li><li>Explicar ajuda a compreender, mas não substitui evidência nem responsabilização.</li></ul>',
+    '<p class="quote">“Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead.”</p><p class="nota">Rudin, C. (2019). Nature Machine Intelligence, 1, 206–215.</p>' +
+    '<ul class="pt-list"><li>Rudin defende usar modelos interpretáveis desde o início em decisões de alto risco, em vez de explicar caixas-pretas depois.</li><li>O artigo #160 cita o trabalho para sustentar que explicações a posteriori podem não representar a lógica real da caixa-preta e não substituem evidência nem responsabilização.</li><li>Diferença: Rudin propõe modelos interpretáveis; o artigo propõe verificar antes da liberação, com regras, rastro e decisão humana.</li></ul>',
     [F('rudin', 'Rudin (2019)')]);
 
   /* =========================================================
@@ -313,15 +313,17 @@
     tbl(['1fr', '1fr', '1fr'], ['At(y)', 'H(y)', 'L(y)'], [['F', 'F', 'F'], ['F', 'V', 'F'], ['V', 'F', '<span class="block">F: não liberado</span>'], { cls: 'dest', c: ['V', 'V', 'V: liberado'] }]) +
     '<p class="nota">F = falso, V = verdadeiro. A pessoa pode manter, modificar ou rejeitar a recomendação (artigo, Seção 3.1).</p>', [F('art-eq', 'Artigo: Equação 3')]);
 
-  panel('s4-formula', 'Admissível = evidência, norma e rastro',
-    K.svg(W, 480,
-      K.formula({ x: 0, y: 0, w: 1500, h: 120, size: 78, t: 'At(y) = E(y, R) ∧ N(y, Ω) ∧ T(y)' }) +
-      K.text({ x: 0, y: 150, t: 'At = admissível · E = evidência · N = norma · T = rastro', size: 28, tone: 'nevoa' }) +
-      K.gate({ x: 620, y: 190, w: 170, h: 250, t: '∧', ins: ['evidência', 'norma', 'rastro'], out: 'admissível', step: 1, stub: 80 }) +
-      K.text({ x: 1160, y: 330, t: 'especificação,', size: 32, tone: 'nevoa' }) + K.text({ x: 1160, y: 372, t: 'não garantia', size: 32, tone: 'nevoa' }),
-      'Porta AND com três entradas: evidência, norma e rastro'),
-    'Um pino falso bloqueia: nos logs reais, F ∧ F ∧ F e F ∧ V ∧ V bloquearam.',
-    [F('art-eq', 'Artigo: Equação 2'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')]);
+  panel('s4-formula', 'Como o sistema decide',
+    K.svg(W, 520,
+      K.formula({ x: 0, y: 0, w: 1100, h: 100, size: 64, t: 'At = E ∧ N ∧ T', step: 1 }) + K.formula({ x: 760, y: 0, w: 900, h: 100, size: 64, t: 'L = At ∧ H', step: 5 }) +
+      K.text({ x: 0, y: 130, t: 'At = admissível · E = evidência · N = norma · T = rastro · L = liberação · H = humano', size: 26, tone: 'nevoa' }) +
+      K.gate({ x: 360, y: 190, w: 150, h: 240, t: '∧', ins: ['evidência', 'norma', 'rastro'], step: 2, stub: 80 }) +
+      K.arrow({ pts: [[590, 310], [680, 310], [680, 283], [830, 283]], noHead: true, step: 3 }) + K.text({ x: 640, y: 262, t: 'admissível', size: 28, anchor: 'middle' }) +
+      K.gate({ x: 830, y: 230, w: 130, h: 170, t: '∧', ins: ['', 'humano'], step: 4, stub: 60, out: 'liberação' }) +
+      K.pic('bloqueio', { x: 1330, y: 220, s: 96, tone: 'block', step: 6, t: 'Portão fechado' }),
+      'Duas portas em série: três condições tornam admissível; com a quarta, o humano, libera'),
+    'Três condições tornam o parecer admissível; só com a quarta, o humano, ele é liberado.',
+    [F('art-eq', 'Artigo: Equações 2 e 3'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')], { selos: [sel('especificação, não garantia', 'sol')] });
   det('s4-formula', 'Equação 2 e execuções: detalhes',
     tbl(['520px', '230px', '1fr', '300px'], ['Execução', 'E ∧ N ∧ T', 'O que o hook apontou', 'Resultado'], [
       ['Cena 2b: rascunho do modelo local 3B', '<b>F ∧ F ∧ F</b>', '2 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
@@ -352,7 +354,7 @@
       [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')], { selos: [sel('ilustrativo, do autor', 'sol')] });
     det('s4-regras', 'Tabela-verdade (16 linhas): detalhes',
       '<div class="dois">' + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(0, 8), 'tv') + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(8), 'tv') + '</div>' +
-      '<p class="nota">Só a linha destacada libera; em âmbar, a admissível mas não liberada. “:-” lê-se “se”.</p>', [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')]);
+      '<p class="nota">Só a linha destacada libera; em vermelho, a admissível mas não liberada. “:-” lê-se “se”.</p>', [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')]);
   })();
 
   /* =========================================================
@@ -384,7 +386,7 @@
       K.box({ x: 80, y: 270, w: 900, h: 210, t: ['Citāre', 'sistema de referência'], size: 40, step: 3, fill: 'solid' }) +
       K.arrow({ pts: [[1060, 270], [1180, 270]], step: 4, tone: 'nevoa', dash: true }) +
       K.box({ x: 1180, y: 190, w: 480, h: 160, t: ['= harness', 'vertical'], size: 40, step: 5, fill: true }) +
-      K.box({ x: 1180, y: 400, w: 480, h: 110, t: 'CBMSC · ESAG/UDESC', s: 'aplicações prévias', step: 6, tone: 'nevoa' }),
+      K.box({ x: 1180, y: 380, w: 480, h: 150, t: ['Corpo de Bombeiros (CBMSC)', 'Escola de Gerência (ESAG)'], s: 'aplicações prévias', size: 26, step: 6, tone: 'nevoa' }),
       'Três níveis aninhados e a ponte com o harness'),
     'CALAIS = harness vertical: o artigo não usa a palavra “harness”.',
     [F('art-arq', 'Artigo: Seções 1 e 3.1'), F('bockeler2026', 'Böckeler (2026)'), F('galster2026', 'Galster et al. (2026)')]);
@@ -452,8 +454,8 @@
     g += K.dot({ cx: 20, cy: 270, r: 12, hollow: true, tone: 'nevoa', t: 'caixa = instância', step: 14 }) + K.text({ x: 54, y: 322, t: ': Classe', size: 26, tone: 'nevoa' }) +
       K.text({ x: 54, y: 380, t: 'exemplo fictício', size: 26, tone: 'nevoa' });
     panel('s6-ontologia', 'Ontologia do Citāre', K.svg(W, 520, g, 'Cadeia do artigo ao trecho e à auditoria da fonte'),
-      'O artigo foi conferido com o Citāre, com revisão humana. Dados do CBMSC/ESAG não avaliam o Citāre.',
-      [F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)'), F('art-citare', 'Artigo: declaração de uso')], { selos: [sel('material didático', 'sol')] });
+      'O artigo foi conferido com o Citāre, com revisão humana. Dados do CBMSC e da ESAG não avaliam o Citāre.',
+      [F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)'), F('art-citare', 'Artigo: declaração de uso')], { selos: [sel('material didático', 'sol')], cred: 'CBMSC: Corpo de Bombeiros Militar de Santa Catarina. ESAG: Escola Superior de Administração e Gerência (UDESC).' });
   })();
   det('s6-ontologia', 'Ontologia: detalhes',
     '<ul class="pt-list"><li><b>Ontologia:</b> “especificação explícita e formal de uma conceitualização compartilhada” (Studer, Benjamins e Fensel, 1998, a partir de Gruber, 1993).</li><li><b>T-box</b> (terminologia): classes e relações. Três grupos: Conteúdo acadêmico (Artigo, Seção, Parágrafo, Afirmação, Citação); Evidência e fonte (Fonte, Arquivo PDF, Trecho); Controle (Auditoria, Estado).</li><li><b>A-box</b> (asserções): instâncias e suas ligações, como Artigo 42 e Auditoria 7.</li><li>Instâncias do desenho são fictícias, para ensinar a leitura; as classes intermediárias são didáticas.</li></ul><p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b></p>',
@@ -468,13 +470,13 @@
       K.box({ x: 0, y: 400, w: 800, h: 110, t: 'exportação bloqueia', s: 'na etapa que falta', size: 30, tone: 'block', step: 6 }) +
       K.arrow({ pts: [[1437, 310], [1437, 400]], step: 7 }) + K.box({ x: 1040, y: 400, w: 620, h: 110, t: 'exportação passa', s: 'cada citação tem evidência exata', size: 30, step: 8, fill: true }),
       'Quatro estados da fonte e onde a exportação bloqueia'),
-    'Conferido com o Citāre, com revisão humana. Dados do CBMSC/ESAG não avaliam o Citāre.',
-    [F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')], { selos: [sel('material didático', 'sol')] });
+    'Conferido com o Citāre, com revisão humana. Dados do CBMSC e da ESAG não avaliam o Citāre.',
+    [F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')], { selos: [sel('material didático', 'sol')], cred: 'CBMSC: Corpo de Bombeiros Militar de Santa Catarina. ESAG: Escola Superior de Administração e Gerência (UDESC).' });
   det('s6-regras', 'Regras e declaração: detalhes',
     '<p><span class="chip">autoria</span> <span class="chip">ano</span> <span class="chip">DOI</span> O marcador (Silva, 2022) precisa corresponder a uma obra registrada; o DOI identifica cada obra.</p>' +
     '<ul class="pt-list"><li><b>quarantined:</b> dado ausente, não confirmado ou divergente.</li><li><b>identity_verified:</b> obra identificada; origem do texto ainda não.</li><li><b>text_verified:</b> pode ser anexada ao artigo.</li><li><b>evidence_ready:</b> trecho validado ligado a uma afirmação.</li><li><b>Bloqueios:</b> bibliographic_match (obra não achada entre as fontes), recovery (PDF não recuperado), source_audit (fonte em quarentena), exact_evidence (falta o vínculo da afirmação exata).</li></ul>' +
     '<p class="nota"><b>Declaração de uso de IA do artigo:</b> o autor usou o Citāre, plataforma de assessoria acadêmica com supervisão humana, para apoiar a redação e a verificação de citações; o texto foi guiado pelas fontes da coleção do autor (RAG), com regras de autoria, ano e DOI. Todo conteúdo e toda citação sugeridos foram revisados e aprovados pelo autor, que assume plena responsabilidade, sem atribuir autoria à IA.</p>' +
-    '<p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b></p>',
+    '<p class="nota"><b>Dados do Corpo de Bombeiros Militar de Santa Catarina (CBMSC) e da Escola Superior de Administração e Gerência (ESAG/UDESC) não avaliam o Citāre.</b></p>',
     [F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')]);
 
   panel('s6-triplas', 'Triplas e recuperação (Eq. 1)',
@@ -493,7 +495,7 @@
       [':Artigo42', 'a', ':Artigo'], [':Artigo42', ':temSecao', ':Introducao'], [':Introducao', ':contem', ':Paragrafo4'], [':Paragrafo4', ':expressa', ':A1'], [':A1', ':temCitacao', ':CitSilva2022'],
       [':CitSilva2022', ':identifica', ':ObraSilva2022'], [':ObraSilva2022', ':temCopiaEm', ':PDFSilva2022'], [':PDFSilva2022', ':contem', ':Trecho_p4'],
       { cls: 'dest', c: [':Trecho_p4', ':podeApoiar', ':A1'] }, [':Auditoria7', ':confere', ':PDFSilva2022'], [':Auditoria7', ':produzResultado', ':EvidenceReady']], 'trip') +
-    '<p class="nota">Modelagem do autor a partir da Atividade v05; “a” significa “é instância de”; predicados adaptados; instância (Silva, 2022) fictícia. Dados do CBMSC/ESAG não avaliam o Citāre.</p>',
+    '<p class="nota">Modelagem do autor a partir da Atividade v05; “a” significa “é instância de”; predicados adaptados; instância (Silva, 2022) fictícia. Dados do CBMSC e da ESAG (Escola Superior de Administração e Gerência) não avaliam o Citāre.</p>',
     [F('ont-citare', 'Ontologia do Citāre (v05)'), F('pseudocodigo', 'Triplas (ilustrativas)')]);
 
   /* =========================================================
@@ -542,7 +544,7 @@
   (function () {
     var rows = [['Contexto', 'operacional', 'seleção acadêmica', null, null], ['Etapa', 'operação observada', 'versão beta', null, null],
       ['NASA-TLX', 'seis registros', 'não identificado', true, false], ['Logs', 'disponíveis', 'sem medida comparável', true, false]];
-    var g = K.box({ x: 360, y: 0, w: 640, h: 80, t: 'CBMSC', size: 34, step: 1, fill: true }) + K.box({ x: 1020, y: 0, w: 640, h: 80, t: 'ESAG/UDESC', size: 34, step: 1, fill: true });
+    var g = K.box({ x: 360, y: 0, w: 640, h: 80, t: 'Bombeiros (CBMSC)', size: 32, step: 1, fill: true }) + K.box({ x: 1020, y: 0, w: 640, h: 80, t: 'Escola de Gerência (ESAG/UDESC)', size: 32, step: 1, fill: true });
     rows.forEach(function (r, i) {
       var y = 110 + i * 100;
       g += K.text({ x: 0, y: y + 40, t: r[0], size: 30, tone: 'nevoa' });
@@ -554,7 +556,8 @@
       'Os casos não são comparados quantitativamente e não avaliam o Citāre.', [F('art-tab4', 'Artigo: Tabela 4'), F('art-escopo', 'Artigo: escopo')],
       { cred: '● disponível · ○ não identificado no material analisado.' });
     det('s7-tab4', 'Tabela 4: detalhes',
-      tbl(['300px', '1fr', '1fr'], ['Dimensão', 'CBMSC', 'ESAG/UDESC'], [
+      '<p class="nota">CBMSC: Corpo de Bombeiros Militar de Santa Catarina. ESAG/UDESC: Escola Superior de Administração e Gerência da Universidade do Estado de Santa Catarina.</p>' +
+        tbl(['300px', '1fr', '1fr'], ['Dimensão', 'Corpo de Bombeiros (CBMSC)', 'Escola de Gerência (ESAG/UDESC)'], [
         ['Contexto', 'Processo público-operacional', 'Processo público-acadêmico de seleção'], ['Etapa', 'Operação assistida observada', 'Versão derivada em fase beta'],
         ['Raw NASA-TLX', 'Seis registros associados a dois identificadores', 'Não identificado no material analisado'],
         ['Logs de operação', 'Disponíveis para envio de mensagens, infraestrutura e aquecimento', 'Nenhuma medida diretamente comparável identificada'],
@@ -773,7 +776,7 @@
       'Cinco limites, cada um com cadeado'),
     'O próximo passo é o estudo pareado em quatro condições.', [F('art-escopo', 'Artigo: escopo'), F('art-nasa', 'Artigo: Tabela 5'), F('hnv-laco', 'Laço local'), F('hnv-ontologia', 'Ontologia (18 fontes)')], { selos: [sel('exploratório')] });
   det('s11-limites', 'Limites: detalhes',
-    '<ul class="pt-list"><li>Situado em Santa Catarina: validade externa limitada; evidência exploratória e descritiva.</li><li>Seis registros são tarefas, não pessoas; cinco vêm da mesma conta; sem comparação manual. Os dados do CBMSC e da ESAG não avaliam o Citāre.</li><li>Confere citações, não raciocínio; bloqueado não é falso (Resolução 7/2005).</li><li>As 18 fontes da ontologia aguardam a validação do especialista.</li><li>O harness neurossimbólico vertical ainda não foi testado.</li></ul>',
+    '<ul class="pt-list"><li>Situado em Santa Catarina: validade externa limitada; evidência exploratória e descritiva.</li><li>Seis registros são tarefas, não pessoas; cinco vêm da mesma conta; sem comparação manual. Os dados do CBMSC e da ESAG (Escola Superior de Administração e Gerência) não avaliam o Citāre.</li><li>Confere citações, não raciocínio; bloqueado não é falso (Resolução 7/2005).</li><li>As 18 fontes da ontologia aguardam a validação do especialista.</li><li>O harness neurossimbólico vertical ainda não foi testado.</li></ul>',
     [F('art-escopo', 'Artigo: escopo'), F('art-nasa', 'Artigo: Tabela 5'), F('hnv-laco', 'Laço local'), F('hnv-ontologia', 'Ontologia (18 fontes)')]);
 
   /* =========================================================
@@ -790,18 +793,22 @@
       return '<div class="qa-c"><h3>' + (i + 1) + '. ' + q[0] + '</h3><p>' + q[1] + '</p><div class="fontes">' + q[2].map(function (f) { return F(f[0], f[1]); }).join('') + '</div></div>';
     }).join('') + '</div>' + foot([sel('preprint'), sel('pendente de validação')], 'Respostas preparadas a partir da avaliação independente do deck (27/10/2026). Reserva: não abrir na fala principal.') + '</div>';
 
+  function linkar(r) {
+    return r.replace(/(https?:\/\/\S+)/g, function (u) { var c = u.replace(/[.,;]$/, ''); return '<a href="' + c + '" target="_blank" rel="noopener noreferrer">[link]</a>'; });
+  }
   function refsHtml() {
+    return '<div class="panel-body"><h2 class="pt">' + TITULOS['r3-referencias'] + '</h2><div class="refs refs3 refscroll">' +
+      ART_REFS.slice(0, 9).map(function (r) { return '<p>' + linkar(r) + '</p>'; }).join('') + '</div>' +
+      foot([], 'Referências do artigo #160, 1 a 9 de 15 (cada [link] abre o DOI ou a página). As 6 restantes e as fontes de cada afirmação do deck estão em “detalhes”.') + '</div>';
+  }
+  function refsDet() {
     var fs = window.HNV_FONTES || {};
     var deck = Object.keys(fs).map(function (k) {
       var f = fs[k], st = String(f.status || '');
       var plain = /^confirmado( no artigo| nos logs)?$/.test(st);
-      return '<p><button class="fonte" data-src="' + k + '" style="font-size:22px;padding:6px 14px 7px">' + k + '</button> <span class="mut">' + f.fonte + '.</span>' + (plain ? '' : ' ' + sel(st.split(':')[0].split('(')[0], 'sol')) + '</p>';
+      return '<p><button class="fonte" data-src="' + k + '">' + k + '</button> ' + f.fonte + '.' + (plain ? '' : ' ' + sel(st.split(':')[0].split('(')[0], 'sol')) + '</p>';
     }).join('');
-    var art = ART_REFS.map(function (r) {
-      return '<p>' + r.replace(/(https?:\/\/\S+)/g, function (u) { var c = u.replace(/[.,;]$/, ''); return '<a href="' + c + '" target="_blank" rel="noopener noreferrer">' + c + '</a>'; }) + '</p>';
-    }).join('');
-    return '<div class="panel-body"><h2 class="pt">Referências</h2><div class="refs"><h3>Fontes das afirmações do deck</h3>' + (deck || '<p>Carregue fontes.js antes de paineis.js.</p>') +
-      '<h3 style="margin-top:22px">Referências do artigo</h3>' + art + '</div></div>';
+    return '<div class="panel-body det"><h2 class="pt">Detalhes: ' + TITULOS['r3-referencias'] + '</h2><h3>Referências do artigo, 10 a 15 de 15</h3><div class="refs refs3 refscroll" style="max-height:none;overflow:visible">' + ART_REFS.slice(9).map(function (r) { return '<p>' + linkar(r) + '</p>'; }).join('') + '</div><h3>Fontes das afirmações do deck</h3><div class="refs refs3 refscroll" style="max-height:none;overflow:visible">' + (deck || '<p>Carregue fontes.js antes de paineis.js.</p>') + '</div></div>';
   }
   var ART_REFS = [
  "Bollotti, J. J., & Wachowicz, M. (2024). A aplicação da inteligência artificial pela administração pública diante do princípio da eficiência. Revista da AGU, 23(4), 101–126. https://doi.org/10.25109/2525-328X.v.23.n.4.2024.3429",
@@ -821,6 +828,7 @@
  "Zen, H., Wagh, R., Wanderley, M., Bicalho, G., Park, R., Sun, M., Palacios, R., Carvalho, L., Rinaldo, G., & Gupta, A. (2025). Ensemble-based biometric verification: Defending against multi-strategy deepfake image generation. Computers, 14(6), Article 225. https://doi.org/10.3390/computers14060225"
 ];
   Object.defineProperty(P, 'r3-referencias', { enumerable: true, configurable: true, get: refsHtml });
+  Object.defineProperty(D, 'r3-referencias', { enumerable: true, configurable: true, get: refsDet });
 
 
   /* =========================================================

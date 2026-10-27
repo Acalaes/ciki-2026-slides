@@ -18,7 +18,7 @@
   "status": "parcial: faixa do preprint"
  },
  "rudin": {
-  "afirmacao": "Explicação pós-hoc não substitui mecanismos verificáveis em decisões de alto impacto",
+  "afirmacao": "Rudin (2019) defende usar modelos interpretáveis desde o início em decisões de alto risco, em vez de explicar caixas-pretas depois; o artigo cita o trabalho para sustentar que a explicação posterior não basta",
   "fonte": "Rudin (2019), Nature Machine Intelligence 1, 206–215, citado no artigo #160 (Discussão)",
   "url": "https://doi.org/10.1038/s42256-019-0048-x",
   "status": "confirmado no artigo"

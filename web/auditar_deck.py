@@ -351,6 +351,11 @@ for hm in re.finditer(r'<h1 class="ttl[^"]*">(.*?)</h1>', html, re.S):
     if len(tit) > 45:
         erro(f"slide: título h1 de {len(tit)} caracteres (limite 45): {tit}")
 
+# texto para o público: o erro/bloqueio é VERMELHO; "âmbar" (e amarelo/laranja) não podem aparecer em painel
+for pid, conteudo in list(PAINEIS.items()) + [("detalhes:" + k, v) for k, v in DETALHES.items()]:
+    if re.search(r"[âa]mbar|amarel[oa]|laranja", HTML_TAG.sub(" ", conteudo) + " " + " ".join(re.findall(r'aria-label="([^"]*)"', conteudo)), re.I):
+        erro(f"{pid}: menciona âmbar/amarelo/laranja ao público (o erro e o bloqueio são vermelhos)")
+
 # prova documental (camada 3): imagens reais do artigo
 for img in ("figura1", "tabela1", "tabela2", "tabela3", "tabela4", "tabela5"):
     if not (pasta / "img" / "artigo" / f"{img}.png").exists():
