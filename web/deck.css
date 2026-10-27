@@ -211,7 +211,7 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 /* capa: mesma hierarquia dos demais (título > subtítulo > pergunta), título um pouco maior */
 .s1 .ttl{font-size:54px}
 .s1 .sub{font-size:46px}
-.s1 .fxslot{transform-origin:1400px 1040px;transform:translate(-100px,-45px) scale(1.04)}
+.s1 .fxslot{transform-origin:1208px 1040px;transform:translate(-248px,-40px) scale(1.1)}
 .fxslot[data-fx^="cover"]{filter:hue-rotate(28deg) brightness(1.15)}
 .s1 .sub{color:#4db3ea}
 .s1 .guia{top:250px}
