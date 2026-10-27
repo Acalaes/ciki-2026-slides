@@ -1,27 +1,27 @@
-/* Slide 8 (demo, estilo matriz): único lugar do deck com verde, escopo .matrix. Âmbar só em .err/.block. */
-/* ---------- S8 matriz ---------- */
-.slide.s8{background:#000}
-.matrix{--g:#00FF41;--g2:#00C434;--g3:#00801F;--gelo:#00FF41;--nevoa:#00C434;--aco:#007A1F}
-.matrix .l1{color:var(--g);text-shadow:0 0 26px rgba(0,255,65,.5)}
-.matrix .l1.err,.matrix .l1.block{color:var(--a);text-shadow:0 0 26px rgba(242,165,65,.45)}
-.matrix .selo{color:var(--g2);border-left-color:var(--g3)}
-.code{position:absolute;z-index:7;left:96px;top:498px;width:max-content;max-width:1130px;margin:0;font:500 40px/1.3 var(--fd);font-stretch:80%;color:var(--g2);white-space:pre;
- background:rgba(0,0,0,.82);border:3px solid var(--g3);border-radius:14px;padding:20px 30px;text-shadow:0 0 12px rgba(0,255,65,.35)}
-.code .cm{color:var(--g3)}.code .kw{color:var(--g);font-weight:800}
+/* Demo (estilo matriz): único lugar do deck com verde, escopo .matrix. Vermelho (erro e bloqueio) só em .err/.block.
+   Exceção de fonte: o código usa monoespaçada. */
+.matrix{--g:#00FF41;--g2:#008F11;--g3:#008F11;--gelo:#00FF41;--nevoa:#008F11;--aco:#008F11}
+.matrix .ttl{color:var(--g);text-shadow:0 0 24px rgba(0,255,65,.5)}
+.matrix .stepw{color:var(--g);text-shadow:0 0 18px rgba(0,255,65,.5)}
+.matrix .stepw .err,.matrix .stepw .block{color:var(--a);text-shadow:0 0 18px rgba(248,113,113,.5)}
+.matrix .guia{color:var(--g2)}
+.matrix>.selo{color:var(--g2);border-left-color:var(--g3);background:rgba(0,0,0,.82);padding:6px 16px}
+.code{position:absolute;z-index:7;left:200px;top:250px;width:max-content;max-width:1020px;margin:0;font:500 31px/1.4 var(--fm);color:var(--g2);white-space:pre;
+ background:rgba(0,0,0,.82);border:2px solid var(--g3);border-radius:8px;padding:18px 28px;text-shadow:0 0 10px rgba(0,255,65,.3)}
+.code .cm{color:var(--g3)}.code .kw{color:var(--g);font-weight:700}
 .code .rt{color:var(--g)}
-.code .rt.block{color:var(--a);text-shadow:0 0 14px rgba(242,165,65,.6)}
+.code .rt.block{color:var(--a);text-shadow:0 0 14px rgba(248,113,113,.6)}
 .matrix .tick{stroke:var(--g2)}
-.matrix .ln,.matrix .ln2{stroke:var(--g)}
-.matrix .sheet{fill:rgba(0,40,10,.55);stroke:var(--g2)}
-.matrix svg text,svg.art .matrix text{fill:var(--g)}
+.matrix .ln{stroke:var(--g)}
+.matrix .sheet{fill:rgba(0,143,17,.15);stroke:var(--g2)}
+.matrix .bk{fill:rgba(0,0,0,.84);stroke:none}
+.matrix svg text{fill:var(--g)}
 .matrix svg text.err,.matrix svg text.block{fill:var(--a)}
-.matrix svg .err,.matrix svg .block{stroke:var(--a)}
-.matrix svg text.err,.matrix svg text.block{stroke:none}
-.matrix svg .ln.block{stroke:var(--a)}
-.matrix .stampg text{fill:#E6EEFB}
-.matrix [data-open]:hover,.matrix [data-open]:focus-visible{filter:drop-shadow(0 0 8px #00FF41) drop-shadow(0 0 24px #00C434)}
+.matrix svg .ln.block,.matrix svg .x6.block{stroke:var(--a)}
+.matrix .stampg text{fill:#f4f4f5}
+.matrix [data-open]:hover,.matrix [data-open]:focus-visible{filter:drop-shadow(0 0 8px #00FF41) drop-shadow(0 0 24px #008F11)}
 
-/* ---------- transição "entrada na matriz" ---------- */
+/* transição "entrada na matriz" (fade para preto) e saída de volta ao azul */
 html[data-vt="matrix-in"]::view-transition-old(root){animation:mxout .7s ease-in both}
 html[data-vt="matrix-in"]::view-transition-new(root){animation:mxin .8s .5s ease-out both}
 html[data-vt="matrix-out"]::view-transition-old(root){animation:mxout2 .6s ease-in both}
@@ -29,8 +29,5 @@ html[data-vt="matrix-out"]::view-transition-new(root){animation:mxin2 .8s .35s e
 ::view-transition-group(root){background:#000}
 @keyframes mxout{to{opacity:0;filter:brightness(0)}}
 @keyframes mxin{from{opacity:0}to{opacity:1}}
-@keyframes mxout2{to{opacity:0;filter:brightness(0) hue-rotate(80deg)}}
+@keyframes mxout2{to{opacity:0;filter:brightness(0)}}
 @keyframes mxin2{from{opacity:0;filter:brightness(2)}to{opacity:1}}
-
-
-.matrix .bk{fill:rgba(0,0,0,.82);stroke:none}

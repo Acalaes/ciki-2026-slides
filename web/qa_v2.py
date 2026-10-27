@@ -33,7 +33,13 @@ def rotulo(n):
 base = (WEB / "index.html").as_uri()
 modo = sys.argv[1] if len(sys.argv) > 1 else "slides"
 if modo == "cover":
-    shot(f"{base}?static=1&only3d=1&fresh=1#1", WEB / "img" / "capa_harness3d.png", budget=15000)
+    import base64
+    r = subprocess.run([CHROME, *FLAGS, "--window-size=1920,1080", "--virtual-time-budget=15000", "--dump-dom",
+                        f"{base}?static=1&only3d=1&fresh=1&dump3d=1#1"], capture_output=True, timeout=180, text=True, encoding="utf-8")
+    m = re.search(r'<pre id="dump3d"[^>]*>data:image/png;base64,([^<]+)</pre>', r.stdout)
+    if not m:
+        print("sem dump3d"); sys.exit(1)
+    (WEB / "img" / "capa_harness3d.png").write_bytes(base64.b64decode(m.group(1)))
     print(WEB / "img" / "capa_harness3d.png")
     sys.exit()
 if modo == "um":

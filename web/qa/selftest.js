@@ -17,8 +17,12 @@
   wheel(-100); await sleep(1100); ok('voltar entra no último passo da demo', st().i === 8 && st().step === 3, JSON.stringify(st()));
   wheel(100, 400); await sleep(300); ok('deltaX ignorado', st().i === 8 && st().step === 3);
   D.goto(1); await sleep(1000);
-  document.querySelector('[data-open="s2-casos"]').click(); await sleep(500);
+  document.querySelector('[data-open="s2-casos"]').dispatchEvent(new MouseEvent('click', { bubbles: true })); await sleep(500);
   const p = document.getElementById('panel-s2-casos'); ok('clique em data-open abre painel', p && p.classList.contains('open'));
+  const bd = p.querySelector('.btn-detalhes');
+  if (bd) { bd.dispatchEvent(new MouseEvent('click', { bubbles: true })); await sleep(300); const dt = document.getElementById('detail'); ok('botão detalhes abre a prova documental (camada 3)', dt.classList.contains('open'));
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(300); ok('Esc fecha os detalhes e mantém o painel', !dt.classList.contains('open') && p.classList.contains('open')); }
+  else ok('painel s2-casos tem botão de detalhes', false);
   const before = st().i; wheel(100, 0, p); await sleep(1100); wheel(100, 0, p); await sleep(1100);
   ok('com painel aberto a roda não muda de slide', st().i === before, JSON.stringify(st()));
   document.querySelector('[data-src="charlotin"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
