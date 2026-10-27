@@ -68,7 +68,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const eo = t => 1 - Math.pow(1 - t, 3);
 function rng(seed) { let a = seed; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-const C = { noite: '#0b0c10', gelo: '#f4f4f5', teal: '#14b8a6', claro: '#5eead4', slate: '#a1a1aa', err: '#f87171', amb: '#f87171', nevoa: '#a1a1aa', aco: '#14b8a6', azul: '#15181f' };
+const C = { noite: '#0b0c10', gelo: '#f4f4f5', teal: '#2b9bdc', claro: '#4db3ea', slate: '#a1a1aa', err: '#f87171', amb: '#f87171', nevoa: '#a1a1aa', aco: '#2b9bdc', azul: '#15181f' };
 const fmtBR = (v, dec) => v.toLocaleString('pt-BR', { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
 const stage = $('#stage');
 const slides = $$('.slide');
@@ -154,17 +154,17 @@ function makeCover3D(canvas) {
   const G = new THREE.Group(); G.position.set(1.45, -1.1, 0); G.scale.setScalar(.98); scene.add(G);
   scene.add(new THREE.AmbientLight(0x8a9a98, .6));
   const dl = new THREE.DirectionalLight(0xf4f4f5, .95); dl.position.set(3, 4, 6); scene.add(dl);
-  const pl = new THREE.PointLight(0x14b8a6, 1.6, 30); pl.position.set(-5, -2, 4); scene.add(pl);
+  const pl = new THREE.PointLight(0x2b9bdc, 1.6, 30); pl.position.set(-5, -2, 4); scene.add(pl);
   const gc = document.createElement('canvas'); gc.width = gc.height = 256; const gx = gc.getContext('2d'), gg = gx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  gg.addColorStop(0, 'rgba(20,184,166,.4)'); gg.addColorStop(1, 'rgba(20,184,166,0)'); gx.fillStyle = gg; gx.fillRect(0, 0, 256, 256);
+  gg.addColorStop(0, 'rgba(43,155,220,.4)'); gg.addColorStop(1, 'rgba(43,155,220,0)'); gx.fillStyle = gg; gx.fillRect(0, 0, 256, 256);
   const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); halo.scale.set(5, 5, 1); halo.position.set(0, .4, -.6); G.add(halo);
   const cn = HG.core, nodeGeo = new THREE.BufferGeometry(), pos = new Float32Array(cn.length * 3), col = new Float32Array(cn.length * 3);
   cn.forEach((p, i) => pos.set([p[0], p[1], p[2]], i * 3)); nodeGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); nodeGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
   const nodes = new THREE.Points(nodeGeo, new THREE.PointsMaterial({ size: .17, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); G.add(nodes);
   const ep = new Float32Array(HG.edges.length * 6); HG.edges.forEach((e, i) => { ep.set([cn[e[0]][0], cn[e[0]][1], cn[e[0]][2]], i * 6); ep.set([cn[e[1]][0], cn[e[1]][1], cn[e[1]][2]], i * 6 + 3); });
   const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(ep, 3));
-  const edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x5eead4, transparent: true, opacity: .35 })); G.add(edges);
-  const web = new THREE.MeshStandardMaterial({ color: 0x0d9488, metalness: .2, roughness: .75, side: THREE.DoubleSide, emissive: 0x03211f });
+  const edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x4db3ea, transparent: true, opacity: .35 })); G.add(edges);
+  const web = new THREE.MeshStandardMaterial({ color: 0x0a6aa1, metalness: .2, roughness: .75, side: THREE.DoubleSide, emissive: 0x03211f });
   const straps = HG.straps.map(s => { const m = new THREE.Mesh(ribbonGeo(THREE, s), web); G.add(m); return m; });
   const steel = new THREE.MeshStandardMaterial({ color: 0xa7f3d0, metalness: .8, roughness: .3, emissive: 0x0b3b36 });
   function buckle(w, h) { const g = new THREE.Group(), t = .07; [[0, h / 2, w, t], [0, -h / 2, w, t], [-w / 2, 0, t, h], [w / 2, 0, t, h], [0, 0, w, t * .8]].forEach(a => { const b = new THREE.Mesh(new THREE.BoxGeometry(a[2], a[3], .09), steel); b.position.set(a[0], a[1], 0); g.add(b); }); return g; }
@@ -176,10 +176,10 @@ function makeCover3D(canvas) {
     lp.push(a.p[0], a.p[1], a.p[2], LX - .63, LY[k], 0);
   });
   const dgrp = new THREE.Group(); dgrp.position.set(...HG.dring);
-  const dmat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, emissive: 0x5eead4, metalness: .5, roughness: .3 });
+  const dmat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, emissive: 0x4db3ea, metalness: .5, roughness: .3 });
   const arc = new THREE.Mesh(new THREE.TorusGeometry(.24, .04, 10, 28, Math.PI), dmat); arc.rotation.z = Math.PI; dgrp.add(arc);
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, .48, 10), dmat); bar.rotation.z = Math.PI / 2; dgrp.add(bar); G.add(dgrp);
-  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(LX, -.95, 0); hsp.scale.set(1.25, .34, 1); lp.push(HG.dring[0], HG.dring[1], HG.dring[2], LX - .63, -.95, 0); { const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3)); G.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x5eead4, transparent: true, opacity: .45 }))); } hsp.renderOrder = 10; G.add(hsp);
+  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(LX, -.95, 0); hsp.scale.set(1.25, .34, 1); lp.push(HG.dring[0], HG.dring[1], HG.dring[2], LX - .63, -.95, 0); { const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3)); G.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x4db3ea, transparent: true, opacity: .45 }))); } hsp.renderOrder = 10; G.add(hsp);
   const cols = nodeGeo.attributes.color;
   const api = {
     canvas, renderer, ok: true, done: false,
@@ -206,9 +206,9 @@ function makeCover2D(canvas) {
       o = o || {}; const tt = this.done ? t + 10 : t, ry = o.fixed ? -.42 : Math.sin(t * .35) * .5 - .15 + HOOK.mx * .1745, rx = o.fixed ? .12 : .1 + HOOK.my * .1745;
       ctx.clearRect(0, 0, 1920, 1080);
       const core = .3 + .7 * clamp((tt - 2.2) / 1.2, 0, 1), P = HG.core.map(p => proj(p, ry, rx));
-      ctx.strokeStyle = '#5eead4'; ctx.globalAlpha = .15 + .35 * core; ctx.lineWidth = 1.2; ctx.beginPath(); HG.edges.forEach(e => { ctx.moveTo(P[e[0]][0], P[e[0]][1]); ctx.lineTo(P[e[1]][0], P[e[1]][1]); }); ctx.stroke();
+      ctx.strokeStyle = '#4db3ea'; ctx.globalAlpha = .15 + .35 * core; ctx.lineWidth = 1.2; ctx.beginPath(); HG.edges.forEach(e => { ctx.moveTo(P[e[0]][0], P[e[0]][1]); ctx.lineTo(P[e[1]][0], P[e[1]][1]); }); ctx.stroke();
       ctx.fillStyle = C.gelo; P.forEach((p, i) => { ctx.globalAlpha = core * (.55 + .4 * Math.sin(tt * 2.4 + i)); ctx.beginPath(); ctx.arc(p[0], p[1], 6 * p[3], 0, 6.283); ctx.fill(); });
-      HG.straps.forEach((s, k) => { const n = Math.floor(s.pts.length * ease(clamp((tt - .12 * k) / 1.5, 0, 1))); if (n < 2) return; ctx.strokeStyle = '#0d9488'; ctx.lineWidth = s.hw * 140 * 1.6; ctx.lineJoin = 'round'; ctx.globalAlpha = .95; ctx.beginPath(); for (let i = 0; i < n; i++) { const q = proj(s.pts[i], ry, rx); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); } if (s.closed && n >= s.pts.length) ctx.closePath(); ctx.stroke(); });
+      HG.straps.forEach((s, k) => { const n = Math.floor(s.pts.length * ease(clamp((tt - .12 * k) / 1.5, 0, 1))); if (n < 2) return; ctx.strokeStyle = '#0a6aa1'; ctx.lineWidth = s.hw * 140 * 1.6; ctx.lineJoin = 'round'; ctx.globalAlpha = .95; ctx.beginPath(); for (let i = 0; i < n; i++) { const q = proj(s.pts[i], ry, rx); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); } if (s.closed && n >= s.pts.length) ctx.closePath(); ctx.stroke(); });
       HG.anchors.concat([{ k: 'Humano', p: [HG.dring[0], HG.dring[1] - .1, HG.dring[2]] }]).forEach((a, k) => { const q = proj(a.p, ry, rx), l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); ctx.globalAlpha = l; ctx.fillStyle = 'rgba(11,12,16,.88)'; ctx.strokeStyle = C.claro; ctx.lineWidth = 3; ctx.fillRect(q[0] - 100, q[1] - 26, 200, 52); ctx.strokeRect(q[0] - 100, q[1] - 26, 200, 52); plain(ctx, a.k, q[0], q[1] + 12, 32, C.gelo, l, 'center', 600); });
       ctx.globalAlpha = 1;
     }
@@ -432,7 +432,7 @@ function buildDynamic() {
     renderHero(i);
   });
 }
-const CAPCOR = ['#14b8a6', '#5eead4', '#14b8a6', '#2dd4bf', '#a1a1aa', '#14b8a6', '#a1a1aa'];
+const CAPCOR = ['#f05a28', '#4db3ea', '#f05a28', '#4db3ea', '#f05a28', '#4db3ea', '#a1a1aa'];
 
 function countUp(root) {
   $$('[data-count]', root).forEach(e => {
@@ -514,7 +514,7 @@ function setStep(i, step) {
 }
 function updateChrome() {
   const s = slides[state.i], strip = $('#strip'), bl = $('b', strip), blk = s.dataset.block || '';
-  stage.style.setProperty('--cap', s.style.getPropertyValue('--cap') || '#14b8a6');
+  stage.style.setProperty('--cap', s.style.getPropertyValue('--cap') || '#2b9bdc');
   if (bl.textContent !== blk) { bl.textContent = blk; strip.classList.remove('go'); void strip.offsetWidth; strip.classList.add('go'); }
   $('#pag').textContent = state.i >= NMAIN ? 'R' + (state.i - NMAIN + 1) + '/R' + (slides.length - NMAIN) : (state.i + 1) + '/' + NMAIN;
   $('#notesbar').textContent = ($('.notes', s) || {}).textContent || '';

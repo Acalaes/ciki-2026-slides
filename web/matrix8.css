@@ -4,7 +4,8 @@
 .matrix .ttl{color:var(--g);text-shadow:0 0 24px rgba(0,255,65,.5)}
 .matrix .stepw{color:var(--g);text-shadow:0 0 18px rgba(0,255,65,.5)}
 .matrix .stepw .err,.matrix .stepw .block{color:var(--a);text-shadow:0 0 18px rgba(248,113,113,.5)}
-.matrix .guia{color:var(--g2)}
+.matrix .sub{color:var(--g)}
+.matrix .guia{color:var(--g)}
 .matrix>.selo{color:var(--g2);border-left-color:var(--g3);background:rgba(0,0,0,.82);padding:6px 16px}
 .code{position:absolute;z-index:7;left:200px;top:250px;width:max-content;max-width:1020px;margin:0;font:500 31px/1.4 var(--fm);color:var(--g2);white-space:pre;
  background:rgba(0,0,0,.82);border:2px solid var(--g3);border-radius:8px;padding:18px 28px;text-shadow:0 0 10px rgba(0,255,65,.3)}

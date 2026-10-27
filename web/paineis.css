@@ -1,8 +1,8 @@
 /* Camada 2 e 3 (v3, padrão visual do Replit do usuário). Escopo .panel-body. Fonte: Poppins.
-   Paleta: fundo #0b0c10, cartões #15181f, texto #f4f4f5, slate #a1a1aa, teal #14b8a6 / #5eead4;
+   Paleta: fundo #0b0c10, cartões #15181f, texto #f4f4f5, slate #a1a1aa, teal #2b9bdc / #4db3ea;
    vermelho #f87171 só em erro / bloqueio (.err / .block / .late). Diagramas: kit.css. */
 .panel-body {
-  --ink: #f4f4f5; --mut: #a1a1aa; --lin: rgba(255, 255, 255, .08); --card: #15181f; --teal: #14b8a6; --teal2: #5eead4;
+  --ink: #f4f4f5; --mut: #a1a1aa; --lin: rgba(255, 255, 255, .08); --card: #15181f; --teal: #2b9bdc; --teal2: #4db3ea;
   --fp: 'Poppins', 'Noto Sans Math', system-ui, 'Segoe UI', sans-serif;
   --fm: ui-monospace, 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', monospace;
   box-sizing: border-box; width: 100%; display: flex; flex-direction: column; gap: 20px;
@@ -13,7 +13,7 @@
 
 /* Título: canto superior esquerdo, uma linha, caixa-alta (padrão Replit) */
 .panel-body .pt { font: 700 52px/1.15 var(--fp); letter-spacing: .03em; text-transform: uppercase; white-space: nowrap; color: var(--ink); margin: 0 0 6px; padding-bottom: 14px; border-bottom: 1px solid rgba(161, 161, 170, .3); }
-.panel-body .leg { font: 400 32px/1.35 var(--fp); color: var(--ink); max-width: 1560px; text-shadow: 0 0 20px rgba(20, 184, 166, .25); }
+.panel-body .leg { font: 400 32px/1.35 var(--fp); color: var(--ink); max-width: 1560px; text-shadow: 0 0 20px rgba(43,155,220, .25); }
 .panel-body h3 { font: 600 32px/1.2 var(--fp); }
 .panel-body .nota { font: 400 28px/1.4 var(--fp); color: var(--mut); }
 .panel-body .nota b, .panel-body .nota strong { color: var(--ink); font-weight: 600; }
@@ -26,9 +26,9 @@
 .panel-body .pf .cred { flex: 1 1 520px; font: 400 18px/1.35 var(--fp); color: var(--mut); }
 .panel-body .fontes { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .panel-body .fonte { font: 500 24px/1 var(--fp); color: var(--ink); background: var(--card); cursor: pointer; border: 1.5px solid rgba(161, 161, 170, .35); border-radius: 999px; padding: 10px 20px; transition: transform .2s, border-color .2s, box-shadow .2s; }
-.panel-body .fonte:hover, .panel-body .fonte:focus-visible { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 0 16px rgba(20, 184, 166, .35); outline: none; }
+.panel-body .fonte:hover, .panel-body .fonte:focus-visible { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 0 16px rgba(43,155,220, .35); outline: none; }
 .panel-body .fonte::before { content: ''; display: inline-block; width: 9px; height: 9px; margin-right: 10px; border-radius: 50%; background: var(--teal2); }
-.panel-body .selo { display: inline-block; font: 500 24px/1 var(--fp); color: var(--teal2); background: rgba(20, 184, 166, .12); border: 1.5px solid var(--teal); border-radius: 8px; padding: 8px 14px; white-space: nowrap; }
+.panel-body .selo { display: inline-block; font: 500 24px/1 var(--fp); color: var(--teal2); background: rgba(43,155,220, .12); border: 1.5px solid var(--teal); border-radius: 8px; padding: 8px 14px; white-space: nowrap; }
 .panel-body .selo.sol { background: transparent; border-style: dashed; color: var(--ink); border-color: rgba(161, 161, 170, .6); }
 .panel-body .chip { display: inline-block; font: 500 26px/1 var(--fp); padding: 8px 16px; border-radius: 8px; border: 1.5px solid rgba(161, 161, 170, .5); margin-right: 8px; background: var(--card); }
 
@@ -37,7 +37,7 @@
 .panel-body.det th { font: 600 26px/1.2 var(--fp); color: var(--mut); text-align: left; padding: 10px 14px 12px; border-bottom: 2px solid var(--teal); }
 .panel-body.det td { padding: 10px 14px; border-bottom: 1px solid var(--lin); vertical-align: top; }
 .panel-body.det td:first-child { font-weight: 600; }
-.panel-body.det tr.dest td { background: rgba(20, 184, 166, .12); }
+.panel-body.det tr.dest td { background: rgba(43,155,220, .12); }
 .panel-body.det table.tv td, .panel-body.det table.tv th { text-align: center; padding: 3px 12px; }
 .panel-body.det table.trip td { font-family: var(--fm); font-size: 24px; font-weight: 400; }
 .panel-body ul.pt-list { list-style: none; display: grid; gap: 12px; }
@@ -57,11 +57,11 @@
 .panel-body .showcase { position: relative; display: grid; gap: 10px; justify-items: start; }
 .panel-body .showcase .lb-t { position: absolute; opacity: 0; pointer-events: none; }
 .panel-body .showcase .lb-th { cursor: zoom-in; display: block; border: 1px solid var(--lin); border-radius: 8px; overflow: hidden; background: #f4f4f5; max-width: 1180px; transition: transform .2s, border-color .2s, box-shadow .2s; }
-.panel-body .showcase .lb-th:hover { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 0 22px rgba(20, 184, 166, .35); }
+.panel-body .showcase .lb-th:hover { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 0 22px rgba(43,155,220, .35); }
 .panel-body .showcase .lb-th img { display: block; width: 100%; height: auto; max-height: 520px; object-fit: contain; }
 .panel-body .showcase .lb-ov { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(11, 12, 16, .94); align-items: center; justify-content: center; cursor: zoom-out; }
 .panel-body .showcase .lb-t:checked ~ .lb-ov { display: flex; }
-.panel-body .showcase .lb-ov img { max-width: 94%; max-height: 94%; background: #f4f4f5; border-radius: 8px; box-shadow: 0 0 40px rgba(20, 184, 166, .35); }
+.panel-body .showcase .lb-ov img { max-width: 94%; max-height: 94%; background: #f4f4f5; border-radius: 8px; box-shadow: 0 0 40px rgba(43,155,220, .35); }
 .panel-body .showcase figcaption { font: 500 24px/1.3 var(--fp); color: var(--mut); }
 .panel-body .proof { background: var(--card); border: 1px solid var(--lin); border-left: 4px solid var(--teal); border-radius: 8px; padding: 18px 24px; display: grid; gap: 6px; }
 .panel-body .proof h3 { font-size: 26px; color: var(--teal2); }
@@ -83,10 +83,10 @@
 .panel-body .refs .selo, .panel-body .refs .fonte { text-indent: 0; margin-left: 8px; font-size: 20px; padding: 3px 10px; }
 .panel-body .refs.refs3 { column-count: 3; column-gap: 36px; }
 .panel-body .refs.refs3 p { padding-left: 0; text-indent: 0; }
-.panel-body .refs.refscroll { display: grid; grid-template-columns: repeat(3, 1fr); column-count: auto; column-gap: 32px; row-gap: 4px; align-items: start; max-height: 800px; overflow-y: auto; padding-right: 14px; scrollbar-width: auto; scrollbar-color: #14b8a6 #15181f; }
+.panel-body .refs.refscroll { display: grid; grid-template-columns: repeat(3, 1fr); column-count: auto; column-gap: 32px; row-gap: 4px; align-items: start; max-height: 800px; overflow-y: auto; padding-right: 14px; scrollbar-width: auto; scrollbar-color: #2b9bdc #15181f; }
 .panel-body .refs.refscroll::-webkit-scrollbar { width: 14px; }
 .panel-body .refs.refscroll::-webkit-scrollbar-track { background: #15181f; border-radius: 8px; }
-.panel-body .refs.refscroll::-webkit-scrollbar-thumb { background: #14b8a6; border-radius: 8px; }
+.panel-body .refs.refscroll::-webkit-scrollbar-thumb { background: #2b9bdc; border-radius: 8px; }
 .panel-body .refs.refscroll p { margin-bottom: 14px; line-height: 1.3; }
 .panel-body .refs.refscroll a[href*="wikimedia"], .panel-body .refs.creditos a { word-break: normal; white-space: nowrap; }
 .panel-body .refs.refscroll p a { word-break: normal; }

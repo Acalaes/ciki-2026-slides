@@ -30,7 +30,7 @@ OBRIGATORIOS = [
     "s5-fig1", "s5-calais", "s5-dsr", "s5-ponte", "s6-ontologia", "s6-regras", "s6-triplas",
     "s7-logs", "s7-nasa", "s7-tab4", "s8-replay", "s8-regua", "s8-portao", "s8-prov",
     "s9-metodo", "s9-cmu", "s9-contexto", "s10-aneis", "s10-nucleo", "s10-portao", "s11-desenho", "s11-limites",
-    "r3-referencias", "r1-respostas", "r5-creditos",
+    "r3-referencias", "r1-respostas",
 ]
 STATUS_SIMPLES = re.compile(r"^confirmado( no artigo| nos logs)?$")
 
@@ -269,11 +269,12 @@ for pid, conteudo in PAINEIS.items():
 
 # paleta fixa (FUNDO_NEUTRO_v3g): fundo grafite #0b0c10 a #14161c, cartões #15181f, texto #f4f4f5, zinc #a1a1aa / #71717a,
 # teal #14b8a6 / #5eead4 só como acento, vermelho #f87171 só em erro; verde só no slide 8 (matrix8.css) e em demo\.
-PERMITIDAS = {"0b0c10", "14161c", "15181f", "f4f4f5", "a1a1aa", "71717a", "14b8a6", "5eead4", "0d9488", "2dd4bf", "38bdf8", "f87171",
+# paleta da instituição (logo do CIKI, v1.4.0): azul #2b9bdc/#4db3ea/#0a6aa1 e laranja #f05a28; o verde-azulado antigo deixou de valer.
+PERMITIDAS = {"0b0c10", "14161c", "15181f", "f4f4f5", "a1a1aa", "71717a", "2b9bdc", "4db3ea", "0a6aa1", "38bdf8", "f87171", "f05a28",
               "000", "000000", "fff", "ffffff", "0a1b4a"}  # 0a1b4a: tint da camada da foto (mix-blend-mode), nunca fundo
 VERDES = {"00ff41", "008f11"}
-RGBA_OK = {(255, 255, 255), (161, 161, 170), (113, 113, 122), (20, 184, 166), (94, 234, 212), (45, 212, 191), (13, 148, 136), (56, 189, 248),
-           (21, 24, 31), (11, 12, 16), (20, 22, 28), (8, 10, 14), (244, 244, 245), (248, 113, 113), (0, 0, 0), (10, 27, 74)}
+RGBA_OK = {(255, 255, 255), (161, 161, 170), (113, 113, 122), (43, 155, 220), (77, 179, 234), (10, 106, 161), (56, 189, 248),
+           (21, 24, 31), (11, 12, 16), (20, 22, 28), (8, 10, 14), (244, 244, 245), (248, 113, 113), (0, 0, 0), (10, 27, 74), (240, 90, 40)}
 
 
 def azul_marinho(h):
