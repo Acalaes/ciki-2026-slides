@@ -383,7 +383,7 @@
       ['Cena 2b: rascunho do modelo local', '<b>F ∧ F ∧ F</b>', '2 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
       ['Laço local, rodada 1', '<b>F ∧ F ∧ F</b>', '3 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
       ['Laço local, rodadas 2 e 3', '<b>F ∧ V ∧ V</b>', '3 e depois 1 citação bloqueada', '<span class="block">bloqueado (exit 2)</span>'],
-      { cls: 'dest', c: ['Cena 2b: após a correção', '<b>V ∧ V ∧ V</b>', 'todas as citações na ontologia', 'admissível; aguarda o humano'] }
+      { cls: 'dest', c: ['Cena 2b: após a correção (modelo de fronteira)', '<b>V ∧ V ∧ V</b>', 'todas as citações na ontologia', 'admissível; aguarda o humano'] }
     ]) +
     foot([F('art-eq', 'Artigo: Equação 2'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')],
       'Valores E, N e T lidos dos logs reais de 25/10/2026 (hnv-demo). Bloqueio exige falha em ao menos um dos três.')
@@ -474,7 +474,7 @@
     '<div class="card"><h3>CBMSC</h3><p class="mut">processo público-operacional</p></div>' +
     '<div class="card"><h3>ESAG/UDESC</h3><p class="mut">processo público-acadêmico de seleção</p></div>' +
     '<p>' + sel('exploratório') + '</p></div></div>' +
-    '<p class="nota">A demonstração mostra que as partes funcionam juntas; efeito e comparação com outras abordagens exigem estudo próprio.</p>' +
+    '<div class="card" style="border-color:var(--az)"><p style="font-size:28px"><b>CALAIS = harness vertical.</b> O artigo #160 não usa a palavra “harness”; em 2026, a engenharia de agentes passou a chamar assim o conjunto de regras e ferramentas em torno do modelo. ' + F('bockeler2026', 'Böckeler (2026)') + ' ' + F('galster2026', 'Galster et al. (2026)') + '</p></div>' +
     foot([F('art-arq', 'Artigo: Seções 1 e 3.1'), F('art-escopo', 'Artigo: escopo da evidência')], 'Definição dos três níveis conforme a Introdução do artigo.')
   );
 
@@ -568,7 +568,7 @@
       '<p><b>Ontologia:</b> “especificação explícita e formal de uma conceitualização compartilhada” (Studer, Benjamins e Fensel, 1998, a partir de Gruber, 1993).</p>' +
       '<p><b>T-box</b> (terminologia): as classes e as relações. Três grupos: Conteúdo acadêmico, Evidência e fonte, Controle.</p>' +
       '<p><b>A-box</b> (asserções): as instâncias e suas ligações, como Artigo 42 e Auditoria 7.</p></div></div>' +
-      '<p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b> Instâncias do desenho são fictícias, para ensinar a leitura. ' + sel('material didático') + '</p>' +
+      '<p class="nota"><b>O artigo foi redigido e conferido com o Citāre, com revisão humana.</b> Dados do CBMSC/ESAG não avaliam o Citāre. Instâncias do desenho são fictícias. ' + sel('material didático') + '</p>' +
       foot([F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)'), F('art-citare', 'Artigo: declaração de uso')],
         'Atividade 1 de Desenvolvimento de Ontologias, v05 (30/09/2026). O desenho reproduz a cadeia e a árvore da atividade; as classes intermediárias são didáticas.')
     );
@@ -592,7 +592,7 @@
       return '<div class="card block" style="padding:12px 18px"><p class="block sans" style="font-weight:600;font-size:28px">' + b[0] + '</p><p style="font-size:26px">' + b[1] + '</p></div>';
     }).join('') + '</div></div>' +
     '<div class="card" style="display:grid;gap:12px"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><span class="chip ok">autoria</span><span class="chip ok">ano</span><span class="chip ok">DOI</span><span class="mut" style="font-size:26px">o marcador (Silva, 2022) precisa corresponder a uma obra registrada; o DOI identifica cada obra</span></div>' +
-    '<p style="font-size:26px"><b>Declaração de uso de IA do artigo:</b> o autor usou o Citāre, plataforma de assessoria acadêmica com supervisão humana, para apoiar a redação e a verificação de citações; o texto foi guiado pelas fontes da coleção do autor (RAG), com regras de autoria, ano e DOI. Todo conteúdo e toda citação sugeridos foram revisados e aprovados pelo autor, que assume plena responsabilidade, sem atribuir autoria à IA.</p></div>' +
+    '<p style="font-size:26px"><b>Conferido com o Citāre. Declaração de uso de IA do artigo:</b> o autor usou o Citāre, plataforma de assessoria acadêmica com supervisão humana, para apoiar a redação e a verificação de citações; o texto foi guiado pelas fontes da coleção do autor (RAG), com regras de autoria, ano e DOI. Todo conteúdo e toda citação sugeridos foram revisados e aprovados pelo autor, que assume plena responsabilidade, sem atribuir autoria à IA.</p></div>' +
     '<p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b> ' + sel('material didático') + '</p>' +
     foot([F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')],
       'Declaração traduzida do artigo (seção “AI use disclosure”). Estados e etapas: Atividade de Ontologia v05.')
@@ -633,9 +633,10 @@
       T('CBMSC: o que os logs de envio mostram', 'Janeiro a agosto de 2026, artefato de envio de mensagens.') +
       '<div class="cols c3" style="align-items:end">' +
       '<div><span class="big" style="font-size:96px">' + cnt(9054, 'k') + '</span><p class="mut">registros de envio</p></div>' +
-      '<div><span class="big" style="font-size:96px">' + cnt(191) + '</span><p class="mut">dias, de 28/01 a 07/08/2026</p></div>' +
+      '<div><span class="big" style="font-size:96px">~' + cnt(191) + '</span><p class="mut">dias, de 28/01 a 07/08/2026</p></div>' +
       '<div><span class="big" style="font-size:96px;color:#C2CBDD">' + cnt(2813, 'k') + '</span><p class="mut">envios sem sucesso</p></div></div>' +
-      svg(1660, 104, cells + labs + '<text class="m" x="0" y="92" style="font-size:26px;display:none"></text>', 'Calendário de cerca de 191 dias, de 28 de janeiro a 7 de agosto de 2026') +
+      svg(1660, 104, cells + labs, 'Calendário ilustrativo de cerca de 191 dias, de 28 de janeiro a 7 de agosto de 2026') +
+      '<p class="mut" style="font-size:26px;margin-top:-10px">Calendário ilustrativo: só o total do período (9.054 em ~191 dias); não há dado por dia. ' + sel('ilustrativo', 'sol') + '</p>' +
       '<div style="display:grid;gap:10px"><div class="bar-trk" style="height:50px"><i class="bar aco" style="left:0;width:' + (100 - seg * 100).toFixed(2) + '%;--d:.5s"></i>' +
       '<i class="bar cz" style="left:' + (100 - seg * 100).toFixed(2) + '%;width:' + (seg * 100).toFixed(2) + '%;--d:1.2s"></i></div>' +
       '<p class="mut" style="font-size:26px">Cinza: 2.813 sem sucesso (' + pct(seg) + '% dos 9.054). Azul: os demais 6.241 (diferença, cálculo do autor). Sem sucesso não é bloqueio.</p></div>' +
@@ -645,7 +646,7 @@
       '<div class="card"><span class="val">' + cnt(1018, 'k') + '</span><p style="font-size:26px">erros de aquecimento</p></div>' +
       '<p class="nota" style="font-size:27px"><b>Processos diferentes, não somados.</b> Nenhum evento classificado como banimento ou restrição de linha pela Meta foi localizado. Isso não é risco zero: não há campo exclusivo para detectar todo banimento.</p></div>' +
       '<p>' + sel('exploratório, SC') + '</p>' +
-      foot([F('art-logs', 'Artigo: logs do CBMSC'), F('art-escopo', 'Artigo: escopo')], 'Seção 4.1 do artigo. Calendário sem dado por dia: o artigo informa só o total do período.')
+      foot([F('art-logs', 'Artigo: logs do CBMSC'), F('art-escopo', 'Artigo: escopo')], 'Seção 4.1 do artigo: de 28/01 a 07/08 são 192 dias contando as duas pontas; o artigo diz “aproximadamente 191”.')
     );
   })();
 
@@ -660,7 +661,7 @@
       dots += '<circle class="fl pp" style="--d:' + (0.4 + i * .25) + 's" cx="' + X(s) + '" cy="' + (110 - (seen[k] - 1) * 30) + '" r="13"/>';
     });
     P['s7-nasa'] = body(
-      T('NASA-TLX bruto: seis registros de tarefas', 'Escala de 0 a 100: quanto menor, menor a carga percebida.') +
+      T('NASA-TLX bruto: seis registros de tarefas', 'TLX bruto = (1/6) Σ s<sub>i</sub>, sobre as seis dimensões (0 a 100); quanto menor, menor a carga percebida.') +
       svg(1660, 200,
         ticks + '<line class="ln" x1="40" y1="150" x2="1620" y2="150"/>' + dots +
         '<line class="ln az dr" pathLength="1" style="--d:1.9s" x1="' + X(6.94) + '" y1="40" x2="' + X(6.94) + '" y2="150"/>' +
@@ -733,7 +734,7 @@
       '<div class="card"><h3>Rodada 2</h3><p style="display:grid;gap:8px;justify-items:start"><span class="chip err">art. 37, XXXIII</span><span class="chip err">Decreto 4.653/2002</span><span class="chip">decisão do STJ sem número</span></p></div>' +
       '<div class="card"><h3>Rodada 3</h3><p style="display:grid;gap:8px;justify-items:start"><span class="chip err">art. 37, XXI, “proíbe o nepotismo”</span><span class="chip">Lei 8.112/1990</span><span class="chip">ADI 2.958</span></p></div></div>' +
       '<p class="nota"><b>Em âmbar:</b> inexistente ou com conteúdo falso. <b>Em cinza-azulado:</b> real, mas sem base ou não conferível. XXXIII só aparece nas rodadas 1 e 2.</p>' +
-      foot([F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')], 'Fontes: checagem manual de 25/10/2026 e texto do art. 37 no Planalto. Modelo local de 3 bilhões de parâmetros, sem harness.')
+      foot([F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')], 'Fontes: checagem manual de 25/10/2026 e texto do art. 37 no Planalto. Modelo local 3B (qwen2.5:3b), sem harness; ele errou nas três rodadas.')
     );
   })();
 
@@ -773,10 +774,10 @@
       svg(468, 150, sq, 'Dezoito quadrados: 3 normas, 12 dispositivos, 1 súmula e 2 precedentes') +
       '<p style="font-size:27px">3 normas · 12 dispositivos · 1 súmula · 2 precedentes ' + sel('pendente de validação') + '</p>' +
       '<h3>Limites</h3><ul class="pt-list" style="gap:8px">' +
-      '<li style="font-size:28px"><b>Confere citações, não raciocínio.</b></li>' +
-      '<li style="font-size:28px"><b>Bloqueado não é falso:</b> a Resolução 7/2005 existe, mas está fora da ontologia.</li>' +
-      '<li style="font-size:28px">Referência vaga (“uma decisão do STJ”) escapa.</li>' +
-      '<li style="font-size:28px">A cena 2b é induzida: o rascunho do modelo local foi entregue ao agente.</li></ul></div></div>' +
+      '<li style="font-size:26px"><b>Confere citações, não raciocínio.</b></li>' +
+      '<li style="font-size:26px"><b>Bloqueado não é falso:</b> a Resolução 7/2005 existe, mas está fora da ontologia.</li>' +
+      '<li style="font-size:26px">Referência vaga (“uma decisão do STJ”) escapa.</li>' +
+      '<li style="font-size:26px"><b>Quem corrigiu:</b> o 3B errou; na cena 2b (induzida), um modelo de fronteira (Sonnet, via Claude Code) corrigiu no mesmo harness. O 3B sozinho: 3, 3 e 1 bloqueadas; não liberado.</li></ul></div></div>' +
       foot([F('hnv-readme', 'README da demonstração'), F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-laco', 'Laço local')],
         'Laço local: citações bloqueadas 3, 3 e 1; encerrou como “bloqueado após o limite de rodadas”. Fluxo conforme o README (25/10/2026).')
     );
@@ -800,30 +801,30 @@
       ['Decreto 7.203/2010, art. 2º, III', 'DEC7203_art2_III', 'ok']
     ]) + '</div></div>' +
     foot([F('hnv-cena2b', 'Log real (cena 2b)'), F('prov-dm', 'W3C PROV-DM'), F('hnv-ontologia', 'Ontologia (18 fontes)')],
-      'Dados de logs/prov-20261025T192704-230.json. A máquina declara “admissível”; só a pessoa libera.')
+      'Dados de logs/prov-20261025T192704-230.json: rascunho do modelo local 3B, corrigido por um modelo de fronteira (Sonnet, via Claude Code) em cena induzida. A máquina declara “admissível”; só a pessoa libera.')
   );
 
   /* =========================================================
      SLIDE 9
      ========================================================= */
   (function () {
-    function row(label, v, max, cls, d, note) {
-      return '<div class="bar-row" style="grid-template-columns:330px 1fr 110px"><span style="font-size:27px">' + label + '</span>' +
+    function row(label, v, max, cls, d, pre) {
+      return '<div class="bar-row" style="grid-template-columns:420px 1fr 130px"><span style="font-size:26px">' + label + '</span>' +
         '<div class="bar-trk" style="height:42px"><i class="bar ' + cls + '" style="left:0;width:' + (v / max * 100).toFixed(1) + '%;--d:' + d + 's"></i></div>' +
-        '<span class="val" style="font-size:34px">' + cnt(v) + '</span></div>';
+        '<span class="val" style="font-size:34px">' + (pre || '') + cnt(v) + '</span></div>';
     }
     P['s9-metodo'] = body(
       T('Como foi feita a contagem de “harness” no arXiv', 'Contagem do autor em 25/10/2026, pela API pública; não é revisão sistemática.') +
-      '<div class="cols" style="grid-template-columns:640px 1fr;gap:44px;align-items:start">' +
-      '<ol class="pt-list" style="gap:16px;list-style:none">' +
-      '<li><b>1. Busca:</b> título com “harness”, na API do arXiv.</li>' +
-      '<li><b>2. Filtro:</b> só a palavra exata (a busca também traz “harnessing”).</li>' +
-      '<li><b>3. Sentido:</b> 2025 conferido título a título; 2026 por amostra de 25 títulos, todos de agentes.</li></ol>' +
-      '<div style="display:grid;gap:22px">' +
-      '<div style="display:grid;gap:10px"><h3>2025</h3>' + row('busca no título', 23, 500, 'cz', .3) + row('palavra exata', 4, 500, 'aco', .6) + row('sentido de agente', 3, 500, '', .9) + '</div>' +
-      '<div style="display:grid;gap:10px"><h3>2026 (até 25/10) ' + sel('contagem do autor') + '</h3>' + row('busca no título', 498, 500, 'cz', 1.2) + row('palavra exata', 446, 500, 'aco', 1.5) + row('sentido de agente', 446, 500, '', 1.8) + '</div>' +
-      '<p class="nota" style="font-size:26px">Em 2023 e 2024, a palavra exata não aparece. 2026 é parcial.</p></div></div>' +
-      foot([F('arxiv-count', 'Contagem do autor (arXiv)')], 'Consulta: ti:harness (e abs:agent); contagens feitas em 25/10/2026. Número de 2026 depende de a amostra de 25 títulos representar o conjunto.')
+      '<div class="cols" style="grid-template-columns:560px 1fr;gap:40px;align-items:start">' +
+      '<ol class="pt-list" style="gap:14px;list-style:none">' +
+      '<li><b>1. Busca:</b> título com “harness” e <b>agent</b> no resumo (<i>ti:harness AND abs:agent</i>).</li>' +
+      '<li><b>2. Filtro:</b> “harness” ou “harnesses” no título; “harnessing” fica de fora.</li>' +
+      '<li><b>3. Sentido:</b> 2025 conferido título a título (3 de 4). 2026: o descarte foi <b>estimado</b> por amostra de 25 títulos, todos de agentes; não foi título a título.</li></ol>' +
+      '<div style="display:grid;gap:20px">' +
+      '<div style="display:grid;gap:8px"><h3>2025</h3>' + row('título com harness (inclui harnessing)', 23, 500, 'cz', .3) + row('harness ou harnesses', 4, 500, 'aco', .6) + row('sentido de agente, conferido', 3, 500, '', .9) + '</div>' +
+      '<div style="display:grid;gap:8px"><h3>2026, até 25/10 ' + sel('contagem do autor') + ' ' + sel('≈ estimativa', 'sol') + '</h3>' + row('título com harness (inclui harnessing)', 498, 500, 'cz', 1.2) + row('harness ou harnesses', 446, 500, 'aco', 1.5) + row('sentido de agente, estimado', 446, 500, '', 1.8, '≈') + '</div>' +
+      '<p class="nota" style="font-size:26px">Só a forma singular “harness” dá 362 em 2026 (reprodução do avaliador). Em 2023 e 2024 não há ocorrência. 2026 é parcial.</p></div></div>' +
+      foot([F('arxiv-count', 'Contagem do autor (arXiv)')], 'Consulta ti:harness AND abs:agent em 25/10/2026. O número de 2026 (≈446) supõe que a amostra de 25 títulos represente o conjunto.')
     );
   })();
 
@@ -851,7 +852,7 @@
   );
 
   P['s9-contexto'] = body(
-    T('Contexto: do investimento ao harness') +
+    T('Contexto de reserva: do investimento ao harness ' + sel('contexto, reserva', 'sol')) +
     '<div class="cols" style="grid-template-columns:1fr 1fr;gap:56px;align-items:center">' +
     '<div style="display:grid;gap:14px"><h3>Capex de Microsoft, Alphabet, Amazon e Meta ' + sel('previsão, imprensa') + '</h3>' +
     '<div style="display:grid;gap:6px"><p>2025 · cerca de US$ 410 bi</p><div class="bar-trk" style="height:48px"><i class="bar" style="left:0;width:' + (410 / 800 * 100).toFixed(1) + '%;--d:.3s"></i></div></div>' +
@@ -986,6 +987,27 @@
     }).join('') + '</div>' +
     '<p>' + sel('pendente de validação') + ' ' + sel('hipótese', 'sol') + '</p>' +
     foot([F('art-escopo', 'Artigo: escopo'), F('hnv-ontologia', 'Ontologia (18 fontes)')], 'Limites conforme o artigo (Seções 3.2, 4.2 e 5) e o README da demonstração.')
+  );
+
+
+  /* =========================================================
+     RESERVA R1: perguntas prováveis e respostas prontas
+     ========================================================= */
+  P['r1-respostas'] = body(
+    T('Perguntas prováveis e respostas prontas ' + sel('reserva', 'sol')) +
+    '<div style="column-count:2;column-gap:22px">' +
+    [
+      ['Quem corrigiu o parecer foi o modelo pequeno?', 'Não. O 3B errou; um modelo de fronteira (Sonnet, via Claude Code), no mesmo harness, corrigiu (cena induzida). O 3B sozinho: 3, 3 e 1 bloqueadas; não liberado. A garantia vem da arquitetura.', [['hnv-cena2b', 'Cena 2b'], ['hnv-laco', 'Laço local']]],
+      ['Seu artigo não fala em harness. O que você apresenta?', 'O artigo propõe o CALAIS: evidência, norma, rastro e humano antes da liberação. Em 2026, a engenharia de agentes chama esse conjunto de harness. O HNV é hipótese, não testada.', [['art-arq', 'Artigo: arquitetura'], ['bockeler2026', 'Böckeler (2026)']]],
+      ['Isso não é só RAG?', 'RAG recupera, mas não confere. Aqui um hook confere cada citação na ontologia e devolve o parecer. Em preprints, RAG jurídico erra 17–33%. ' + sel('preprint'), [['magesh', 'Magesh et al. (2025)'], ['hnv-cena2b', 'Cena 2b']]],
+      ['Bloquear o que está fora da ontologia não engessa?', 'Gera falso positivo, e isso é declarado: bloqueado não é falso (a Resolução 7/2005 existe, fora da ontologia). O custo é manter a ontologia com o especialista. ' + sel('pendente de validação'), [['hnv-laco', 'Laço local'], ['hnv-ontologia', 'Ontologia (18 fontes)']]],
+      ['Seis registros NASA-TLX provam alguma coisa?', 'Não provam ganho: são tarefas, não pessoas, e cinco vêm da mesma conta. Mostram os componentes juntos; para medir ganho, o estudo pareado.', [['art-nasa', 'Artigo: Tabela 5'], ['art-escopo', 'Artigo: escopo']]]
+    ].map(function (q, i) {
+      return '<div class="card ri" style="--d:' + (0.15 + i * .15) + 's;display:grid;gap:8px;break-inside:avoid;margin-bottom:22px"><h3 style="font-size:28px">' + (i + 1) + '. ' + q[0] + '</h3>' +
+        '<p style="font-size:26px;line-height:1.28">' + q[1] + '</p><div class="fontes">' + q[2].map(function (f) { return F(f[0], f[1]); }).join('') + '</div></div>';
+    }).join('') +
+    '</div>' +
+    '<p class="cred" style="font-size:18px;color:var(--mut)">Respostas preparadas a partir da avaliação independente do deck (27/10/2026). Reserva: não abrir na fala principal.</p>'
   );
 
   /* =========================================================

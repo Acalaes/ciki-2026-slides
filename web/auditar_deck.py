@@ -30,7 +30,7 @@ OBRIGATORIOS = [
     "s5-fig1", "s5-calais", "s5-dsr", "s5-ponte", "s6-ontologia", "s6-regras", "s6-triplas",
     "s7-logs", "s7-nasa", "s7-tab4", "s8-replay", "s8-regua", "s8-portao", "s8-prov",
     "s9-metodo", "s9-cmu", "s9-contexto", "s10-aneis", "s10-nucleo", "s10-portao", "s11-desenho", "s11-limites",
-    "r3-referencias",
+    "r3-referencias", "r1-respostas",
 ]
 STATUS_SIMPLES = re.compile(r"^confirmado( no artigo| nos logs)?$")
 

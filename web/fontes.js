@@ -43,16 +43,16 @@ window.HNV_FONTES = {
   "status": "confirmado no artigo"
  },
  "arxiv-count": {
-  "afirmacao": "3 trabalhos em 2025 e 446 em 2026 (até 25/10) com 'harness' no título e sentido de agente",
+  "afirmacao": "≈446 trabalhos em 2026 (até 25/10) com harness ou harnesses no título e agent no resumo (consulta ti:harness AND abs:agent); 3 em 2025, conferidos título a título. O descarte de 2026 foi estimado por amostra de 25 títulos, não título a título; só a forma singular dá 362",
   "fonte": "Contagem do autor na API do arXiv; 2025 conferido título a título, 2026 amostra de 25 títulos",
   "url": "http://export.arxiv.org/api/query?search_query=ti:harness",
-  "status": "contagem própria"
+  "status": "contagem própria (2026 estimado por amostra)"
  },
  "cmu": {
   "afirmacao": "Modelo pequeno com harness recupera 89,7% do desempenho do modelo grande a 4% do custo",
   "fonte": "Yang, Kästner et al. (2026), Better Harnesses, Smaller Models",
   "url": "https://arxiv.org/abs/2607.08938",
-  "status": "confirmado"
+  "status": "preprint (frase do resumo conferida)"
  },
  "capex": {
   "afirmacao": "Capex de Microsoft, Alphabet, Amazon e Meta: cerca de US$ 410 bi (2025) e cerca de US$ 725 bi (2026, previsão)",
@@ -139,8 +139,8 @@ window.HNV_FONTES = {
   "status": "confirmado nos logs"
  },
  "hnv-cena2b": {
-  "afirmacao": "Cena 2b, com harness: o hook deu exit 2 (BLOQUEIO) no rascunho com citação fabricada; o modelo corrigiu; o hook deu OK; parecer aguardando aprovação humana. Cena induzida: o rascunho da cena 1 foi entregue ao agente",
-  "fonte": "hnv-demo, logs/cena2b/stream.jsonl e logs/prov-20261025T192704-230.json",
+  "afirmacao": "Cena 2b, com harness: o hook deu exit 2 (BLOQUEIO) no rascunho do modelo local 3B (qwen2.5:3b) com citação fabricada; um modelo de fronteira (Sonnet, via Claude Code) corrigiu no mesmo harness e o hook deu OK; parecer aguardando aprovação humana. Cena INDUZIDA: o rascunho do 3B foi entregue ao Claude Code. O 3B sozinho, no laço local, não convergiu (3, 3 e 1 bloqueadas)",
+  "fonte": "hnv-demo, logs/cena2b/execucao.json (modelo_pedido: sonnet), stream.jsonl e prov-20261025T192704-230.json; README, linha da cena 2b",
   "url": "C:\\Users\\acala\\projetos\\hnv-demo\\logs\\cena2b\\stream.jsonl",
   "status": "confirmado nos logs"
  },
