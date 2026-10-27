@@ -23,7 +23,7 @@
     var g = '<g class="' + cls + '"' + st + '><g class="k-ic" transform="translate(' + (o.x || 0) + ' ' + (o.y || 0) + ') scale(' + (s / 100) + ')">' + (P[name] || '') + '</g>';
     if (o.t) {
       var ls = Array.isArray(o.t) ? o.t : String(o.t).split('\n');
-      ls.forEach(function (l, i) { g += '<text class="k-t k-b7" x="' + ((o.x || 0) + s / 2) + '" y="' + ((o.y || 0) + s + size * 1.25 + i * size * 1.2) + '" text-anchor="middle" style="font-size:' + size + 'px">' + esc(l) + '</text>'; });
+      ls.forEach(function (l, i) { g += '<text class="k-t" x="' + ((o.x || 0) + s / 2) + '" y="' + ((o.y || 0) + s + size * 1.25 + i * size * 1.2) + '" text-anchor="middle" style="font-size:' + size + 'px">' + esc(l) + '</text>'; });
     }
     return g + '</g>';
   };

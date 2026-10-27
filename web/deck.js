@@ -296,8 +296,8 @@ HEROES.s2 = K => {
   cards.forEach((c, i) => { g += SRC('charlotin', K.box({ x: c[2], y: 40, w: 480, h: 340, t: '', fill: i === 0, step: 1 + i }) + CNT(c[2] + 240, 240, c[0], i === 0 ? 120 : 104) + K.text({ x: c[2] + 240, y: 330, t: c[1], size: 38, anchor: 'middle', step: 1 + i })); });
   return K.svg(1600, 720,
     OG('<g data-open="s2-casos" aria-label="Casos de alucinação em tribunais: ver a tabela e as taxas de erro">', HIT(0, 20, 1600, 380) + g) +
-    OG('<g data-open="s2-softmax" aria-label="Por que o modelo alucina: ver a explicação">', K.box({ x: 20, y: 470, w: 760, h: 110, t: 'Por que o modelo alucina', size: 38, step: 4 })) +
-    OG('<g data-open="s2-citacoes" aria-label="Exemplo real de citação inexistente: ver a checagem manual">', K.box({ x: 820, y: 470, w: 760, h: 110, t: 'Exemplo real: artigo 37, inciso 33', size: 38, tone: 'err', step: 5 })),
+    OG('<g data-open="s2-softmax" aria-label="Por que o modelo alucina: ver a explicação">', K.box({ x: 20, y: 450, w: 760, h: 130, t: 'Por que o modelo alucina', size: 38, step: 4 })) +
+    OG('<g data-open="s2-citacoes" aria-label="Exemplo real de citação inexistente: ver a checagem manual">', K.box({ x: 820, y: 450, w: 760, h: 130, t: ['Exemplo real: cita o inciso 33', 'do artigo 37, que não existe'], size: 34, tone: 'err', step: 5 })),
     'Três números de casos de alucinação em tribunais e dois exemplos para explorar');
 };
 
@@ -319,11 +319,12 @@ HEROES.s4 = K => {
   nomes.forEach((n, i) => {
     const falta = i === 2, cx = xs[i];
     g += OG(PINOS[n[2]], HIT(cx - 110, 20, 220, 340) + K.pic(n[0], { x: cx - 75, y: 40, s: 150, size: 38, tone: falta ? 'block' : 'gelo', step: 1 + i }) +
-      K.arrow({ pts: [[cx, 270], [cx, 360]], tone: falta ? 'block' : 'gelo', dash: falta, step: 5 }));
+      (falta ? K.text({ x: cx, y: 270, t: 'não registrado', size: 30, anchor: 'middle', tone: 'block', step: 4 }) : '') +
+      K.arrow({ pts: [[cx, falta ? 292 : 270], [cx, 360]], tone: falta ? 'block' : 'gelo', dash: falta, step: 5 }));
   });
-  g += K.arrow({ pts: [[175, 360], [1460, 360]], noHead: true, step: 5 }) + K.arrow({ pts: [[1460, 360], [1460, 300]], step: 6 });
-  const lock = OG('<g data-open=\"s4-formula\" aria-label=\"Portão fechado: ver a regra que decide\">', HIT(1340, 20, 240, 300) + K.pic('fechadura', { x: 1385, y: 40, s: 150, size: 38, t: 'Bloqueado', tone: 'block', step: 6 }));
-  const msg = OG('<g data-open=\"s4-regras\" aria-label=\"Regra de liberação: ver as regras em forma de código\">', K.box({ x: 250, y: 470, w: 1100, h: 130, t: 'Falta uma condição: o portão não abre', size: 40, tone: 'block', fill: true, step: 7 }));
+  g += K.arrow({ pts: [[175, 360], [1195, 360]], noHead: true, step: 5 }) + K.arrow({ pts: [[685, 360], [685, 430]], step: 6 });
+  const lock = OG('<g data-open="s4-formula" aria-label="Portão fechado quando falta uma condição: ver a regra que decide">', HIT(540, 420, 290, 230) + K.pic('fechadura', { x: 620, y: 440, s: 130, size: 38, t: 'Portão fechado', tone: 'block', step: 6 }));
+  const msg = OG('<g data-open="s4-regras" aria-label="Regra de liberação: ver as regras em forma de código">', HIT(440, 635, 490, 60) + K.text({ x: 685, y: 668, t: 'quando falta uma condição', size: 32, anchor: 'middle', tone: 'nevoa', step: 7 }));
   return K.svg(1600, 720, g + lock + msg, 'Quatro condições levam a um portão; sem o rastro, o portão fica fechado');
 };
 
@@ -333,20 +334,20 @@ HEROES.s5 = K => {
     K.pic('verificar', { x: 900, y: 270, s: 100, size: 32, step: 4, fill: true }) + K.pic('registrar', { x: 1200, y: 270, s: 100, size: 32, step: 6 }) + K.pic('aprovar', { x: 1400, y: 510, s: 100, size: 32, step: 7 });
   const arr = K.arrow({ pts: [[410, 80], [590, 80]], step: 3 }) + K.arrow({ pts: [[1010, 320], [1190, 320]], step: 6 }) + K.arrow({ pts: [[1310, 320], [1450, 320], [1450, 500]], step: 7 });
   const ponte = OG('<g data-open=\"s5-ponte\" aria-label=\"Ponte entre o modelo neural e as regras simbólicas: ver como se ligam\">', HIT(690, 40, 280, 250) + K.arrow({ pts: [[710, 80], [950, 80], [950, 262]], step: 4 }));
-  const rico = OG('<g data-open=\"s5-dsr\" aria-label=\"Bloqueio devolve ao gerador: ver o método de pesquisa\">', HIT(640, 190, 300, 160) + K.arrow({ pts: [[890, 310], [650, 310], [650, 215]], tone: 'err', dash: true, step: 5, t: 'Bloqueia', tx: 770, ty: 292, size: 32 }));
+  const rico = OG('<g data-open=\"s5-dsr\" aria-label=\"Bloqueio devolve ao gerador: ver o método de pesquisa\">', HIT(640, 190, 300, 160) + K.arrow({ pts: [[890, 310], [650, 310], [650, 215]], tone: 'err', dash: true, step: 5 }));
   const part = TRACK('M410 80 L950 80 L950 320 L1450 320 L1450 500', 4, 7) +
     '<circle class="prt err" r="9"><animateMotion dur="5s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;0" keyTimes="0;.5;1" path="M890 310 L650 310 L650 215"/></circle>';
   return K.svg(1600, 720, lanes + OG('<g data-open=\"s5-fig1\" aria-label=\"Etapas do sistema: ver a Figura 1 do artigo redesenhada\">', HIT(280, 20, 1260, 600) + pics) + arr + ponte + rico + part, 'Fluxo: recuperar, gerar, verificar, registrar e aprovar, com o bloqueio devolvendo ao gerador');
 };
 
 HEROES.s9 = K => {
-  const eq = K.pic('gerar', { x: 140, y: 20, s: 200, t: 'Modelo', size: 44, step: 1 }) + PIC2('mais', { x: 450, y: 90, s: 80, step: 2 }) +
-    PIC2('arnes', { x: 640, y: 20, s: 200, t: 'Harness', size: 44, step: 3 }) + PIC2('igual', { x: 950, y: 90, s: 80, step: 4 }) + PIC2('agente', { x: 1140, y: 20, s: 200, t: 'Agente', size: 44, step: 5 });
+  const eq = K.pic('gerar', { x: 140, y: 20, s: 200, t: 'Modelo', size: 44, step: 1 }) + K.text({ x: 490, y: 140, t: 'com', size: 40, anchor: 'middle', tone: 'nevoa', step: 2 }) +
+    PIC2('arnes', { x: 640, y: 20, s: 200, t: 'Harness', size: 44, step: 3 }) + K.arrow({ pts: [[880, 120], [1100, 120]], step: 4, t: 'forma', tx: 990, ty: 92, size: 36 }) + PIC2('agente', { x: 1140, y: 20, s: 200, t: 'Agente', size: 44, step: 5 });
   return K.svg(1600, 720, eq +
-    OG('<g data-open="s5-calais" aria-label="CALAIS é o harness vertical do artigo: ver os três níveis">', K.box({ x: 250, y: 400, w: 1100, h: 110, t: 'CALAIS é o harness vertical do artigo', size: 42, fill: true, step: 6 })) +
+    OG('<g data-open="s5-calais" aria-label="CALAIS, a arquitetura do artigo, é um harness: ver os três níveis">', K.box({ x: 200, y: 400, w: 1200, h: 110, t: 'CALAIS, a arquitetura do artigo, é um harness', size: 40, fill: true, step: 6 })) +
     OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'Quantos artigos usam o termo?', size: 34, step: 7 })) +
     OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'Modelo pequeno rende quanto?', size: 34, step: 8 })),
-    'Modelo mais harness é igual a agente; CALAIS é o harness vertical do artigo');
+    'Modelo com harness forma um agente; CALAIS, a arquitetura do artigo, é um harness');
 };
 
 HEROES.s6 = K => {
@@ -361,19 +362,17 @@ HEROES.s6 = K => {
 };
 
 HEROES.s7 = K => {
-  const cal = OG('<g data-open=\"s7-logs\" aria-label=\"Período e envios do Corpo de Bombeiros: ver os números dos registros\">', HIT(0, 0, 1600, 450) +
-    K.pic('calendario', { x: 0, y: 0, s: 120, t: 'Cerca de 191 dias', size: 44, pos: 'right', step: 1 }) +
-    K.text({ x: 150, y: 138, t: 'ilustrativo: só o total do período', size: 32, tone: 'nevoa', step: 1 }) +
-    SRC('art-logs', '<text class="cnt" data-count="9054" x="0" y="262" style="font-size:64px;font-weight:800;fill:#fff;stroke:none">9.054</text><text x="270" y="262" style="font-size:44px;font-weight:500;fill:#f4f4f5;stroke:none">envios</text>') +
+  const cal = OG('<g data-open="s7-tab4" aria-label="Período do estudo e comparação com o outro caso: ver a tabela">', HIT(0, 0, 900, 150) + K.pic('calendario', { x: 0, y: 10, s: 120, t: 'Cerca de 191 dias', size: 44, pos: 'right', step: 1 }));
+  const envios = OG('<g data-open="s7-logs" aria-label="Mensagens enviadas pelo Corpo de Bombeiros: ver os números dos registros">', HIT(0, 180, 1600, 300) +
+    SRC('art-logs', '<text class="cnt" data-count="9054" x="0" y="262" style="font-size:64px;font-weight:800;fill:#fff;stroke:none">9.054</text><text x="250" y="262" style="font-size:44px;font-weight:500;fill:#f4f4f5;stroke:none">mensagens enviadas</text>') +
     K.bar({ x: 0, y: 290, w: 1600, h: 70, v: 9054, max: 9054, step: 3 }) + K.bar({ x: 0, y: 290, w: 1600, h: 70, v: 9054, v0: 6241, max: 9054, tone: 'nevoa', step: 4 }) +
     SRC('art-logs', K.text({ x: 1600, y: 425, t: '2.813 sem sucesso', size: 38, anchor: 'end', step: 4 })));
-  const vals = [0, 1.67, 3.33, 5, 15.83, 15.83], ro = [0, 1, 2, 3, 0, 1];
-  const nasa = OG('<g data-open=\"s7-nasa\" aria-label=\"Seis medições de esforço percebido: ver a tabela\"><g transform=\"translate(0 -45)\">', HIT(0, 470, 1600, 250) +
-    K.text({ x: 0, y: 500, t: 'Esforço percebido, 6 tarefas (escala de 0 a 100)', size: 36, step: 5 }) + K.text({ x: 0, y: 728, t: '0', size: 32, step: 5 }) + K.text({ x: 1600, y: 728, t: '100', size: 32, anchor: 'end', step: 5 }) + K.arrow({ pts: [[0, 690], [1600, 690]], noHead: true, step: 5 }) +
-    vals.map((v, i) => K.dot({ cx: 20 + v * 15.8, cy: 668 - ro[i] * 34, r: 15, step: 6 })).join('') +
-    SRC('art-nasa', K.text({ x: 380, y: 600, t: 'Mediana 4,17 de 100', size: 36, step: 7 })) + '</g>');
-  const tab = OG('<g data-open=\"s7-tab4\" aria-label=\"Comparação com outro caso: ver a tabela\">', HIT(1180, 480, 420, 120) + PIC2('documento', { x: 1200, y: 500, s: 70, t: 'Comparar com outro caso', size: 32, pos: 'right', step: 8 }));
-  return K.svg(1600, 720, cal + nasa + tab, 'Período, envios e esforço percebido na operação do Corpo de Bombeiros');
+  const vals = [0, 1.67, 3.33, 5, 15.83, 15.83], ro = [0, 0, 0, 0, 0, 1];
+  const nasa = OG('<g data-open="s7-nasa" aria-label="Seis medições de esforço percebido: ver a tabela">', HIT(0, 470, 1600, 230) + '<g transform="translate(0 -45)">' +
+    K.text({ x: 0, y: 500, t: 'Esforço percebido, 6 tarefas (de 0 a 100)', size: 36, step: 5 }) + K.arrow({ pts: [[0, 690], [1600, 690]], noHead: true, step: 5 }) +
+    vals.map((v, i) => K.dot({ cx: 20 + v * 15.8, cy: 668 - ro[i] * 30, r: 11, step: 6 })).join('') +
+    SRC('art-nasa', K.text({ x: 420, y: 650, t: 'Mediana 4,17', size: 36, step: 7 })) + '</g>');
+  return K.svg(1600, 720, cal + envios + nasa, 'Período, mensagens enviadas e esforço percebido na operação do Corpo de Bombeiros');
 };
 
 HEROES.s10 = K => {
@@ -390,7 +389,7 @@ HEROES.s10 = K => {
 };
 
 HEROES.s11 = K => {
-  const nomes = ['Manual', 'Modelo sozinho', 'Busca + modelo', 'Arquitetura completa'], n = [1, 1, 2, 5];
+  const nomes = ['Manual', 'Modelo sozinho', 'Busca com modelo', 'Arquitetura completa'], n = [1, 1, 2, 5];
   let g = '';
   nomes.forEach((nm, i) => {
     const y = 20 + i * 165;
@@ -400,9 +399,11 @@ HEROES.s11 = K => {
       g += K.box({ x, y: y + 40, w: 70, h: 65, t: '', fill: j === n[i] - 1, step: 2 + i }) + (j < n[i] - 1 ? K.arrow({ pts: [[x + 72, y + 72], [x + 108, y + 72]], step: 2 + i }) : '');
     }
   });
-  const lim = [['lock', 'Só em Santa Catarina'], ['lock', 'Só citações'], ['lock', 'Ontologia a validar'], ['lock', 'Hipótese']];
-  const locks = OG('<g data-open=\"s11-limites\" aria-label=\"Quatro limites do estudo: ver cada um\">', HIT(1090, 0, 510, 700) + lim.map((l, i) => K.pic('fechadura', { x: 1110, y: 30 + i * 165, s: 90, t: l[1], size: 32, pos: 'right', step: 6 + i })).join(''));
-  return K.svg(1600, 720, OG('<g data-open=\"s11-desenho\" aria-label=\"Quatro métodos comparados: ver o desenho do estudo\">', HIT(0, 0, 1060, 700) + g) + locks, 'Quatro métodos em raias e quatro limites do estudo');
+  const lim = ['Só em Santa Catarina', 'Só citações', 'Ontologia a validar', 'Hipótese'];
+  const locks = OG('<g data-open="s11-limites" aria-label="Quatro limites declarados do estudo: ver cada um">', HIT(1090, 0, 510, 700) +
+    K.arrow({ pts: [[1085, 0], [1085, 700]], noHead: true, tone: 'nevoa', step: 6 }) + K.text({ x: 1130, y: 60, t: 'Limites declarados', size: 40, weight: 'b', step: 6 }) +
+    lim.map((l, i) => K.pic('fechadura', { x: 1130, y: 120 + i * 140, s: 90, t: l, size: 32, pos: 'right', step: 7 + i })).join(''));
+  return K.svg(1600, 720, OG('<g data-open="s11-desenho" aria-label="Quatro métodos comparados: ver o desenho do estudo">', HIT(0, 0, 1060, 700) + g) + locks, 'Quatro métodos em raias e quatro limites declarados do estudo');
 };
 
 function renderHero(i) {
@@ -574,6 +575,7 @@ const wheel = Core.makeWheel({ thresh: 50, lock: 900 });
 function inPres() { return body.classList.contains('presenter') || body.classList.contains('thumb'); }
 document.addEventListener('wheel', e => {
   if (inPres()) return;
+  const rl = e.target.closest && e.target.closest('.ref'); if (rl && ((e.deltaY > 0 && rl.scrollTop + rl.clientHeight < rl.scrollHeight - 2) || (e.deltaY < 0 && rl.scrollTop > 0))) return;
   if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; // a roda rola o painel (overscroll contido); nunca troca de slide
   e.preventDefault();
   const d = wheel.feed(e.deltaY, e.deltaX, performance.now()); if (d) move(d);

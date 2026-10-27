@@ -23,6 +23,7 @@
 <p class="guia">(como confiar numa decisão apoiada por IA?)</p>
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:760px;top:260px;width:560px;height:740px"></div>
 <div class="hitbox" data-open="s1-harness3d" aria-label="Arnês em 3D: ver o que cada parte representa" style="left:1320px;top:260px;width:560px;height:740px"></div>
+<p class="rodape">Foto: planta da National Agricultural Library (Warner, Burns, Toan e Lunde), domínio público</p>
 <p class="selo ident" data-open="s1-ficha" tabindex="0" role="button" aria-label="Ficha do artigo" style="left:200px;top:820px;cursor:zoom-in">Alexandre Pinto Calaes<br><span>PPGEGC/UFSC</span></p>
 <aside class="notes" data-t="30">Boa tarde. Hoje alguém na sua organização vai assinar um parecer escrito com ajuda de inteligência artificial. Pergunta simples: como essa pessoa prova cada afirmação que assinou? Eu defendo que a prova não pode vir depois, em forma de explicação. Ela precisa estar na arquitetura, antes da assinatura. O que vocês veem aqui é um arnês, um harness: ele envolve o modelo neural e prende quatro condições, evidência, norma, rastro e humano.</aside>
 </section>
@@ -36,7 +37,7 @@
 <div class="hero" data-hero="s2"></div>
 <p class="selo" data-src="charlotin">Charlotin, 25/10/2026</p>
 <p class="rodape">Foto: Daderot, CC0</p>
-<aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Esta barra que cresce é a resposta plausível, mas sem fonte. A base de Damien Charlotin, em 25 de outubro, registra 2.217 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
+<aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Os três números mostram a escala do problema. A base de Damien Charlotin, em 25 de outubro, registra 2.217 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
 </section>
 
 <!-- 3 -->
@@ -47,7 +48,7 @@
 <p class="guia">(por que explicar o modelo não basta?)</p>
 <div class="hero" data-hero="s3"></div>
 <p class="rodape">Foto: NTSB, domínio público</p>
-<aside class="notes" data-t="40">A falsa saída é explicar depois. Explicar um modelo, por exemplo com mapas de saliência, é contar o que aconteceu depois que a decisão foi tomada. Em decisão pública, o dano já ocorreu quando a explicação chega. Cynthia Rudin, em 2019, argumenta que explicação posterior não substitui mecanismos verificáveis em decisões de alto impacto. É isso que a linha de baixo mostra: portões de verificação antes da decisão. A prova precisa vir antes da assinatura, não depois do acidente.</aside>
+<aside class="notes" data-t="40">A falsa saída é explicar depois. Explicar um modelo, por exemplo com mapas de saliência, é contar o que aconteceu depois que a decisão foi tomada. Em decisão pública, o dano já ocorreu quando a explicação chega. Cynthia Rudin, em 2019, defende que, em decisões de alto impacto, é melhor usar modelos interpretáveis desde o início do que tentar explicar caixas-pretas depois. É isso que a linha de baixo mostra: portões de verificação antes da decisão. A prova precisa vir antes da assinatura, não depois do acidente: por isso a linha de baixo coloca as verificações antes da decisão.</aside>
 </section>
 
 <!-- 4 -->
@@ -71,7 +72,7 @@
 <div class="hero" data-hero="s5"></div>
 <p class="selo">laço gerar, verificar, corrigir</p>
 <p class="rodape">Foto: kitmasterbloke, CC BY 2.0</p>
-<aside class="notes" data-t="45">Como isso funciona na prática? O neural propõe, o simbólico verifica. O modelo recupera fontes e gera o texto. Depois, uma etapa simbólica, feita de regras, confere cada citação. Se não passa, bloqueia e devolve ao gerador: é o laço gerar, verificar, corrigir, a bolinha âmbar que ricocheteia. Cada passagem fica registrada, e só então a pessoa aprova. No artigo, essa arquitetura se chama CALAIS, com três níveis: modelo, arquitetura e Citāre, construída pelo método design science research. Ainda é uma arquitetura proposta. Esse arranjo, hoje, tem um nome.</aside>
+<aside class="notes" data-t="45">Como isso funciona na prática? O neural propõe, o simbólico verifica. O modelo recupera fontes e gera o texto. Depois, uma etapa simbólica, feita de regras, confere cada citação. Se não passa, bloqueia e devolve ao gerador: é o laço gerar, verificar, corrigir, a bolinha vermelha que ricocheteia. Cada passagem fica registrada, e só então a pessoa aprova. No artigo, essa arquitetura se chama CALAIS, com três níveis: modelo, arquitetura e Citāre, construída pelo método design science research. Ainda é uma arquitetura proposta. Esse arranjo, hoje, tem um nome.</aside>
 </section>
 
 <!-- 6 NOME DO QUE ACABAMOS DE VER -->
@@ -95,7 +96,7 @@
 <div class="hero" data-hero="s6"></div>
 <p class="selo">prova qualitativa</p>
 <p class="rodape">Foto: Carolina Prysyazhnyuk, CC BY-SA 2.0</p>
-<aside class="notes" data-t="45">Primeira prova: o Citāre. Ele trabalha sobre uma ontologia, uma especificação formal do que é artigo, seção, parágrafo, afirmação, citação, fonte e trecho. Cada citação precisa de autoria, ano e DOI para o trecho ficar pronto como evidência. O artigo que apresento foi redigido com apoio do Citāre e teve as citações conferidas com ele, sempre com revisão e aprovação do autor. Atenção: isso é uma prova qualitativa. Os dados do Corpo de Bombeiros e da ESAG não avaliam o Citāre. A próxima prova é outra: a operação real no Corpo de Bombeiros.</aside>
+<aside class="notes" data-t="45">Primeira prova: o Citāre. Ele trabalha sobre uma ontologia, uma especificação formal do que é artigo, seção, parágrafo, afirmação, citação, fonte e trecho. Cada citação precisa de autoria, ano e DOI para o trecho ficar pronto como evidência. O artigo que apresento foi redigido com apoio do Citāre e teve as citações conferidas com ele, sempre com revisão e aprovação do autor. Atenção: isso é uma prova qualitativa. Os dados do Corpo de Bombeiros e da Escola Superior de Administração e Gerência da UDESC não avaliam o Citāre. A próxima prova é outra: a operação real no Corpo de Bombeiros.</aside>
 </section>
 
 <!-- 8 -->
@@ -106,7 +107,7 @@
 <p class="guia">(e numa operação pública de verdade?)</p>
 <div class="hero" data-hero="s7"></div>
 <p class="selo" data-src="art-logs">evidência exploratória, Santa Catarina</p>
-<p class="rodape">Foto: DAR7, CC0</p>
+<p class="rodape">O artigo informa só o total do período. Foto: DAR7, CC0</p>
 <aside class="notes" data-t="35">Segunda prova: a operação real no Corpo de Bombeiros de Santa Catarina. Em cerca de 191 dias, foram 9.054 envios; 2.813 terminaram sem sucesso, e isso não são bloqueios. A régua mostra seis medições de carga de trabalho, NASA-TLX: são tarefas, não pessoas, e cinco vieram da mesma conta. A mediana é 4,17 em 100. O calendário é ilustrativo: o artigo informa só o total do período. É evidência exploratória: mostra os componentes funcionando juntos, não ganho. Para ganho, estudo pareado.</aside>
 </section>
 
@@ -125,8 +126,8 @@
  <g class="st st1" transform="translate(0 -60)" data-open="s8-regua" aria-label="Régua do artigo 37 com 22 incisos: ver a checagem manual">
   <rect class="hit" x="200" y="800" width="1500" height="200"/>
   <g class="tick" id="ticks"></g>
-  <text class="t40" x="240" y="965" data-src="cf-art37" style="text-anchor:middle">I</text><text class="t40" x="1332" y="965" data-src="cf-art37" style="text-anchor:middle">XXII</text>
-  <g class="ghost"><text class="err" x="1430" y="906" data-src="hnv-cena1" style="font-weight:600;font-size:56px">XXXIII</text></g>
+  <text class="t32" x="240" y="942" data-src="cf-art37">Incisos do artigo 37 da Constituição: vão até o 22</text>
+  <g class="ghost"><text class="err" x="1430" y="906" data-src="hnv-cena1" style="font-weight:600;font-size:40px">33: não existe</text></g>
  </g>
  <g class="st st2 st2b" transform="translate(0 -40)" data-open="s8-portao" aria-label="Portão do hook: três condições falsas, bloqueio. Ver o fluxograma e a ontologia">
   <rect class="hit" x="1000" y="580" width="840" height="240"/>
@@ -135,7 +136,7 @@
   <rect class="ln" x="1020" y="660" width="240" height="120" rx="8"/><text class="t32 mid" x="1140" y="728" data-src="hnv-cena2b">Evidência</text><path class="block x6" d="M1230 672L1250 692M1250 672L1230 692"/>
   <rect class="ln" x="1290" y="660" width="240" height="120" rx="8"/><text class="t32 mid" x="1410" y="728" data-src="hnv-cena2b">Norma</text><path class="block x6" d="M1500 672L1520 692M1520 672L1500 692"/>
   <rect class="ln" x="1560" y="660" width="240" height="120" rx="8"/><text class="t32 mid" x="1680" y="728" data-src="hnv-cena2b">Rastro</text><path class="block x6" d="M1770 672L1790 692M1790 672L1770 692"/>
-  <rect class="ln block" x="1412" y="832" width="248" height="96" rx="8" style="stroke-width:6"/>
+  <rect class="ln block" x="1400" y="832" width="340" height="96" rx="8" style="stroke-width:6"/>
  </g>
  <g class="st st3" data-open="s8-prov" aria-label="Parecer corrigido, aguardando aprovação humana: ver o registro de proveniência">
   <rect class="hit" x="1250" y="230" width="560" height="320"/>
@@ -168,7 +169,7 @@
 <h1 class="ttl"><span class="w">PRÓXIMO PASSO: COMPARAR QUATRO MÉTODOS</span></h1>
 <p class="guia">(como vamos medir o ganho?)</p>
 <div class="hero" data-hero="s11"></div>
-<p class="selo">evidência exploratória, Santa Catarina</p>
+<p class="selo">estudo planejado</p>
 <p class="rodape">Foto: Santeri Viinamäki, CC BY-SA 4.0</p>
 <aside class="notes" data-t="35">Próximo passo: um estudo pareado, com quatro condições: trabalho manual, modelo sozinho, RAG e a arquitetura completa. Mediríamos fidelidade de citação, conformidade, qualidade da decisão, tempo, custo, retrabalho e intervenções humanas, sempre como a diferença entre a arquitetura e a base. Os cadeados são os limites que declaro: evidência exploratória e situada em Santa Catarina; o harness confere citações, não raciocínio; a ontologia ainda aguarda validação; e o HNV é hipótese. Sem esses limites, a conclusão seria maior do que a evidência permite.</aside>
 </section>
@@ -182,8 +183,9 @@
 <p class="guia">(o que levar daqui?)</p>
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:760px;top:260px;width:560px;height:740px"></div>
 <div class="hitbox" data-open="s1-harness3d" aria-label="Arnês em 3D: ver o que cada parte representa" style="left:1320px;top:260px;width:560px;height:740px"></div>
+<p class="rodape">Foto: planta da National Agricultural Library (Warner, Burns, Toan e Lunde), domínio público</p>
 <p class="selo ident" style="left:200px;top:760px">Alexandre Pinto Calaes<br><span>alexandre.calaes@posgrad.ufsc.br</span></p>
-<aside class="notes" data-t="25">Quem assina não precisa de uma explicação depois. Precisa de evidência, norma, rastro e da própria decisão, construídos antes, na arquitetura. Auditável por construção. Obrigado. Tenho reservas preparadas sobre RAG, raciocínio, LGPD, método e referências, se quiserem perguntar.</aside>
+<aside class="notes" data-t="25">Quem assina não precisa de uma explicação depois. Precisa de evidência, norma, rastro e humano, construídos antes, na arquitetura. Auditável por construção. Obrigado. Tenho reservas preparadas sobre RAG, raciocínio, LGPD, método e referências, se quiserem perguntar.</aside>
 </section>
 
 <!-- RESERVAS -->
@@ -193,7 +195,7 @@
 <div class="rb cp">
  <div><b>Quem corrigiu o parecer?</b><p>O modelo local de 3 bilhões de parâmetros errou. Um modelo de fronteira, no mesmo harness, corrigiu (cena induzida). Quando esse modelo pequeno tentou, em três rodadas: <span data-src="hnv-laco">3, 3 e 1</span> bloqueadas, não liberado.</p></div>
  <div><b>O artigo não fala em harness?</b><p>A arquitetura CALAIS é o que a engenharia de agentes passou a chamar de harness. O harness vertical é hipótese de agenda, ainda não testada.</p></div>
- <div><b>Isso não é só buscar documentos?</b><p>Buscar documentos recupera; o verificador confere cada citação contra a ontologia e bloqueia a que está fora. ferramentas jurídicas com busca de documentos ainda erram <span data-src="magesh">17 a 33%</span> nos preprints.</p></div>
+ <div><b>Isso não é só buscar documentos?</b><p>Buscar documentos recupera; o verificador confere cada citação contra a ontologia e bloqueia a que está fora. Ferramentas jurídicas com busca de documentos ainda erram <span data-src="magesh">17 a 33%</span> nos preprints.</p></div>
  <div><b>Bloquear não gera falso positivo?</b><p>Gera, e é declarado: bloqueado não é falso (Resolução 7/2005). <span data-src="hnv-ontologia">18 instâncias</span> aguardam validação do especialista.</p></div>
  <div><b>Seis medições provam algo?</b><p>Não provam ganho. São tarefas, não pessoas, e cinco da mesma conta. É evidência exploratória; o próximo passo é o estudo pareado.</p></div>
  <div><b>E o raciocínio e os dados pessoais?</b><p>O harness confere citações, não raciocínio; a decisão final é humana. Dados pessoais e a lei de proteção de dados não foram avaliados: limite declarado.</p></div>
@@ -206,7 +208,7 @@
 <p class="guia">(qual foi o método de pesquisa?)</p>
 <div class="rb">
  <div><b>Artefato</b><p>Harness com quatro condições: evidência, norma, rastro e humano.</p></div>
- <div><b>Demonstração</b><p>Cena 1 sem harness, cena 2 com harness, ontologia e hook.</p></div>
+ <div><b>Demonstração</b><p>Cena 1 sem harness, cena 2 com harness, ontologia e verificador automático.</p></div>
  <div><b>Avaliação</b><p>Exploratória, em Santa Catarina. Estudo pareado ainda por fazer.</p></div>
  <div><a class="link" data-open="s5-dsr" tabindex="0" role="button" aria-label="Abrir a Tabela 3 do método DSR">Tabela 3 do artigo</a></div>
 </div>

@@ -215,3 +215,8 @@ body.only3d .ttl,body.only3d .guia,body.only3d .sub,body.only3d .hd,body.only3d 
 .s12 .sub{top:150px}
 
 .k .k-rg{fill:none!important}
+
+/* capa e fecho: planta mais visível */
+.bgimg.dim{opacity:1;filter:grayscale(1) blur(1.5px) brightness(.8) contrast(1.1)}
+.s1 .veil,.s12 .veil{background:linear-gradient(90deg,rgba(11,12,16,.8) 0%,rgba(11,12,16,.55) 45%,rgba(11,12,16,.3) 100%)}
+@media print{.res .ref{max-height:none;overflow:visible}}

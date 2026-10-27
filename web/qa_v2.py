@@ -73,6 +73,6 @@ for f in range(0, len(arquivos), 9):
             continue
         ImageDraw.Draw(im).text((10, 8), a.stem, fill=(245, 158, 11))
         folha.paste(im, ((j % 3) * w, (j // 3) * h))
-    destino = OUT / f"v2_folha_{modo}_n{f // 9 + 1}.png"
+    destino = OUT / f"v2_folha_{modo}_p{f // 9 + 1}.png"
     folha.save(destino)
     print(destino)
