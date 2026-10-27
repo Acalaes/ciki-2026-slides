@@ -15,7 +15,7 @@
 <div id="stage">
 
 <!-- 1 CAPA -->
-<section class="slide s1" data-title="IA auditável desde o projeto" data-t="30" data-block="INTRODUÇÃO" aria-label="Capa">
+<section class="slide s1" data-title="IA auditável desde o projeto" data-t="30" data-block="INTRODUÇÃO" data-fontes="art-escopo" aria-label="Capa">
 <div class="bgimg dim" style="background-image:url(img/capa.jpg)"></div>
 <div class="fxslot" data-fx="cover"></div><div class="veil"></div>
 <h1 class="ttl cover"><span class="w">IA AUDITÁVEL</span><span class="w">DESDE O PROJETO</span></h1>
@@ -23,96 +23,88 @@
 <p class="guia">(como confiar numa decisão apoiada por IA?)</p>
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:760px;top:260px;width:560px;height:740px"></div>
 <div class="hitbox" data-open="s1-harness3d" aria-label="Arnês em 3D: ver o que cada parte representa" style="left:1320px;top:260px;width:560px;height:740px"></div>
-<p class="rodape">Foto: planta da National Agricultural Library (Warner, Burns, Toan e Lunde), domínio público</p>
 <p class="selo ident" data-open="s1-ficha" tabindex="0" role="button" aria-label="Ficha do artigo" style="left:200px;top:820px;cursor:zoom-in">Alexandre Pinto Calaes<br><span>PPGEGC/UFSC</span></p>
 <aside class="notes" data-t="30">Boa tarde. Hoje alguém na sua organização vai assinar um parecer escrito com ajuda de inteligência artificial. Pergunta simples: como essa pessoa prova cada afirmação que assinou? Eu defendo que a prova não pode vir depois, em forma de explicação. Ela precisa estar na arquitetura, antes da assinatura. O que vocês veem aqui é um arnês, um harness: ele envolve o modelo neural e prende quatro condições, evidência, norma, rastro e humano.</aside>
 </section>
 
 <!-- 2 PROBLEMA -->
-<section class="slide s2" data-title="A IA alucina: cita fontes que não existem" data-t="50" data-block="PROBLEMA" aria-label="A IA alucina">
+<section class="slide s2" data-title="A IA alucina: cita fontes que não existem" data-t="50" data-block="PROBLEMA" data-fontes="charlotin,dahl,magesh,art-cena1" aria-label="A IA alucina">
 <div class="bgimg" style="background-image:url(img/tribunal.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">A IA ALUCINA: CITA FONTES QUE NÃO EXISTEM</span></h1>
 <p class="guia">(o que acontece quando ninguém confere?)</p>
 <div class="hero" data-hero="s2"></div>
 <p class="selo" data-src="charlotin">Charlotin, 25/10/2026</p>
-<p class="rodape">Foto: Daderot, CC0</p>
 <aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Os três números mostram a escala do problema. A base de Damien Charlotin, em 25 de outubro, registra 2.217 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
 </section>
 
 <!-- 3 -->
-<section class="slide s3" data-title="Explicar depois não evita o erro" data-t="40" data-block="PROBLEMA" aria-label="Explicar depois não basta">
+<section class="slide s3" data-title="Explicar depois não evita o erro" data-t="40" data-block="PROBLEMA" data-fontes="rudin,kroll2017,busuioc2021,art-tab1" aria-label="Explicar depois não basta">
 <div class="bgimg" style="background-image:url(img/gravador.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">EXPLICAR DEPOIS NÃO EVITA O ERRO</span></h1>
 <p class="guia">(por que explicar o modelo não basta?)</p>
 <div class="hero" data-hero="s3"></div>
-<p class="rodape">Foto: NTSB, domínio público</p>
 <aside class="notes" data-t="40">A falsa saída é explicar depois. Explicar um modelo, por exemplo com mapas de saliência, é contar o que aconteceu depois que a decisão foi tomada. Em decisão pública, o dano já ocorreu quando a explicação chega. Cynthia Rudin, em 2019, defende que, em decisões de alto impacto, é melhor usar modelos interpretáveis desde o início do que tentar explicar caixas-pretas depois. É isso que a linha de baixo mostra: portões de verificação antes da decisão. A prova precisa vir antes da assinatura, não depois do acidente: por isso a linha de baixo coloca as verificações antes da decisão.</aside>
 </section>
 
 <!-- 4 -->
-<section class="slide s4" data-title="Quatro condições para ser auditável" data-t="50" data-block="SOLUÇÃO" aria-label="Quatro condições para liberar">
+<section class="slide s4" data-title="Quatro condições para ser auditável" data-t="50" data-block="SOLUÇÃO" data-fontes="art-eq,art-limpe,prov-dm" aria-label="Quatro condições para liberar">
 <div class="bgimg" style="background-image:url(img/fechadura.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">QUATRO CONDIÇÕES PARA SER AUDITÁVEL</span></h1>
 <p class="guia">(o que a IA precisa ter antes de decidir?)</p>
 <div class="hero" data-hero="s4"></div>
 <p class="selo">especificação formal</p>
-<p class="rodape">Foto: Dennis van Zuijlekom, CC BY-SA 2.0</p>
 <aside class="notes" data-t="50">A ferramenta são quatro condições. Evidência: a afirmação tem fonte recuperada. Norma: a fonte está numa base normativa reconhecida. Rastro: o caminho até a conclusão fica registrado, em padrão W3C PROV. E humano: uma pessoa aprova. Pensem num portão com fechadura: se falta uma das quatro, ele não abre. Aqui, quando falta o rastro, o portão fecha e fica bloqueado. A admissibilidade é evidência e norma e rastro; a liberação exige ainda o humano. Atenção: isso é uma especificação formal do artigo, não uma garantia comprovada em experimento. O sistema só declara o parecer admissível. Quem libera é a pessoa.</aside>
 </section>
 
 <!-- 5 -->
-<section class="slide s5" data-title="A IA propõe e as regras conferem" data-t="45" data-block="SOLUÇÃO" aria-label="Neural propõe, simbólico verifica">
+<section class="slide s5" data-title="A IA propõe e as regras conferem" data-t="45" data-block="SOLUÇÃO" data-fontes="art-arq,prov-dm,art-dsr" aria-label="Neural propõe, simbólico verifica">
 <div class="bgimg" style="background-image:url(img/sinalizacao.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">A IA PROPÕE E AS REGRAS CONFEREM</span></h1>
 <p class="guia">(como o sistema funciona, passo a passo?)</p>
 <div class="hero" data-hero="s5"></div>
 <p class="selo">laço gerar, verificar, corrigir</p>
-<p class="rodape">Foto: kitmasterbloke, CC BY 2.0</p>
 <aside class="notes" data-t="45">Como isso funciona na prática? O neural propõe, o simbólico verifica. O modelo recupera fontes e gera o texto. Depois, uma etapa simbólica, feita de regras, confere cada citação. Se não passa, bloqueia e devolve ao gerador: é o laço gerar, verificar, corrigir, a bolinha vermelha que ricocheteia. Cada passagem fica registrada, e só então a pessoa aprova. No artigo, essa arquitetura se chama CALAIS, com três níveis: modelo, arquitetura e Citāre, construída pelo método design science research. Ainda é uma arquitetura proposta. Esse arranjo, hoje, tem um nome.</aside>
 </section>
 
 <!-- 6 NOME DO QUE ACABAMOS DE VER -->
-<section class="slide s9" data-title="Harness: as regras em volta do modelo" data-t="40" data-block="SOLUÇÃO" aria-label="Agente é modelo mais harness">
+<section class="slide s9" data-title="Harness: as regras em volta do modelo" data-t="40" data-block="SOLUÇÃO" data-fontes="bockeler2026,galster2026,art-arq,arxiv-count,cmu" aria-label="Agente é modelo mais harness">
 <div class="bgimg" style="background-image:url(img/servidores.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">HARNESS: AS REGRAS EM VOLTA DO MODELO</span></h1>
 <p class="guia">(como esse arranjo é chamado hoje?)</p>
 <div class="hero" data-hero="s9"></div>
 <p class="selo" data-src="bockeler2026">Engenharia de harness</p>
-<p class="rodape">Números nos painéis: contagem do autor (2026 por amostra) e estudo da Carnegie Mellon em preprint. Foto: NOIRLab, CC BY 4.0</p>
 <aside class="notes" data-t="40">Esse arranjo tem hoje um nome. O artigo não usa a palavra harness, mas a arquitetura CALAIS é, na prática, um harness vertical. Em 2026, a engenharia de agentes passou a tratar agente como modelo mais harness. Pela minha contagem, os artigos com harness no título e agent no resumo passaram de 3, em 2025, para cerca de 446, em 2026; é contagem do autor, com amostra para descartar falsos sentidos. E um preprint de Carnegie Mellon relata que um modelo pequeno com bom harness chega a cerca de 90 por cento do desempenho a 4 por cento do custo, num conjunto de tarefas do estudo.</aside>
 </section>
 
 <!-- 7 -->
-<section class="slide s6" data-title="Prova 1: o Citāre confere citações" data-t="45" data-block="PROVAS" aria-label="Citāre conferiu este artigo">
+<section class="slide s6" data-title="Prova 1: o Citāre confere citações" data-t="45" data-block="PROVAS" data-fontes="art-citare,ont-citare,studer1998,art-escopo" aria-label="Citāre conferiu este artigo">
 <div class="bgimg" style="background-image:url(img/catalogo.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">PROVA 1: O CITĀRE CONFERE CITAÇÕES</span></h1>
 <p class="guia">(funciona na escrita acadêmica?)</p>
 <div class="hero" data-hero="s6"></div>
 <p class="selo">prova qualitativa</p>
-<p class="rodape">Foto: Carolina Prysyazhnyuk, CC BY-SA 2.0</p>
 <aside class="notes" data-t="45">Primeira prova: o Citāre. Ele trabalha sobre uma ontologia, uma especificação formal do que é artigo, seção, parágrafo, afirmação, citação, fonte e trecho. Cada citação precisa de autoria, ano e DOI para o trecho ficar pronto como evidência. O artigo que apresento foi redigido com apoio do Citāre e teve as citações conferidas com ele, sempre com revisão e aprovação do autor. Atenção: isso é uma prova qualitativa. Os dados do Corpo de Bombeiros e da Escola Superior de Administração e Gerência da UDESC não avaliam o Citāre. A próxima prova é outra: a operação real no Corpo de Bombeiros.</aside>
 </section>
 
 <!-- 8 -->
-<section class="slide s7" data-title="Prova 2: automação real nos bombeiros" data-t="35" data-block="PROVAS" aria-label="Operação real no Corpo de Bombeiros">
+<section class="slide s7" data-title="Prova 2: automação real nos bombeiros" data-t="35" data-block="PROVAS" data-fontes="art-logs,art-nasa,hart1988,art-tab4" aria-label="Operação real no Corpo de Bombeiros">
 <div class="bgimg" style="background-image:url(img/bombeiros.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">PROVA 2: AUTOMAÇÃO REAL NOS BOMBEIROS</span></h1>
 <p class="guia">(e numa operação pública de verdade?)</p>
 <div class="hero" data-hero="s7"></div>
-<p class="selo" data-src="art-logs">evidência exploratória, Santa Catarina</p>
-<p class="rodape">O artigo informa só o total do período. Foto: DAR7, CC0</p>
+<p class="selo" data-src="art-logs">exploratório; só o total do período</p>
 <aside class="notes" data-t="35">Segunda prova: a operação real no Corpo de Bombeiros de Santa Catarina. Em cerca de 191 dias, foram 9.054 envios; 2.813 terminaram sem sucesso, e isso não são bloqueios. A régua mostra seis medições de carga de trabalho, NASA-TLX: são tarefas, não pessoas, e cinco vieram da mesma conta. A mediana é 4,17 em 100. O calendário é ilustrativo: o artigo informa só o total do período. É evidência exploratória: mostra os componentes funcionando juntos, não ganho. Para ganho, estudo pareado.</aside>
 </section>
 
 <!-- 9 DEMO (matriz) -->
-<section class="slide s8 matrix" data-title="Prova 3: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" aria-label="Demonstração em três passos">
+<section class="slide s8 matrix" data-title="Prova 3: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" data-fontes="hnv-cena1,hnv-cena2b,hnv-laco,cf-art37" aria-label="Demonstração em três passos">
 <div class="fxslot" data-fx="s8"></div>
 <h1 class="ttl"><span class="w">PROVA 3: O SISTEMA BARRA A CITAÇÃO FALSA</span></h1>
 <p class="guia">(o que acontece quando a IA erra?)</p>
@@ -151,31 +143,29 @@
 </section>
 
 <!-- 10 -->
-<section class="slide s10" data-title="Hipótese: regras de especialistas no harness" data-t="55" data-block="FUTURO" aria-label="Harness neurossimbólico vertical, hipótese">
+<section class="slide s10" data-title="Hipótese: regras de especialistas no harness" data-t="55" data-block="FUTURO" data-fontes="bockeler2026,garcez2023,hnv-ontologia" aria-label="Harness neurossimbólico vertical, hipótese">
 <div class="bgimg" style="background-image:url(img/via_ferrata.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">HIPÓTESE: REGRAS DE ESPECIALISTAS NO HARNESS</span></h1>
 <p class="guia">(isso vale para qualquer área?)</p>
 <div class="hero" data-hero="s10"></div>
 <p class="selo stampsel">hipótese</p>
-<p class="rodape">Foto: Speikboden AG, CC BY-SA 4.0</p>
 <aside class="notes" data-t="55">Chegamos à hipótese, e quero ser claro: ainda não foi testada. Chamo de harness neurossimbólico vertical, o HNV. Vertical porque é feito para um domínio. O harness já tem um guia macio, as skills, que orientam o modelo, e uma regra dura, os hooks, que bloqueiam. Falta a peça central: a ontologia do domínio, escrita pelo especialista, que liga as regras ao conhecimento do campo. Esse é o trabalho da engenharia de grafos de conhecimento. Domínios candidatos, e são propostas, não resultados: pareceres administrativos, escrita científica e boletins de ocorrência de bombeiros. É aqui que a engenharia do conhecimento volta ao centro da inteligência artificial. Hipótese, não resultado.</aside>
 </section>
 
 <!-- 11 -->
-<section class="slide s11" data-title="Próximo passo: comparar quatro métodos" data-t="35" data-block="FUTURO" aria-label="Próximo: estudo pareado">
+<section class="slide s11" data-title="Próximo passo: comparar quatro métodos" data-t="35" data-block="FUTURO" data-fontes="art-futuro" aria-label="Próximo: estudo pareado">
 <div class="bgimg" style="background-image:url(img/pista.jpg)"></div>
 <div class="veil"></div>
 <h1 class="ttl"><span class="w">PRÓXIMO PASSO: COMPARAR QUATRO MÉTODOS</span></h1>
 <p class="guia">(como vamos medir o ganho?)</p>
 <div class="hero" data-hero="s11"></div>
 <p class="selo">estudo planejado</p>
-<p class="rodape">Foto: Santeri Viinamäki, CC BY-SA 4.0</p>
 <aside class="notes" data-t="35">Próximo passo: um estudo pareado, com quatro condições: trabalho manual, modelo sozinho, RAG e a arquitetura completa. Mediríamos fidelidade de citação, conformidade, qualidade da decisão, tempo, custo, retrabalho e intervenções humanas, sempre como a diferença entre a arquitetura e a base. Os cadeados são os limites que declaro: evidência exploratória e situada em Santa Catarina; o harness confere citações, não raciocínio; a ontologia ainda aguarda validação; e o HNV é hipótese. Sem esses limites, a conclusão seria maior do que a evidência permite.</aside>
 </section>
 
 <!-- 12 FECHO -->
-<section class="slide s12" data-title="Conclusão: auditar antes de assinar" data-t="25" data-block="CONCLUSÃO" aria-label="Auditável por construção">
+<section class="slide s12" data-title="Conclusão: auditar antes de assinar" data-t="25" data-block="CONCLUSÃO" data-fontes="art-escopo" aria-label="Auditável por construção">
 <div class="bgimg dim" style="background-image:url(img/capa.jpg)"></div>
 <div class="fxslot" data-fx="cover12"></div><div class="veil"></div>
 <h1 class="ttl"><span class="w">CONCLUSÃO: AUDITAR ANTES DE ASSINAR</span></h1>
@@ -183,7 +173,6 @@
 <p class="guia">(o que levar daqui?)</p>
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:760px;top:260px;width:560px;height:740px"></div>
 <div class="hitbox" data-open="s1-harness3d" aria-label="Arnês em 3D: ver o que cada parte representa" style="left:1320px;top:260px;width:560px;height:740px"></div>
-<p class="rodape">Foto: planta da National Agricultural Library (Warner, Burns, Toan e Lunde), domínio público</p>
 <p class="selo ident" style="left:200px;top:760px">Alexandre Pinto Calaes<br><span>alexandre.calaes@posgrad.ufsc.br</span></p>
 <aside class="notes" data-t="25">Quem assina não precisa de uma explicação depois. Precisa de evidência, norma, rastro e humano, construídos antes, na arquitetura. Auditável por construção. Obrigado. Tenho reservas preparadas sobre RAG, raciocínio, LGPD, método e referências, se quiserem perguntar.</aside>
 </section>
@@ -230,6 +219,13 @@
 </div>
 <aside class="notes" data-t="0">Agenda de pesquisa, sem título de tese. Tudo o que está aqui é proposta.</aside>
 </section>
+<section class="slide res r5" data-reserve="5" data-title="Créditos das imagens" data-t="0" data-block="Reserva" aria-label="Reserva 5: créditos das imagens">
+<h1 class="ttl"><span class="w">CRÉDITOS DAS IMAGENS</span></h1>
+<p class="guia">(de quem são as fotos e as licenças?)</p>
+<div class="rb"><div class="ref" data-fill="r5-creditos"></div></div>
+<aside class="notes" data-t="0">Créditos e licenças das fotos usadas como fundo. Atribuição exigida pelas licenças CC BY e CC BY-SA.</aside>
+</section>
+
 <!-- camadas comuns -->
 <div id="band" aria-hidden="true"></div>
 <div id="strip" aria-hidden="true"><i class="ln1"></i><b></b><i class="ln2"></i></div>

@@ -58,3 +58,9 @@ for d in dom:
 ys = {d["y"] for d in dom}; cxs = {d["cx"] for d in dom}; ps = {d["fontPx"] for d in dom}
 print("\nposicao do titulo: y distintos =", sorted(ys), "| centros x =", sorted(cxs), "| tamanhos =", sorted(ps))
 print("titulos com mais de 1 linha:", [d["slide"] for d in dom if d["linhas"] > 1], "| acima de 45 caracteres:", [d["slide"] for d in dom if d["chars"] > 45], "| nao cabem:", [d["slide"] for d in dom if not d["cabe"]])
+
+sem = [d["slide"] for d in dom if str(d["slide"]).isdigit() and d.get("fontesN", 0) < 1]
+foto = [d["slide"] for d in dom if "Foto:" in d.get("rodape", "")]
+print("slides principais sem fonte no rodape:", sem, "| com 'Foto:' no rodape:", foto)
+for d in dom:
+    if str(d["slide"]).isdigit(): print(f"  {d['slide']:>2}: {d['rodape']}")

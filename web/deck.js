@@ -421,6 +421,13 @@ function buildDynamic() {
     const hd = document.createElement('div'); hd.className = 'hd'; hd.setAttribute('aria-hidden', 'true');
     hd.innerHTML = '<span class="num">' + (n >= 0 ? String(n + 1).padStart(2, '0') : 'R') + '</span><span class="lab">' + b + '</span>';
     s.insertBefore(hd, s.firstChild.nextSibling);
+    const keys = (s.dataset.fontes || '').split(',').map(x => x.trim()).filter(Boolean);
+    if (keys.length) {
+      let r = $('.rodape', s); if (!r) { r = document.createElement('p'); r.className = 'rodape'; s.appendChild(r); }
+      const seen = new Set(), parts = [];
+      keys.forEach(k => { const f = FONTES[k]; const ref = f && (f.ref || String(f.fonte || '').split(/[,(]/)[0].slice(0, 48)); if (!ref || seen.has(ref)) return; seen.add(ref); parts.push('<span data-src="' + k + '" tabindex="0" role="button" aria-label="Ver a fonte: ' + esc(ref) + '">' + esc(ref) + '</span>'); });
+      r.innerHTML = 'Fontes: ' + parts.join('; ');
+    }
     const bgi = $('.bgimg', s); if (bgi && !$('.tint', s)) { const tn = document.createElement('div'); tn.className = 'tint'; bgi.after(tn); }
     renderHero(i);
   });
@@ -440,7 +447,7 @@ function countUp(root) {
 const PANELS = root.HNV_PANELS || {}, FONTES = root.HNV_FONTES || {}, DET = root.HNV_DETALHES || {};
 let openPanelEl = null, lastOpener = null, drawerOpen = false, detailOpen = false, lbOpen = false;
 function buildPanels() {
-  const ids = new Set($$('[data-open]').map(e => e.dataset.open)); Object.keys(PANELS).forEach(k => { if (k !== 'r3-referencias') ids.add(k); });
+  const ids = new Set($$('[data-open]').map(e => e.dataset.open)); Object.keys(PANELS).forEach(k => { if (k !== 'r3-referencias' && k !== 'r5-creditos') ids.add(k); });
   ids.forEach(id => {
     const s = document.createElement('section'); s.className = 'panel'; s.id = 'panel-' + id; s.dataset.layer = '2'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-label', 'Painel ' + id); s.setAttribute('aria-hidden', 'true');
     s.innerHTML = '<button class="panel-close" type="button" aria-label="Fechar painel (Esc)">fechar · Esc</button>' + (DET[id] ? '<button class="btn-detalhes" type="button" data-id="' + id + '" aria-label="Ver explicação detalhada e prova documental">Ver explicação detalhada</button>' : '') + '<div class="panel-body"></div>';

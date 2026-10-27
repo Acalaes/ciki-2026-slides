@@ -15,7 +15,7 @@
       slide: i < 12 ? i + 1 : 'R' + (i - 11), titulo: t.textContent, chars: t.textContent.length,
       x: Math.round((r.left - o.left) / sc), y: Math.round((r.top - o.top) / sc), w: Math.round(r.width / sc), h: Math.round(r.height / sc), cx: Math.round(((r.left + r.right) / 2 - o.left) / sc),
       fontPx: parseFloat(cs.fontSize), linhas: Math.round(r.height / sc / lh), cabe: r.width / sc <= 1420,
-      bloco: s.dataset.block, guia: g ? g.textContent : '', palavrasHero: heroTexts.join(' ').split(/\s+/).filter(Boolean).length, rotulos: heroTexts.length,
+      bloco: s.dataset.block, rodape: (s.querySelector('.rodape') || {}).textContent || '', fontesN: s.querySelectorAll('.rodape [data-src]').length, guia: g ? g.textContent : '', palavrasHero: heroTexts.join(' ').split(/\s+/).filter(Boolean).length, rotulos: heroTexts.length,
       menorTextoHero: sizes.length ? Math.round(Math.min(...sizes)) : null, clicaveis: [...new Set([...s.querySelectorAll('[data-open]')].map(e => e.dataset.open))].length
     });
   }

@@ -220,3 +220,6 @@ body.only3d .ttl,body.only3d .guia,body.only3d .sub,body.only3d .hd,body.only3d 
 .bgimg.dim{opacity:1;filter:grayscale(1) blur(1.5px) brightness(.8) contrast(1.1)}
 .s1 .veil,.s12 .veil{background:linear-gradient(90deg,rgba(11,12,16,.8) 0%,rgba(11,12,16,.55) 45%,rgba(11,12,16,.3) 100%)}
 @media print{.res .ref{max-height:none;overflow:visible}}
+
+.rodape span[data-src]{cursor:help}
+.rodape span[data-src]:hover{color:var(--teal-claro)}
