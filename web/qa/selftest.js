@@ -9,13 +9,13 @@
   await sleep(1200); const a = st().i;
   for (let k = 0; k < 10; k++) { wheel(100); await sleep(100); }
   ok('10 entalhes em 1 s avançam no máximo 2', st().i - a <= 2, 'avançou ' + (st().i - a));
-  await sleep(1500); D.goto(7); await sleep(1200);
-  ok('slide 8 começa no passo 1', st().i === 7 && st().step === 1, JSON.stringify(st()));
-  wheel(100); await sleep(1100); ok('roda consome passo 2 sem trocar de slide', st().i === 7 && st().step === 2, JSON.stringify(st()));
-  wheel(100); await sleep(1100); ok('roda consome passo 3', st().i === 7 && st().step === 3, JSON.stringify(st()));
-  wheel(100); await sleep(1100); ok('depois do passo 3 troca de slide', st().i === 8, JSON.stringify(st()));
-  wheel(-100); await sleep(1100); ok('voltar entra no último passo do slide 8', st().i === 7 && st().step === 3, JSON.stringify(st()));
-  wheel(100, 400); await sleep(300); ok('deltaX ignorado', st().i === 7 && st().step === 3);
+  await sleep(1500); D.goto(8); await sleep(1200);
+  ok('demo começa no passo 1', st().i === 8 && st().step === 1, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('roda consome passo 2 sem trocar de slide', st().i === 8 && st().step === 2, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('roda consome passo 3', st().i === 8 && st().step === 3, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('depois do passo 3 troca de slide', st().i === 9, JSON.stringify(st()));
+  wheel(-100); await sleep(1100); ok('voltar entra no último passo da demo', st().i === 8 && st().step === 3, JSON.stringify(st()));
+  wheel(100, 400); await sleep(300); ok('deltaX ignorado', st().i === 8 && st().step === 3);
   D.goto(1); await sleep(1000);
   document.querySelector('[data-open="s2-casos"]').click(); await sleep(500);
   const p = document.getElementById('panel-s2-casos'); ok('clique em data-open abre painel', p && p.classList.contains('open'));

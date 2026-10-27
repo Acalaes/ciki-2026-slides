@@ -207,7 +207,7 @@ body:not(.static) .s10.active .flash{animation:fl2 4s ease-in-out infinite}
 .pa{opacity:0}.flash{opacity:0}
 body.static .s10 .pa{opacity:1;transform:translate(159px,-159px)}
 body.static .s10 .pb{opacity:0}
-body.static .s10 .flash{opacity:.9}
+body.static .s10 .flash{opacity:0}
 @keyframes core{0%,100%{opacity:.55}50%{opacity:1}}
 body:not(.static) .s10.active .nn{animation:core 1.8s ease-in-out infinite;animation-delay:var(--dl)}
 svg text.rlab{font-size:44px;font-weight:700;font-stretch:90%;paint-order:stroke;stroke:#070D1A;stroke-width:10px;stroke-linejoin:round}
@@ -264,7 +264,7 @@ aside.notes{display:none}
 .scrim.on{display:block}
 .vh{position:absolute;left:-9999px}
 .grain{position:absolute;inset:0;width:1920px;height:1080px;z-index:20;pointer-events:none;opacity:.16;mix-blend-mode:overlay}
-body[data-s="8"] .grain{opacity:.38}
+body[data-s="9"] .grain{opacity:.38}
 body.lite .grain{display:none}
 body.lite .glow{display:none}
 .probe{position:absolute;width:0;height:0;overflow:hidden}
@@ -327,3 +327,15 @@ body.only3d .l1,body.only3d .selo,body.only3d svg.art,body.only3d .hitbox,body.o
 .s10 .venn .vt{font-size:40px;font-stretch:70%}
 body.static .s8 .st2b{opacity:.65!important}
 .matrix .selo{background:rgba(0,0,0,.72);padding:6px 16px}
+
+/* ---------- correções do avaliador ---------- */
+.cit.sb .tx{color:var(--cinza);text-decoration:underline dashed var(--cinza);text-decoration-thickness:4px;text-underline-offset:8px}
+.s4 .blk.block{color:var(--a);text-shadow:0 0 30px rgba(242,165,65,.35)}
+.s7 .til{display:inline-block;color:var(--nevoa);margin-right:.04em}
+.hm .band .bl{position:absolute;left:24px;top:0;font:700 44px/72px var(--fd);font-stretch:85%;color:#0E1A33;white-space:nowrap}
+.hm .band{position:absolute}
+.chipsrc .eq{border-color:var(--nevoa);color:var(--gelo);background:rgba(30,58,102,.75);cursor:zoom-in}
+.res .rb.cp{display:grid;grid-template-columns:1fr 1fr;gap:22px 56px;font-size:36px}
+.res .rb.cp b{font-size:46px;margin-bottom:4px}
+.res .rb.cp p{font-size:36px;line-height:1.28}
+.s9 .cnt .ap{font-family:'Cambria Math','Segoe UI Symbol',serif;font-weight:400;margin-right:.02em}

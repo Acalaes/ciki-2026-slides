@@ -276,7 +276,7 @@ SCENES.s7 = function () {
       ctx.strokeStyle = C.nevoa; ctx.globalAlpha = .14; ctx.lineWidth = 1.6; ctx.beginPath(); ed.forEach(e => { ctx.moveTo(nodes[e[0]].x, nodes[e[0]].y); ctx.lineTo(nodes[e[1]].x, nodes[e[1]].y); }); ctx.stroke();
       ctx.fillStyle = C.gelo; ed.forEach(e => { if (e[2] > .72) { const f = (t * .3 + e[2] * 5) % 1, p = nodes[e[0]], q = nodes[e[1]]; ctx.globalAlpha = .5; ctx.beginPath(); ctx.arc(p.x + (q.x - p.x) * f, p.y + (q.y - p.y) * f, 4, 0, 6.283); ctx.fill(); } });
       nodes.forEach(n => { ctx.globalAlpha = .2 + .15 * Math.sin(t * 1.6 + n.ph); ctx.beginPath(); ctx.arc(n.x, n.y, 6, 0, 6.283); ctx.fill(); });
-      mtext(ctx, 'TLX = (1/6) Σ_{i=1}^{6} s_i', 1000, 478, 46, C.gelo, .9);
+      mtext(ctx, 'TLX_{bruto} = (1/6) Σ_{i} s_i', 1000, 478, 46, C.gelo, .9);
       ctx.globalAlpha = 1;
     }
   };
@@ -372,98 +372,116 @@ SCENES.s11 = function () {
   };
 };
 
-/* ======================= CAPA E FECHO: HARNESS EM 3D ======================= */
-function harnessGeom() {
-  const loops = [], s2 = Math.SQRT1_2, R = 1.55;
-  const ang = d => d * Math.PI / 180, u = a => [Math.cos(ang(a)), 0, Math.sin(ang(a))];
-  loops.push({ a: [1, 0, 0], b: [0, 0, 1], r: R, kind: 'strap' }, { a: u(45), b: [0, 1, 0], r: R, kind: 'strap' }, { a: u(135), b: [0, 1, 0], r: R, kind: 'strap' },
-    { a: [1, 0, 0], b: [0, .766, .643], r: 1.74, kind: 'strap' }, { a: [0, 0, 1], b: [.643, .766, 0], r: 1.74, kind: 'strap' });
-  const rings = [{ a: [1, 0, 0], b: [0, .94, -.34], r: 2.0 }, { a: [0, 0, 1], b: [.6, .8, 0], r: 2.12 }, { a: [1, 0, 0], b: [0, .17, .985], r: 2.24 }];
-  const anchors = [45, 135, 225, 315].map(d => u(d).map(v => v * R));
-  const pt = (L, th) => [0, 1, 2].map(i => L.r * (Math.cos(th) * L.a[i] + Math.sin(th) * L.b[i]));
-  return { loops, rings, anchors, pt, R };
+/* ======================= CAPA E FECHO: ARNÊS (HARNESS) EM 3D ======================= */
+const v3 = { sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]], norm: a => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; } };
+function catmull(pts, closed, n) {
+  const out = [], m = pts.length, g = i => closed ? pts[(i + m) % m] : pts[Math.max(0, Math.min(m - 1, i))], segs = closed ? m : m - 1;
+  for (let s = 0; s < segs; s++) for (let k = 0; k < n / segs; k++) {
+    const t = k / (n / segs), p0 = g(s - 1), p1 = g(s), p2 = g(s + 1), p3 = g(s + 2), t2 = t * t, t3 = t2 * t;
+    out.push([0, 1, 2].map(i => .5 * ((2 * p1[i]) + (-p0[i] + p2[i]) * t + (2 * p0[i] - 5 * p1[i] + 4 * p2[i] - p3[i]) * t2 + (-p0[i] + 3 * p1[i] - 3 * p2[i] + p3[i]) * t3)));
+  }
+  if (!closed) out.push(pts[m - 1]);
+  return out;
 }
-const HG = harnessGeom();
-function fib(n, rad, r) { const p = []; for (let i = 0; i < n; i++) { const th = Math.acos(1 - 2 * (i + .5) / n), ph = Math.PI * (1 + Math.sqrt(5)) * i; p.push([rad * Math.sin(th) * Math.cos(ph), rad * Math.cos(th), rad * Math.sin(th) * Math.sin(ph)]); } return p; }
-function nearEdges(p, k) { const e = [], seen = new Set(); p.forEach((a, i) => { const d = p.map((b, j) => [Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]), j]).filter(x => x[1] !== i).sort((x, y) => x[0] - y[0]).slice(0, k); d.forEach(x => { const key = Math.min(i, x[1]) + '_' + Math.max(i, x[1]); if (!seen.has(key)) { seen.add(key); e.push([i, x[1]]); } }); }); return e; }
-
+function ellipse(cx, cy, cz, rx, rz, n, tilt) { const a = []; for (let i = 0; i < n; i++) { const t = i / n * 6.2832; a.push([cx + rx * Math.cos(t), cy + (tilt || 0) * Math.cos(t), cz + rz * Math.sin(t)]); } return a; }
+const HG = (function () {
+  const A = [[-.95, 1.7, 0], [-.85, 1.1, .6], [-.3, .4, .8], [.3, -.25, .82], [.85, -.85, .6], [.95, -1.2, 0], [.85, -.85, -.6], [.3, -.25, -.82], [-.3, .4, -.8], [-.85, 1.1, -.6]];
+  const B = A.map(p => [-p[0], p[1], p[2]]);
+  const straps = [
+    { pts: catmull(A, true, 160), closed: true, hw: .15, out: p => [p[0], 0, p[2]] },
+    { pts: catmull(B, true, 160), closed: true, hw: .15, out: p => [p[0], 0, p[2]] },
+    { pts: catmull(ellipse(0, -.55, 0, 1.2, .88, 12), true, 160), closed: true, hw: .22, out: p => [p[0], 0, p[2]] },
+    { pts: catmull(ellipse(-.6, -1.5, 0, .46, .46, 8, .08), true, 90), closed: true, hw: .16, out: p => [p[0] + .6, 0, p[2]] },
+    { pts: catmull(ellipse(.6, -1.5, 0, .46, .46, 8, .08), true, 90), closed: true, hw: .16, out: p => [p[0] - .6, 0, p[2]] }
+  ];
+  [-.6, .6].forEach(cx => [1, -1].forEach(s => straps.push({ pts: catmull([[cx, -.55, .84 * s], [cx, -1.05, .62 * s], [cx, -1.5, .46 * s]], false, 40), closed: false, hw: .12, out: () => [0, 0, s] })));
+  const core = [], edges = [];
+  for (let l = 0; l < 4; l++) for (let b = 0; b < 3; b++) for (let a = 0; a < 3; a++) core.push([(a - 1) * .36, .42 + (b - 1) * .36, -.45 + l * .3, l]);
+  for (let i = 0; i < core.length; i++) for (let j = 0; j < core.length; j++) if (core[j][3] === core[i][3] + 1) edges.push([i, j]);
+  const anchors = [{ k: 'E', p: [0, .12, .9], o: [0, 0, .42], w: .5, h: .36 }, { k: 'N', p: [-1.22, -.55, 0], o: [-.42, 0, 0], w: .36, h: .5 }, { k: 'T', p: [1.22, -.55, 0], o: [.42, 0, 0], w: .36, h: .5 }];
+  const dring = [0, -.55, .93];
+  return { straps, core, edges, anchors, dring };
+})();
 function letterTexture(THREE, ch) {
   const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d');
   x.strokeStyle = C.gelo; x.lineWidth = 6; x.beginPath(); x.arc(80, 80, 66, 0, 6.283); x.stroke();
-  x.fillStyle = 'rgba(7,13,26,.7)'; x.fill(); x.fillStyle = C.gelo; x.font = '900 92px Archivo,Arial,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ch, 80, 88);
-  const t = new THREE.CanvasTexture(c); return t;
+  x.fillStyle = 'rgba(7,13,26,.78)'; x.fill(); x.fillStyle = C.gelo; x.font = '900 92px Archivo,Arial,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(ch, 80, 88);
+  return new THREE.CanvasTexture(c);
 }
-
+function ribbonGeo(THREE, s) {
+  const pts = s.pts, n = pts.length, pos = new Float32Array(n * 6), idx = [], m = s.closed ? n : n - 1;
+  for (let i = 0; i < n; i++) {
+    const p = pts[i], q = pts[s.closed ? (i + 1) % n : Math.min(n - 1, i + 1)], r = pts[s.closed ? (i - 1 + n) % n : Math.max(0, i - 1)];
+    const T = v3.norm(v3.sub(q, r)), W = v3.norm(v3.cross(T, v3.norm(s.out(p))));
+    for (let k = 0; k < 3; k++) { pos[i * 6 + k] = p[k] + W[k] * s.hw; pos[i * 6 + 3 + k] = p[k] - W[k] * s.hw; }
+  }
+  for (let i = 0; i < m; i++) { const a = 2 * i, b = a + 1, c = 2 * ((i + 1) % n), d = c + 1; idx.push(a, b, c, b, d, c); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); g.userData = { total: idx.length, segs: m };
+  return g;
+}
 function makeCover3D(canvas) {
   const THREE = root.THREE; if (!THREE) return null;
   let renderer; try { renderer = new THREE.WebGLRenderer({ canvas, antialias: !LITE, alpha: false, preserveDrawingBuffer: true }); } catch (e) { return null; }
   if (!renderer.getContext()) return null;
   renderer.setSize(1920, 1080, false); renderer.setPixelRatio(1); renderer.setClearColor(0x070D1A, 1);
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1920 / 1080, .1, 100); cam.position.set(0, 0, 10);
-  const G = new THREE.Group(); G.position.set(2.3, -1.06, 0); G.scale.setScalar(.93); scene.add(G);
-  scene.add(new THREE.AmbientLight(0x5a78b0, .9));
-  const dl = new THREE.DirectionalLight(0xE6EEFB, 1.25); dl.position.set(3, 4, 6); scene.add(dl);
-  const pl = new THREE.PointLight(0x6F8FC7, 2.2, 30); pl.position.set(-5, -2, 4); scene.add(pl);
-  // brilho atrás do núcleo
+  const G = new THREE.Group(); G.position.set(2.2, -1.12, 0); G.scale.setScalar(.98); scene.add(G);
+  scene.add(new THREE.AmbientLight(0x5a78b0, .55));
+  const dl = new THREE.DirectionalLight(0xE6EEFB, .95); dl.position.set(3, 4, 6); scene.add(dl);
+  const pl = new THREE.PointLight(0x6F8FC7, 1.5, 30); pl.position.set(-5, -2, 4); scene.add(pl);
   const gc = document.createElement('canvas'); gc.width = gc.height = 256; const gx = gc.getContext('2d'), gg = gx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  gg.addColorStop(0, 'rgba(111,143,199,.65)'); gg.addColorStop(1, 'rgba(111,143,199,0)'); gx.fillStyle = gg; gx.fillRect(0, 0, 256, 256);
-  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); halo.scale.set(6, 6, 1); G.add(halo);
-  // núcleo neural
-  const np = fib(LITE ? 90 : 170, 1.05), ne = nearEdges(np, 3), nodeGeo = new THREE.BufferGeometry(), pos = new Float32Array(np.length * 3), col = new Float32Array(np.length * 3);
-  np.forEach((p, i) => { pos.set(p, i * 3); }); nodeGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); nodeGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const nodes = new THREE.Points(nodeGeo, new THREE.PointsMaterial({ size: .15, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); G.add(nodes);
-  const ep = new Float32Array(ne.length * 6); ne.forEach((e, i) => { ep.set(np[e[0]], i * 6); ep.set(np[e[1]], i * 6 + 3); });
+  gg.addColorStop(0, 'rgba(111,143,199,.5)'); gg.addColorStop(1, 'rgba(111,143,199,0)'); gx.fillStyle = gg; gx.fillRect(0, 0, 256, 256);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); halo.scale.set(5, 5, 1); halo.position.set(0, .4, -.6); G.add(halo);
+  const cn = HG.core, nodeGeo = new THREE.BufferGeometry(), pos = new Float32Array(cn.length * 3), col = new Float32Array(cn.length * 3);
+  cn.forEach((p, i) => pos.set([p[0], p[1], p[2]], i * 3)); nodeGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); nodeGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const nodes = new THREE.Points(nodeGeo, new THREE.PointsMaterial({ size: .17, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); G.add(nodes);
+  const ep = new Float32Array(HG.edges.length * 6); HG.edges.forEach((e, i) => { ep.set([cn[e[0]][0], cn[e[0]][1], cn[e[0]][2]], i * 6); ep.set([cn[e[1]][0], cn[e[1]][1], cn[e[1]][2]], i * 6 + 3); });
   const eg = new THREE.BufferGeometry(); eg.setAttribute('position', new THREE.BufferAttribute(ep, 3));
-  const edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x6F8FC7, transparent: true, opacity: .4 })); G.add(edges);
-  // faixas (skills): tubos que se desenham
-  const steel = new THREE.MeshStandardMaterial({ color: 0x2c4f86, metalness: .75, roughness: .38, emissive: 0x0a1630 });
-  const straps = HG.loops.map((L, k) => { const pts = []; for (let i = 0; i < 64; i++) pts.push(new THREE.Vector3(...HG.pt(L, i / 64 * 6.2832))); const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 220, .065, 6, true); const m = new THREE.Mesh(g, steel); m.userData.n = g.index.count; G.add(m); return m; });
-  // anéis rígidos (hooks)
-  const ringMat = new THREE.MeshStandardMaterial({ color: 0x5f86c7, metalness: .9, roughness: .28, emissive: 0x10223f });
-  const rings = HG.rings.map((L, k) => { const grp = new THREE.Group(), pts = []; for (let i = 0; i < 80; i++) pts.push(new THREE.Vector3(...HG.pt(L, i / 80 * 6.2832))); const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 160, .02, 8, true); grp.add(new THREE.Mesh(g, ringMat)); G.add(grp); return grp; });
-  // fivelas e ancoragens
-  const bk = [], lab = ['E', 'N', 'T', 'H'];
-  HG.anchors.forEach((a, k) => {
-    const bx = new THREE.Mesh(new THREE.BoxGeometry(.36, .46, .2), new THREE.MeshStandardMaterial({ color: 0x86a9e6, metalness: .85, roughness: .25, emissive: 0x16305a })); bx.position.set(...a); bx.lookAt(0, 0, 0); G.add(bx);
-    const ed = new THREE.LineSegments(new THREE.EdgesGeometry(bx.geometry), new THREE.LineBasicMaterial({ color: 0xE6EEFB })); bx.add(ed);
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, lab[k]), transparent: true, depthTest: false })); sp.position.set(a[0] * 1.3, a[1] * 1.3, a[2] * 1.3); sp.scale.set(.66, .66, 1); sp.renderOrder = 10; G.add(sp);
-    bk.push({ bx, sp });
+  const edges = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x8fb0e8, transparent: true, opacity: .35 })); G.add(edges);
+  const web = new THREE.MeshStandardMaterial({ color: 0x2a4a80, metalness: .2, roughness: .8, side: THREE.DoubleSide, emissive: 0x050c1c });
+  const straps = HG.straps.map(s => { const m = new THREE.Mesh(ribbonGeo(THREE, s), web); G.add(m); return m; });
+  const steel = new THREE.MeshStandardMaterial({ color: 0xa9c3f0, metalness: .9, roughness: .25, emissive: 0x1a3566 });
+  function buckle(w, h) { const g = new THREE.Group(), t = .07; [[0, h / 2, w, t], [0, -h / 2, w, t], [-w / 2, 0, t, h], [w / 2, 0, t, h], [0, 0, w, t * .8]].forEach(a => { const b = new THREE.Mesh(new THREE.BoxGeometry(a[2], a[3], .09), steel); b.position.set(a[0], a[1], 0); g.add(b); }); return g; }
+  const bk = [];
+  HG.anchors.forEach(a => {
+    const b = buckle(a.w, a.h); b.position.set(...a.p); b.lookAt(a.p[0] * 3, a.p[1], a.p[2] * 3 + (a.k === 'E' ? 1 : 0)); G.add(b);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, a.k), transparent: true, depthTest: false })); sp.position.set(a.p[0] + a.o[0], a.p[1] + a.o[1], a.p[2] + a.o[2]); sp.scale.set(.62, .62, 1); sp.renderOrder = 10; G.add(sp); bk.push({ b, sp });
   });
-  const human = new THREE.Mesh(new THREE.BoxGeometry(.4, .3, .22), new THREE.MeshStandardMaterial({ color: 0xE6EEFB, emissive: 0x9fb8e8, metalness: .3, roughness: .4 })); human.position.set(0, 1.55, 0); G.add(human);
-  const hr = new THREE.Mesh(new THREE.TorusGeometry(.32, .03, 8, 40), new THREE.MeshBasicMaterial({ color: 0xE6EEFB })); hr.position.set(0, 1.55, 0); hr.rotation.x = Math.PI / 2; G.add(hr);
+  const dgrp = new THREE.Group(); dgrp.position.set(...HG.dring);
+  const dmat = new THREE.MeshStandardMaterial({ color: 0xE6EEFB, emissive: 0x9fb8e8, metalness: .6, roughness: .3 });
+  const arc = new THREE.Mesh(new THREE.TorusGeometry(.24, .04, 10, 28, Math.PI), dmat); arc.rotation.z = Math.PI; dgrp.add(arc);
+  const bar = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, .48, 10), dmat); bar.rotation.z = Math.PI / 2; dgrp.add(bar); G.add(dgrp);
+  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'H'), transparent: true, depthTest: false })); hsp.position.set(HG.dring[0], HG.dring[1] - .55, HG.dring[2] + .25); hsp.scale.set(.62, .62, 1); hsp.renderOrder = 10; G.add(hsp);
   const cols = nodeGeo.attributes.color;
   const api = {
     canvas, renderer, ok: true, done: false,
     render(t, o) {
-      o = o || {}; const tt = api.done ? t + 10 : t, rotY = o.fixed ? -.62 : -.5 + t * .12 + HOOK.mx * .1745, rotX = o.fixed ? .22 : .2 + HOOK.my * .1745;
+      o = o || {}; const tt = api.done ? t + 10 : t, rotY = o.fixed ? -.42 : Math.sin(t * .35) * .5 - .15 + HOOK.mx * .1745, rotX = o.fixed ? .12 : .1 + HOOK.my * .1745;
       G.rotation.y += (rotY - G.rotation.y) * (o.fixed ? 1 : .08); G.rotation.x += (rotX - G.rotation.x) * (o.fixed ? 1 : .08);
-      straps.forEach((m, k) => { const p = ease(clamp((tt - .15 * k) / 1.7, 0, 1)); m.geometry.setDrawRange(0, Math.floor(m.userData.n * p / 3) * 3); m.visible = p > 0; });
-      rings.forEach((g, k) => { const s = eo(clamp((tt - .35 - .2 * k) / 1.3, 0, 1)); g.scale.setScalar(Math.max(.001, s)); g.rotation.y = o.fixed ? .3 * k : t * (.18 + .07 * k) * (k % 2 ? -1 : 1); });
-      bk.forEach((b, k) => { const s = eo(clamp((tt - 1.6 - .18 * k) / .6, 0, 1)); b.bx.scale.setScalar(Math.max(.001, s)); const l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); b.sp.material.opacity = l; b.sp.visible = l > 0; });
-      const hs = eo(clamp((tt - 2.4) / .6, 0, 1)); human.scale.setScalar(Math.max(.001, hs)); hr.scale.setScalar(Math.max(.001, hs));
-      const core = .25 + .75 * clamp((tt - 2.2) / 1.2, 0, 1);
-      for (let i = 0; i < np.length; i++) { const p = np[i], w = (tt * .32) % 1, u = (p[1] + 1.05) / 2.1, bump = Math.max(0, 1 - Math.abs(u - w) * 7), v = core * (.5 + .3 * Math.sin(tt * 2.2 + i * .7) + .9 * bump); cols.setXYZ(i, .44 * v, .62 * v, .9 * v + .1 * bump); }
-      cols.needsUpdate = true; edges.material.opacity = .25 + .45 * core; halo.material.opacity = .3 + .7 * core;
+      straps.forEach((m, k) => { const g = m.geometry.userData, p = ease(clamp((tt - .12 * k) / 1.5, 0, 1)); m.geometry.setDrawRange(0, Math.floor(g.segs * p) * 6); m.visible = p > 0; });
+      bk.forEach((b, k) => { const s = eo(clamp((tt - 1.5 - .2 * k) / .6, 0, 1)); b.b.scale.setScalar(Math.max(.001, s)); const l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); b.sp.material.opacity = l; b.sp.visible = l > 0; });
+      const hs = eo(clamp((tt - 2.3) / .6, 0, 1)); dgrp.scale.setScalar(Math.max(.001, hs)); const hl = clamp((tt - 3.5) / .5, 0, 1); hsp.material.opacity = hl; hsp.visible = hl > 0;
+      const core = .3 + .7 * clamp((tt - 2.2) / 1.2, 0, 1);
+      for (let i = 0; i < cn.length; i++) { const l = cn[i][3], v = core * (.55 + .45 * Math.sin(tt * 2.4 - l * 1.2 + i * .9)); cols.setXYZ(i, .5 * v, .7 * v, v); }
+      cols.needsUpdate = true; edges.material.opacity = .2 + .4 * core; halo.material.opacity = .3 + .7 * core;
       renderer.render(scene, cam);
     }
   };
   return api;
 }
 function makeCover2D(canvas) {
-  const ctx = canvas.getContext('2d'), np = fib(120, .85), ne = nearEdges(np, 3);
-  const proj = (p, ry, rx) => { const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx); let x = p[0] * cy + p[2] * sy, z = -p[0] * sy + p[2] * cy, y = p[1] * cx - z * sx; z = p[1] * sx + z * cx; const k = 10 / (10 - z); return [1380 + (x * k) * 171, 745 - y * k * 171, z, k]; };
+  const ctx = canvas.getContext('2d');
+  const proj = (p, ry, rx) => { const cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx); let x = p[0] * cy + p[2] * sy, z = -p[0] * sy + p[2] * cy, y = p[1] * cx - z * sx; z = p[1] * sx + z * cx; const k = 10 / (10 - z); return [1400 + x * k * 140, 640 - y * k * 140, z, k]; };
   return {
     canvas, ok: true, done: false,
     render(t, o) {
-      o = o || {}; const tt = this.done ? t + 10 : t, ry = o.fixed ? -.62 : -.5 + t * .12 + HOOK.mx * .1745, rx = o.fixed ? .22 : .2 + HOOK.my * .1745;
-      bg(ctx, 1380, 745, 700);
-      const core = .25 + .75 * clamp((tt - 2.2) / 1.2, 0, 1), P = np.map(p => proj(p, ry, rx));
-      ctx.strokeStyle = C.nevoa; ctx.globalAlpha = .18 + .3 * core; ctx.lineWidth = 1.5; ctx.beginPath(); ne.forEach(e => { ctx.moveTo(P[e[0]][0], P[e[0]][1]); ctx.lineTo(P[e[1]][0], P[e[1]][1]); }); ctx.stroke();
-      ctx.fillStyle = C.gelo; P.forEach((p, i) => { ctx.globalAlpha = core * (.5 + .4 * Math.sin(tt * 2.2 + i * .7)); ctx.beginPath(); ctx.arc(p[0], p[1], 3.5 * p[3], 0, 6.283); ctx.fill(); });
-      const draw = (L, w, c, prog) => { const n = Math.floor(80 * prog); if (n < 2) return; ctx.strokeStyle = c; ctx.lineWidth = w; ctx.globalAlpha = .95; ctx.beginPath(); for (let i = 0; i <= n; i++) { const q = proj(HG.pt(L, i / 80 * 6.2832), ry, rx); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); } ctx.stroke(); };
-      HG.loops.forEach((L, k) => draw(L, 8, '#2c4f86', ease(clamp((tt - .15 * k) / 1.7, 0, 1))));
-      HG.rings.forEach((L, k) => draw(L, 5, '#6F8FC7', eo(clamp((tt - .35 - .2 * k) / 1.3, 0, 1))));
-      HG.anchors.forEach((a, k) => { const q = proj(a, ry, rx), l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); ctx.globalAlpha = l; ctx.fillStyle = 'rgba(7,13,26,.8)'; ctx.strokeStyle = C.gelo; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(q[0], q[1], 34, 0, 6.283); ctx.fill(); ctx.stroke(); plain(ctx, 'ETHN'[0] && ['E', 'N', 'T', 'H'][k], q[0], q[1] + 16, 46, C.gelo, l, 'center', 900); });
+      o = o || {}; const tt = this.done ? t + 10 : t, ry = o.fixed ? -.42 : Math.sin(t * .35) * .5 - .15 + HOOK.mx * .1745, rx = o.fixed ? .12 : .1 + HOOK.my * .1745;
+      bg(ctx, 1400, 640, 700);
+      const core = .3 + .7 * clamp((tt - 2.2) / 1.2, 0, 1), P = HG.core.map(p => proj(p, ry, rx));
+      ctx.strokeStyle = '#8fb0e8'; ctx.globalAlpha = .15 + .35 * core; ctx.lineWidth = 1.2; ctx.beginPath(); HG.edges.forEach(e => { ctx.moveTo(P[e[0]][0], P[e[0]][1]); ctx.lineTo(P[e[1]][0], P[e[1]][1]); }); ctx.stroke();
+      ctx.fillStyle = C.gelo; P.forEach((p, i) => { ctx.globalAlpha = core * (.55 + .4 * Math.sin(tt * 2.4 + i)); ctx.beginPath(); ctx.arc(p[0], p[1], 6 * p[3], 0, 6.283); ctx.fill(); });
+      HG.straps.forEach((s, k) => { const n = Math.floor(s.pts.length * ease(clamp((tt - .12 * k) / 1.5, 0, 1))); if (n < 2) return; ctx.strokeStyle = '#2f5596'; ctx.lineWidth = s.hw * 140 * 1.6; ctx.lineJoin = 'round'; ctx.globalAlpha = .95; ctx.beginPath(); for (let i = 0; i < n; i++) { const q = proj(s.pts[i], ry, rx); i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1]); } if (s.closed && n >= s.pts.length) ctx.closePath(); ctx.stroke(); });
+      HG.anchors.concat([{ k: 'H', p: [HG.dring[0], HG.dring[1] - .1, HG.dring[2]] }]).forEach((a, k) => { const q = proj(a.p, ry, rx), l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); ctx.globalAlpha = l; ctx.strokeStyle = '#a9c3f0'; ctx.lineWidth = 6; ctx.strokeRect(q[0] - 34, q[1] - 24, 68, 48); ctx.fillStyle = 'rgba(7,13,26,.8)'; ctx.fillRect(q[0] - 30, q[1] - 20, 60, 40); plain(ctx, a.k, q[0], q[1] + 15, 42, C.gelo, l, 'center', 900); });
       ctx.globalAlpha = 1;
     }
   };
@@ -531,7 +549,7 @@ function bakeSlide(slide) {
 }
 function bakeAll() { slides.forEach(bakeSlide); }
 HOOK.arc = on => { const a = $('#arc'), v = $('#ndV'); if (!a) return; a.classList.toggle('err', !!on); if (v) v.classList.toggle('block', !!on); if (on && v && !STATIC) { v.classList.remove('shake'); void v.getBoundingClientRect(); v.classList.add('shake'); } };
-HOOK.count = (n, yr) => { const c = $('#cnt'), y = $('#yr'); if (c) c.textContent = n; if (y) y.textContent = yr; };
+HOOK.count = (n, yr) => { const c = $('#cnt'), y = $('#yr'); if (c) { if (n === '446') c.innerHTML = '<span class="ap">≈</span>446'; else c.textContent = n; } if (y) y.textContent = yr; };
 
 /* ======================= CONSTRUÇÕES DINÂMICAS ======================= */
 const NS = 'http://www.w3.org/2000/svg';
@@ -558,7 +576,7 @@ function buildDynamic() {
   const pads = $('#pads'); if (pads) { [[1660, 600], [1790, 600], [1660, 790], [1790, 790]].forEach((p, k) => { const g = el('g', { transform: 'translate(' + p[0] + ' ' + p[1] + ')' }, pads); el('rect', { class: 'hit', x: -50, y: -60, width: 100, height: 120 }, g); const sh = el('path', { class: 'padl shk', d: 'M-20 -6V-26A20 20 0 0 1 20 -26V-6' }, g); sh.style.setProperty('--dl', (k * .5 + 1) + 's'); el('rect', { class: 'pad', x: -32, y: -8, width: 64, height: 50, rx: 8 }, g); }); }
   const trail = $('#trail'); if (trail) { trail.innerHTML = '<i></i><i></i><i></i><i></i><i></i><em></em>'; }
 }
-const MARCO = [[], [0, 'Chamado'], [0, 'Chamado'], [1, 'Travessia'], [1, 'Travessia'], [2, 'Provas'], [2, 'Provas'], [2, 'Provas'], [3, 'Fronteira'], [3, 'Fronteira'], [4, 'Retorno'], [4, 'Retorno']];
+const MARCO = [[], [0, 'Chamado'], [0, 'Chamado'], [1, 'Travessia'], [1, 'Travessia'], [1, 'Travessia'], [2, 'Provas'], [2, 'Provas'], [2, 'Provas'], [3, 'Fronteira'], [4, 'Retorno'], [4, 'Retorno']];
 function updateTrail(i) {
   const tr = $('#trail'); if (!tr) return; const m = MARCO[i] && MARCO[i].length ? MARCO[i] : null;
   $$('i', tr).forEach((d, k) => { d.className = !m ? '' : k === m[0] ? 'on' : k < m[0] ? 'past' : ''; });
@@ -620,9 +638,10 @@ function activate(target, ev) {
 
 /* ======================= ESTADO, SLIDES E NAVEGAÇÃO ======================= */
 let state = { i: -1, step: 0 }, started = false, lastCmd = 0;
+function isDemo(i) { return i >= 0 && slides[i].classList.contains('matrix'); }
 function enterSlide(i) {
   const s = slides[i]; clearTimers();
-  body.dataset.s = i + 1; if (i === 7 && !LITE) body.classList.add('in-matrix'); else body.classList.remove('in-matrix');
+  body.dataset.s = i + 1; if (isDemo(i) && !LITE) body.classList.add('in-matrix'); else body.classList.remove('in-matrix');
   const c3 = $('#cit3'); if (c3) c3.classList.remove('err');
   const lk = $('#lock'); if (lk) { lk.classList.remove('open', 'block'); $('#pinT') && $('#pinT').classList.remove('fail', 'block'); slides[3].classList.remove('blocked'); }
   if (i === 1) at(4300, () => c3 && c3.classList.add('err'));
@@ -631,13 +650,13 @@ function enterSlide(i) {
   if (i === 4) HOOK.arc(STATIC);
   countUp(s);
   enterFx(s);
-  if (STATIC && i === 8) HOOK.count('446', '2026');
+  if (STATIC && s.classList.contains('s9')) HOOK.count('446', '2026');
 }
 function leaveSlide(i) { if (i < 0) return; clearTimers(); leaveFx(); }
 function setStep(i, step) {
   const s = slides[i]; if (!meta.steps[i]) { delete s.dataset.step; return; }
   const prev = +s.dataset.step || 0; s.dataset.step = STATIC ? meta.steps[i] : step;
-  if (i === 7) {
+  if (isDemo(i)) {
     const st = +s.dataset.step; const rt = $('.rt', s); if (rt) rt.classList.toggle('block', st >= 2);
     $$('.wd', s).forEach((w, k) => w.classList.toggle('on', k + 1 === st && step !== prev && !STATIC));
     HOOK.kick = 1;
@@ -655,7 +674,7 @@ function show(st, opts) {
     setStep(st.i, st.step); updateChrome();
   };
   if (changed && started && !opts.instant && !STATIC && !LITE && document.startViewTransition) {
-    html.dataset.vt = st.i === 7 ? 'matrix-in' : prev === 7 ? 'matrix-out' : '';
+    html.dataset.vt = isDemo(st.i) ? 'matrix-in' : isDemo(prev) ? 'matrix-out' : '';
     html.classList.add('vt');
     const vt = document.startViewTransition(apply);
     const endVt = () => { html.classList.remove('vt'); html.dataset.vt = ''; }; vt.ready.catch(() => {}); vt.finished.then(endVt, endVt);

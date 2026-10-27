@@ -6,7 +6,7 @@
 .matrix .l1.err,.matrix .l1.block{color:var(--a);text-shadow:0 0 26px rgba(242,165,65,.45)}
 .matrix .selo{color:var(--g2);border-left-color:var(--g3)}
 .code{position:absolute;z-index:7;left:96px;top:498px;width:max-content;max-width:1130px;margin:0;font:500 40px/1.3 var(--fd);font-stretch:80%;color:var(--g2);white-space:pre;
- background:rgba(0,18,5,.82);border:3px solid var(--g3);border-radius:14px;padding:20px 30px;text-shadow:0 0 12px rgba(0,255,65,.35)}
+ background:rgba(0,0,0,.82);border:3px solid var(--g3);border-radius:14px;padding:20px 30px;text-shadow:0 0 12px rgba(0,255,65,.35)}
 .code .cm{color:var(--g3)}.code .kw{color:var(--g);font-weight:800}
 .code .rt{color:var(--g)}
 .code .rt.block{color:var(--a);text-shadow:0 0 14px rgba(242,165,65,.6)}
@@ -32,3 +32,5 @@ html[data-vt="matrix-out"]::view-transition-new(root){animation:mxin2 .8s .35s e
 @keyframes mxout2{to{opacity:0;filter:brightness(0) hue-rotate(80deg)}}
 @keyframes mxin2{from{opacity:0;filter:brightness(2)}to{opacity:1}}
 
+
+.matrix .bk{fill:rgba(0,0,0,.82);stroke:none}
