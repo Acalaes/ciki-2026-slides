@@ -15,10 +15,10 @@ body.presenter #stage{display:none}
 .slide{position:absolute;inset:0;overflow:hidden;opacity:0;visibility:hidden;isolation:isolate;transition:opacity .45s ease,visibility 0s .45s}
 .slide.active{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
 html.vt .slide{transition:none}
-.bgimg{position:absolute;inset:-10px;z-index:0;background-size:cover;background-position:center;filter:blur(2px) brightness(.5) saturate(.9)}
-.tint{position:absolute;inset:0;z-index:1;background:#0a1b4a;mix-blend-mode:color;pointer-events:none}
+.bgimg{position:absolute;inset:-10px;z-index:0;background-size:cover;background-position:center;filter:grayscale(1) blur(2px) brightness(.62) contrast(1.05)}
+.tint{display:none}
 .bgimg.dim{opacity:.8}
-.veil{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(8,10,14,.92) 0%,rgba(8,10,14,.75) 45%,rgba(8,10,14,.45) 100%)}
+.veil{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(11,12,16,.9) 0%,rgba(11,12,16,.72) 45%,rgba(11,12,16,.5) 100%)}
 .veil::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,10,14,.88) 0,rgba(8,10,14,0) 150px,rgba(8,10,14,0) calc(100% - 150px),rgba(8,10,14,.88) 100%)}
 .veil::after{content:"";position:absolute;inset:0;background:radial-gradient(95% 95% at 50% 50%,transparent 50%,rgba(0,0,0,.6) 100%)}
 .slide.res{background:linear-gradient(180deg,#0b0c10,#14161c)}
@@ -206,3 +206,12 @@ body.only3d .ttl,body.only3d .guia,body.only3d .sub,body.only3d .hd,body.only3d 
 .res .ref .pt,.res .ref h2{display:none}
 .res .ref .panel-body *{font-size:24px}
 .res .ref a{color:var(--teal-claro)}
+
+/* capa: título grande à esquerda */
+.ttl.cover{display:block;left:200px;top:170px;width:1000px;height:auto;text-align:left;font-size:104px;line-height:1.05;white-space:normal;letter-spacing:.01em}
+.ttl.cover .w{display:block}
+.s1 .guia{left:200px;width:1000px;top:520px;text-align:left;font-size:32px}
+.s1 .sub{left:200px;right:auto;top:410px;text-align:left;font-size:46px;color:var(--teal-claro)}
+.s12 .sub{top:150px}
+
+.k .k-rg{fill:none!important}

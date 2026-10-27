@@ -44,6 +44,7 @@ Core.parseHash = function (h, nMain, nTotal) {
   h = (h || '').replace('#', '');
   if (/^r\d$/i.test(h)) { const k = nMain + (+h.slice(1)) - 1; return k < nTotal ? k : 0; }
   const n = parseInt(h, 10);
+  if (!isNaN(n) && n > nMain) return Math.min(nTotal - 1, n - 1);
   return isNaN(n) ? 0 : Math.max(0, Math.min(nMain - 1, n - 1));
 };
 Core.planned = function (ts, i) { let s = 0; for (let k = 0; k <= i; k++) s += ts[k] || 0; return s; };
@@ -150,7 +151,7 @@ function makeCover3D(canvas) {
   if (!renderer.getContext()) return null;
   renderer.setSize(1920, 1080, false); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1920 / 1080, .1, 100); cam.position.set(0, 0, 10);
-  const G = new THREE.Group(); G.position.set(2.2, -1.12, 0); G.scale.setScalar(.98); scene.add(G);
+  const G = new THREE.Group(); G.position.set(1.45, -1.1, 0); G.scale.setScalar(.98); scene.add(G);
   scene.add(new THREE.AmbientLight(0x8a9a98, .6));
   const dl = new THREE.DirectionalLight(0xf4f4f5, .95); dl.position.set(3, 4, 6); scene.add(dl);
   const pl = new THREE.PointLight(0x14b8a6, 1.6, 30); pl.position.set(-5, -2, 4); scene.add(pl);
@@ -168,15 +169,17 @@ function makeCover3D(canvas) {
   const steel = new THREE.MeshStandardMaterial({ color: 0xa7f3d0, metalness: .8, roughness: .3, emissive: 0x0b3b36 });
   function buckle(w, h) { const g = new THREE.Group(), t = .07; [[0, h / 2, w, t], [0, -h / 2, w, t], [-w / 2, 0, t, h], [w / 2, 0, t, h], [0, 0, w, t * .8]].forEach(a => { const b = new THREE.Mesh(new THREE.BoxGeometry(a[2], a[3], .09), steel); b.position.set(a[0], a[1], 0); g.add(b); }); return g; }
   const bk = [];
-  HG.anchors.forEach(a => {
-    const b = buckle(a.w, a.h); b.position.set(...a.p); b.lookAt(a.p[0] * 3, a.p[1], a.p[2] * 3 + (a.k === 'E' ? 1 : 0)); G.add(b);
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, a.k), transparent: true, depthTest: false })); sp.position.set(a.p[0] + a.o[0], a.p[1] + a.o[1], a.p[2] + a.o[2]); sp.scale.set(1.5, .41, 1); sp.renderOrder = 10; G.add(sp); bk.push({ b, sp });
+  const LY = [1.0, .35, -.3], LX = 2.55, lp = [];
+  HG.anchors.forEach((a, k) => {
+    const b = buckle(a.w, a.h); b.position.set(...a.p); b.lookAt(a.p[0] * 3, a.p[1], a.p[2] * 3 + (a.k === 'Evidência' ? 1 : 0)); G.add(b);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, a.k), transparent: true, depthTest: false })); sp.position.set(LX, LY[k], 0); sp.scale.set(1.25, .34, 1); sp.renderOrder = 10; G.add(sp); bk.push({ b, sp });
+    lp.push(a.p[0], a.p[1], a.p[2], LX - .63, LY[k], 0);
   });
   const dgrp = new THREE.Group(); dgrp.position.set(...HG.dring);
   const dmat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, emissive: 0x5eead4, metalness: .5, roughness: .3 });
   const arc = new THREE.Mesh(new THREE.TorusGeometry(.24, .04, 10, 28, Math.PI), dmat); arc.rotation.z = Math.PI; dgrp.add(arc);
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, .48, 10), dmat); bar.rotation.z = Math.PI / 2; dgrp.add(bar); G.add(dgrp);
-  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(HG.dring[0], HG.dring[1] - .6, HG.dring[2] + .3); hsp.scale.set(1.5, .41, 1); hsp.renderOrder = 10; G.add(hsp);
+  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(LX, -.95, 0); hsp.scale.set(1.25, .34, 1); lp.push(HG.dring[0], HG.dring[1], HG.dring[2], LX - .63, -.95, 0); { const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3)); G.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x5eead4, transparent: true, opacity: .45 }))); } hsp.renderOrder = 10; G.add(hsp);
   const cols = nodeGeo.attributes.color;
   const api = {
     canvas, renderer, ok: true, done: false,
@@ -288,14 +291,14 @@ const TRACK = (d, n, dur, red) => '<path class="trk" d="' + d + '"/>' + (red ? '
 const HEROES = {};
 
 HEROES.s2 = K => {
-  const ys = [20, 120, 220, 320, 420, 520], v = [14, 10, 9, 88, 18, 12]; let outros = '', erro = '';
-  ys.forEach((y, i) => { if (i === 3) erro = K.bar({ x: 700, y, w: 860, h: 60, v: v[i], max: 100, t: 'Sem fonte', size: 36, tone: 'err', step: 8 }); else outros += K.bar({ x: 700, y, w: 860, h: 60, v: v[i], max: 100, step: 2 + i }); });
+  const cards = [[2217, 'casos em tribunais', 20], [41, 'no Brasil', 560], [1514, 'nos Estados Unidos', 1100]];
+  let g = '';
+  cards.forEach((c, i) => { g += SRC('charlotin', K.box({ x: c[2], y: 40, w: 480, h: 340, t: '', fill: i === 0, step: 1 + i }) + CNT(c[2] + 240, 240, c[0], i === 0 ? 120 : 104) + K.text({ x: c[2] + 240, y: 330, t: c[1], size: 38, anchor: 'middle', step: 1 + i })); });
   return K.svg(1600, 720,
-    OG('<g data-open=\"s2-casos\" aria-label=\"Total de casos de alucinação em tribunais: ver a tabela e as taxas de erro\">',
-      HIT(20, 80, 420, 460) + SRC('charlotin', K.node({ cx: 230, cy: 290, r: 170, fill: true, step: 1 }) + CNT(230, 312, 2217, 84) + K.text({ x: 230, y: 520, t: 'casos em tribunais', size: 34, anchor: 'middle' }))) +
-    OG('<g data-open=\"s2-softmax\" aria-label=\"Respostas possíveis do modelo: ver como ele escolhe a mais provável\">', HIT(560, 0, 1040, 600) + outros) +
-    OG('<g data-open=\"s2-citacoes\" aria-label=\"Resposta plausível sem fonte: ver a checagem manual\">', HIT(380, 300, 1220, 100) + erro),
-    'Seis respostas possíveis do modelo; a mais provável cita uma fonte que não existe');
+    OG('<g data-open="s2-casos" aria-label="Casos de alucinação em tribunais: ver a tabela e as taxas de erro">', HIT(0, 20, 1600, 380) + g) +
+    OG('<g data-open="s2-softmax" aria-label="Por que o modelo alucina: ver a explicação">', K.box({ x: 20, y: 470, w: 760, h: 110, t: 'Por que o modelo alucina', size: 38, step: 4 })) +
+    OG('<g data-open="s2-citacoes" aria-label="Exemplo real de citação inexistente: ver a checagem manual">', K.box({ x: 820, y: 470, w: 760, h: 110, t: 'Exemplo real: artigo 37, inciso 33', size: 38, tone: 'err', step: 5 })),
+    'Três números de casos de alucinação em tribunais e dois exemplos para explorar');
 };
 
 HEROES.s3 = K => {
@@ -337,26 +340,23 @@ HEROES.s5 = K => {
 };
 
 HEROES.s9 = K => {
-  const eq = K.pic('gerar', { x: 40, y: 20, s: 140, t: 'Modelo', size: 36, step: 1 }) + PIC2('mais', { x: 240, y: 60, s: 60, step: 2 }) +
-    PIC2('arnes', { x: 360, y: 20, s: 140, t: 'Harness', size: 36, step: 3 }) + PIC2('igual', { x: 560, y: 60, s: 60, step: 4 }) + PIC2('agente', { x: 680, y: 20, s: 140, t: 'Agente', size: 36, step: 5 });
-  const rings = OG('<g data-open=\"s9-cmu\" aria-label=\"Desempenho e custo de um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon\">',
-    HIT(980, 0, 620, 300) + SRC('cmu', K.ring({ cx: 1130, cy: 120, r: 86, v: 90, t: '89,7%', size: 34, step: 6 }) + K.ring({ cx: 1430, cy: 120, r: 86, v: 4, t: '4%', size: 34, step: 7 })) +
-    K.text({ x: 1130, y: 262, t: 'Desempenho', size: 32, anchor: 'middle' }) + K.text({ x: 1430, y: 262, t: 'Custo', size: 32, anchor: 'middle' }));
-  const bars = OG('<g data-open=\"s9-metodo\" aria-label=\"Artigos com harness no título: ver o método da contagem\">', HIT(0, 320, 1600, 220) +
-    K.bar({ x: 300, y: 340, w: 1000, h: 70, v: 3, max: 446, t: '2025', size: 40, step: 8 }) + K.bar({ x: 300, y: 450, w: 1000, h: 70, v: 446, max: 446, t: '2026', size: 40, step: 9 }));
-  const nums = SRC('arxiv-count', '<text class="cnt" data-count="3" x="372" y="392" style="font-size:44px;font-weight:700;fill:#fff;stroke:none">3</text>' + CNT(1330, 500, 446, 52, { anchor: 'start', prefix: 'cerca de ' }).replace('x="1330"', 'x="1320"'));
-  const calais = OG('<g data-open=\"s5-calais\" aria-label=\"CALAIS é o harness vertical do artigo: ver os três níveis\">', K.box({ x: 250, y: 600, w: 1100, h: 90, t: 'CALAIS é o harness vertical do artigo', size: 38, fill: true, step: 10 }));
-  return K.svg(1600, 720, eq + rings + bars + nums + calais, 'Agente é modelo mais harness; contagem de artigos e desempenho de um modelo pequeno');
+  const eq = K.pic('gerar', { x: 140, y: 20, s: 200, t: 'Modelo', size: 44, step: 1 }) + PIC2('mais', { x: 450, y: 90, s: 80, step: 2 }) +
+    PIC2('arnes', { x: 640, y: 20, s: 200, t: 'Harness', size: 44, step: 3 }) + PIC2('igual', { x: 950, y: 90, s: 80, step: 4 }) + PIC2('agente', { x: 1140, y: 20, s: 200, t: 'Agente', size: 44, step: 5 });
+  return K.svg(1600, 720, eq +
+    OG('<g data-open="s5-calais" aria-label="CALAIS é o harness vertical do artigo: ver os três níveis">', K.box({ x: 250, y: 400, w: 1100, h: 110, t: 'CALAIS é o harness vertical do artigo', size: 42, fill: true, step: 6 })) +
+    OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'Quantos artigos usam o termo?', size: 34, step: 7 })) +
+    OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'Modelo pequeno rende quanto?', size: 34, step: 8 })),
+    'Modelo mais harness é igual a agente; CALAIS é o harness vertical do artigo');
 };
 
 HEROES.s6 = K => {
-  const x0 = [60, 470, 880, 1290];
-  const cadeia = OG('<g data-open=\"s6-ontologia\" aria-label=\"Do trecho do artigo à fonte: ver a ontologia do Citāre\">', HIT(0, 40, 1600, 300) +
-    PIC2('documento', { x: x0[0], y: 60, s: 130, t: 'Afirmação', size: 36, step: 1 }) + K.pic('registrar', { x: x0[1], y: 60, s: 130, t: 'Citação', size: 36, step: 3 }) +
-    PIC2('fonte', { x: x0[2], y: 60, s: 130, t: 'Fonte', size: 36, step: 5 }) + K.pic('verificar', { x: x0[3], y: 60, s: 130, t: 'Pronto como evidência', size: 32, step: 7, fill: true }) +
-    K.arrow({ pts: [[210, 125], [450, 125]], step: 2 }) + K.arrow({ pts: [[620, 125], [860, 125]], step: 4 }) + K.arrow({ pts: [[1030, 125], [1270, 125]], step: 6 }));
-  const chips = OG('<g data-open=\"s6-regras\" aria-label=\"Regras de autoria, ano e identificador: ver o que o verificador exige\">', HIT(380, 280, 400, 60) + K.text({ x: 535, y: 322, t: 'autoria, ano e identificador', size: 32, anchor: 'middle', tone: 'nevoa', step: 8 }));
-  const onto = OG('<g data-open=\"s6-triplas\" aria-label=\"Ontologia: ver exemplos de como as peças se ligam\">', HIT(40, 440, 640, 180) + K.pic('ontologia', { x: 60, y: 460, s: 130, t: 'Ontologia do Citāre', size: 36, pos: 'right', step: 9 }));
+  const x0 = [80, 480, 880, 1280];
+  const cadeia = OG('<g data-open="s6-ontologia" aria-label="Do trecho do artigo à fonte: ver a ontologia do Citāre">', HIT(0, 20, 1600, 320) +
+    PIC2('documento', { x: x0[0], y: 40, s: 150, t: 'Afirmação', size: 38, step: 1 }) + K.pic('registrar', { x: x0[1], y: 40, s: 150, t: 'Citação', size: 38, step: 3 }) +
+    PIC2('fonte', { x: x0[2], y: 40, s: 150, t: 'Fonte', size: 38, step: 5 }) + K.pic('verificar', { x: x0[3], y: 40, s: 150, t: 'Pronto', size: 38, step: 7, fill: true }) +
+    K.arrow({ pts: [[250, 115], [460, 115]], step: 2 }) + K.arrow({ pts: [[650, 115], [860, 115]], step: 4 }) + K.arrow({ pts: [[1050, 115], [1260, 115]], step: 6 }));
+  const chips = OG('<g data-open="s6-regras" aria-label="Regras de autoria, ano e identificador: ver o que o verificador exige">', HIT(380, 290, 440, 70) + K.text({ x: 600, y: 336, t: 'autoria, ano e identificador', size: 34, anchor: 'middle', tone: 'nevoa', step: 8 }));
+  const onto = OG('<g data-open="s6-triplas" aria-label="Como as peças se ligam: ver exemplos">', K.box({ x: 20, y: 470, w: 760, h: 100, t: 'Como as peças se ligam', size: 38, step: 9 }));
   return K.svg(1600, 720, cadeia + chips + onto, 'Afirmação, citação, fonte e estado pronto como evidência');
 };
 
@@ -368,10 +368,10 @@ HEROES.s7 = K => {
     K.bar({ x: 0, y: 290, w: 1600, h: 70, v: 9054, max: 9054, step: 3 }) + K.bar({ x: 0, y: 290, w: 1600, h: 70, v: 9054, v0: 6241, max: 9054, tone: 'nevoa', step: 4 }) +
     SRC('art-logs', K.text({ x: 1600, y: 425, t: '2.813 sem sucesso', size: 38, anchor: 'end', step: 4 })));
   const vals = [0, 1.67, 3.33, 5, 15.83, 15.83], ro = [0, 1, 2, 3, 0, 1];
-  const nasa = OG('<g data-open=\"s7-nasa\" aria-label=\"Seis medições de esforço percebido: ver a tabela\">', HIT(0, 470, 1600, 250) +
-    K.text({ x: 0, y: 500, t: 'Esforço percebido, 6 tarefas', size: 36, step: 5 }) + K.arrow({ pts: [[0, 690], [1600, 690]], noHead: true, step: 5 }) +
+  const nasa = OG('<g data-open=\"s7-nasa\" aria-label=\"Seis medições de esforço percebido: ver a tabela\"><g transform=\"translate(0 -45)\">', HIT(0, 470, 1600, 250) +
+    K.text({ x: 0, y: 500, t: 'Esforço percebido, 6 tarefas (escala de 0 a 100)', size: 36, step: 5 }) + K.text({ x: 0, y: 728, t: '0', size: 32, step: 5 }) + K.text({ x: 1600, y: 728, t: '100', size: 32, anchor: 'end', step: 5 }) + K.arrow({ pts: [[0, 690], [1600, 690]], noHead: true, step: 5 }) +
     vals.map((v, i) => K.dot({ cx: 20 + v * 15.8, cy: 668 - ro[i] * 34, r: 15, step: 6 })).join('') +
-    SRC('art-nasa', K.text({ x: 380, y: 600, t: 'Mediana 4,17 de 100', size: 36, step: 7 })));
+    SRC('art-nasa', K.text({ x: 380, y: 600, t: 'Mediana 4,17 de 100', size: 36, step: 7 })) + '</g>');
   const tab = OG('<g data-open=\"s7-tab4\" aria-label=\"Comparação com outro caso: ver a tabela\">', HIT(1180, 480, 420, 120) + PIC2('documento', { x: 1200, y: 500, s: 70, t: 'Comparar com outro caso', size: 32, pos: 'right', step: 8 }));
   return K.svg(1600, 720, cal + nasa + tab, 'Período, envios e esforço percebido na operação do Corpo de Bombeiros');
 };
@@ -380,12 +380,12 @@ HEROES.s10 = K => {
   const cx = 1060, cy = 380;
   const aneis = OG('<g data-open=\"s10-aneis\" aria-label=\"Anéis em volta do modelo: guias, regras duras e ontologia do especialista. Ver a tabela\">', HIT(cx - 320, cy - 320, 640, 640) +
     K.ring({ cx, cy, r: 150, dash: true, step: 2 }) + K.ring({ cx, cy, r: 215, step: 3 }) + K.ring({ cx, cy, r: 280, dash: true, tone: 'nevoa', step: 4 }) +
-    Array.from({ length: 12 }, (_, i) => K.dot({ cx: cx + Math.cos(i / 12 * 6.2832) * 280, cy: cy + Math.sin(i / 12 * 6.2832) * 280, r: 9, tone: 'nevoa', step: 5 })).join('') +
-    K.text({ x: cx, y: cy - 150 - 12, t: 'Guias', size: 32, anchor: 'middle', step: 2 }) + K.text({ x: cx, y: cy - 215 - 12, t: 'Regras duras', size: 32, anchor: 'middle', step: 3 }) +
-    K.text({ x: cx, y: cy - 280 - 12, t: 'Ontologia do especialista', size: 32, anchor: 'middle', step: 4 }) +
+    Array.from({ length: 12 }, (_, i) => i === 9 ? '' : K.dot({ cx: cx + Math.cos(i / 12 * 6.2832) * 280, cy: cy + Math.sin(i / 12 * 6.2832) * 280, r: 9, tone: 'nevoa', step: 5 })).join('') +
+    '<rect x="' + (cx - 60) + '" y="' + (cy - 196) + '" width="120" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 164, t: 'Guias', size: 32, anchor: 'middle', step: 2 }) + '<rect x="' + (cx - 130) + '" y="' + (cy - 261) + '" width="260" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 229, t: 'Regras duras', size: 32, anchor: 'middle', step: 3 }) +
+    '<rect x="' + (cx - 255) + '" y="' + (cy - 326) + '" width="510" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 294, t: 'Ontologia do especialista', size: 32, anchor: 'middle', step: 4 }) +
     K.arrow({ pts: [[cx, cy], [cx + 152, cy - 152]], tone: 'block', step: 8 }) + K.dot({ cx: cx + 152, cy: cy - 152, r: 14, tone: 'block', step: 8 }));
   const nucleo = OG('<g data-open=\"s10-nucleo\" aria-label=\"Modelo no centro: ver a camada de regras sobre ele\">', HIT(cx - 80, cy - 80, 160, 160) + K.node({ cx, cy, r: 70, t: 'Modelo', size: 32, fill: true, step: 1 }));
-  const humano = OG('<g data-open=\"s10-portao\" aria-label=\"Aprovação humana: ver os domínios candidatos\">', HIT(cx + 250, cy - 120, 150, 240) + K.ring({ cx, cy, r: 320, v: 22, step: 6 }) + K.text({ x: cx + 345, y: cy - 20, t: 'Humano', size: 32, step: 6 }));
+  const humano = OG('<g data-open=\"s10-portao\" aria-label=\"Aprovação humana: ver os domínios candidatos\">', HIT(cx + 250, cy - 120, 150, 240) + '<g transform=\"rotate(40 ' + cx + ' ' + cy + ')\">' + K.ring({ cx, cy, r: 320, v: 22, step: 6 }) + '</g>' + K.text({ x: cx + 345, y: cy + 60, t: 'Humano', size: 32, step: 6 }));
   return K.svg(1600, 720, aneis + nucleo + humano, 'Modelo no centro, guias, regras duras e ontologia em anéis, aprovação humana na saída');
 };
 
@@ -424,7 +424,7 @@ function buildDynamic() {
     renderHero(i);
   });
 }
-const CAPCOR = ['#14b8a6', '#38bdf8', '#5eead4', '#2dd4bf', '#a1a1aa', '#14b8a6', '#a1a1aa'];
+const CAPCOR = ['#14b8a6', '#5eead4', '#14b8a6', '#2dd4bf', '#a1a1aa', '#14b8a6', '#a1a1aa'];
 
 function countUp(root) {
   $$('[data-count]', root).forEach(e => {
