@@ -88,3 +88,5 @@
 .panel-body .refs.refscroll::-webkit-scrollbar-track { background: #15181f; border-radius: 8px; }
 .panel-body .refs.refscroll::-webkit-scrollbar-thumb { background: #14b8a6; border-radius: 8px; }
 .panel-body .refs.refscroll p { margin-bottom: 14px; line-height: 1.3; }
+.panel-body .refs.refscroll a[href*="wikimedia"], .panel-body .refs.creditos a { word-break: normal; white-space: nowrap; }
+.panel-body .refs.refscroll p a { word-break: normal; }

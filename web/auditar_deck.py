@@ -30,7 +30,7 @@ OBRIGATORIOS = [
     "s5-fig1", "s5-calais", "s5-dsr", "s5-ponte", "s6-ontologia", "s6-regras", "s6-triplas",
     "s7-logs", "s7-nasa", "s7-tab4", "s8-replay", "s8-regua", "s8-portao", "s8-prov",
     "s9-metodo", "s9-cmu", "s9-contexto", "s10-aneis", "s10-nucleo", "s10-portao", "s11-desenho", "s11-limites",
-    "r3-referencias", "r1-respostas",
+    "r3-referencias", "r1-respostas", "r5-creditos",
 ]
 STATUS_SIMPLES = re.compile(r"^confirmado( no artigo| nos logs)?$")
 
@@ -80,12 +80,13 @@ else:
 CHAVES = ["charlotin", "dahl", "magesh", "rudin", "art-tab1", "art-eq", "art-limpe", "prov-dm", "art-arq", "art-dsr",
           "art-citare", "ont-citare", "studer1998", "art-escopo", "art-logs", "art-nasa", "hart1988", "hnv-cena1",
           "hnv-cena2b", "hnv-laco", "hnv-ontologia", "cf-art37", "arxiv-count", "cmu", "capex", "mit",
-          "huang2025", "softmax", "pseudocodigo", "bockeler2026", "openai2026", "galster2026", "anthropic-context2025", "edge2024"]
+          "huang2025", "softmax", "pseudocodigo", "bockeler2026", "openai2026", "galster2026", "anthropic-context2025", "edge2024",
+          "art-cena1", "kroll2017", "busuioc2021", "garcez2023", "art-futuro"]
 for k in CHAVES:
     if k not in fontes:
         erro(f"chave obrigatória ausente em fontes.json: {k}")
     else:
-        for campo in ("afirmacao", "fonte", "url", "status"):
+        for campo in ("afirmacao", "fonte", "url", "status", "ref"):
             if campo not in fontes[k]:
                 erro(f"fontes.json: {k} sem o campo {campo}")
 
@@ -218,7 +219,7 @@ for pid, conteudo in PAINEIS.items():
 
 # ---------------------------------------------------------------- 9. design clean v3 (camada 2) e kit
 HTML_TAG = re.compile(r"<[^>]+>")
-RESERVAS = ("r1-respostas", "r3-referencias")
+RESERVAS = ("r1-respostas", "r3-referencias", "r5-creditos")
 DETALHES = {}
 if (pasta / "paineis.js").exists():
     prog2 = (
@@ -378,6 +379,26 @@ for nome in SEM_FONTE_ANTIGA:
 for f in (pasta / "demo").glob("*.html"):
     if re.search(r"Archivo|Source Serif", f.read_text(encoding="utf-8", errors="replace")):
         erro(f"fonte antiga em demo/{f.name}")
+
+
+# ---------------------------------------------------------------- 10. rodapé de fontes (data-fontes) e créditos
+for k, v in fontes.items():
+    if not str(v.get("ref", "")).strip():
+        erro(f"fontes.json: {k} sem o campo ref (citação curta do rodapé)")
+if "Foto:" in html:
+    erro('index.html: o rodapé dos slides mostra as fontes do conteúdo; "Foto:" é proibido (créditos das imagens ficam no painel r5-creditos)')
+for n_, sm in enumerate(re.finditer(r'<section class="slide[^"]*"([^>]*)>', html), 1):
+    attrs = sm.group(1)
+    bl = re.search(r'data-block="([^"]*)"', attrs)
+    if bl and bl.group(1).strip().upper() == "RESERVA":
+        continue
+    df = re.search(r'data-fontes="([^"]*)"', attrs)
+    chaves_f = [x.strip() for x in df.group(1).split(",") if x.strip()] if df else []
+    if not chaves_f:
+        erro(f"slide {n_}: sem data-fontes (cada slide principal precisa de ao menos uma fonte no rodapé)")
+    for ch in chaves_f:
+        if ch not in fontes:
+            erro(f"slide {n_}: data-fontes cita chave inexistente em fontes.json: {ch}")
 
 # ---------------------------------------------------------------- relatório
 print(f"{len(PAINEIS)} painéis · {len(fontes)} fontes · {len(usados)} chaves usadas")

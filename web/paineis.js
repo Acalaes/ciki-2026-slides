@@ -19,7 +19,7 @@
     's8-portao': 'Como o hook barra a citação', 's8-prov': 'O que o parecer registrou', 's9-metodo': 'Como contamos os artigos',
     's9-cmu': 'Modelo pequeno com bom harness', 's9-contexto': 'Como o termo harness surgiu', 's10-aneis': 'Três ideias combinadas',
     's10-nucleo': 'Regras do especialista sobre o modelo', 's10-portao': 'Onde isso poderia valer', 's11-desenho': 'Como vamos medir o ganho',
-    's11-limites': 'O que ainda não sabemos', 'r1-respostas': 'Perguntas difíceis e respostas', 'r3-referencias': 'Referências'
+    's11-limites': 'O que ainda não sabemos', 'r1-respostas': 'Perguntas difíceis e respostas', 'r3-referencias': 'Referências', 'r5-creditos': 'Créditos das imagens'
   };
 
   /* ---------- auxiliares ---------- */
@@ -861,6 +861,125 @@
     'Delimita o que cada caso permite afirmar: há registros e esforço percebido no CBMSC, e nenhuma medida comparável na ESAG/UDESC.');
   addProof('s7-nasa', 'img/artigo/tabela5.png', 'Tabela 5', 'Distribuição dos registros exploratórios de esforço percebido.',
     'Lista as seis tarefas e suas pontuações; confirma que são tarefas, não pessoas, e que o resultado é exploratório.');
+
+
+  /* =========================================================
+     RESERVA R5: créditos das imagens (gerado de img/creditos*.json)
+     ========================================================= */
+  var CREDITOS = [
+ {
+  "arquivo": "biblioteca.jpg",
+  "titulo": "University Library TUHH interior bookshelf",
+  "autor": "Jonas Muth",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:University_Library_TUHH_interior_bookshelf.jpg"
+ },
+ {
+  "arquivo": "bombeiros.jpg",
+  "titulo": "Capinzal SC Brasil Corpo de Bombeiros Militar de Santa Catarina (2)",
+  "autor": "DAR7",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Capinzal_SC_Brasil_Corpo_de_Bombeiros_Militar_de_Santa_Catarina_(2).jpg"
+ },
+ {
+  "arquivo": "servidores.jpg",
+  "titulo": "NOIRLab HQ Server Racks (6V6A0402-CC)",
+  "autor": "NOIRLab/NSF/AURA/T. Slovinský",
+  "licenca": "CC BY 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:NOIRLab_HQ_Server_Racks_(6V6A0402-CC).jpg"
+ },
+ {
+  "arquivo": "tribunal.jpg",
+  "titulo": "Interior view - Wisconsin Supreme Court - DSC03163",
+  "autor": "Daderot",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Interior_view_-_Wisconsin_Supreme_Court_-_DSC03163.JPG"
+ },
+ {
+  "arquivo": "noite.jpg",
+  "titulo": "Rubin Observatory Under the Milky Way (noirlab2409b)",
+  "autor": "Hernán Stockebrand",
+  "licenca": "CC BY 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Rubin_Observatory_Under_the_Milky_Way_(noirlab2409b).jpg"
+ },
+ {
+  "arquivo": "stf.jpg",
+  "titulo": "Supreme Federal Court Azul (STF, Brasília)",
+  "autor": "Dasfour2022",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Supreme_Federal_Court_Azul.jpg"
+ },
+ {
+  "arquivo": "planalto.jpg",
+  "titulo": "Planalto a noite (Palácio do Planalto)",
+  "autor": "Leandro Neumann Ciuffo",
+  "licenca": "CC BY 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Planalto_a_noite.jpg"
+ },
+ {
+  "arquivo": "capa.jpg",
+  "titulo": "Original Blueprint of United States National Agricultural Library",
+  "autor": "Warner, Burns, Toan, and Lunde  architecture firm",
+  "licenca": "Public domain",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Original_Blueprint_of_United_States_National_Agricultural_Library.jpg"
+ },
+ {
+  "arquivo": "gravador.jpg",
+  "titulo": "SWA 4013 Recorders",
+  "autor": "National Transportation Safety Board",
+  "licenca": "Public domain",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:SWA_4013_Recorders.jpg"
+ },
+ {
+  "arquivo": "fechadura.jpg",
+  "titulo": "Cutaway Padlocks",
+  "autor": "Dennis van Zuijlekom from Ermelo, The Netherlands",
+  "licenca": "CC BY-SA 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Cutaway_Padlocks.jpg"
+ },
+ {
+  "arquivo": "sinalizacao.jpg",
+  "titulo": "The 44 lever frame at St Albans South signalbox",
+  "autor": "kitmasterbloke",
+  "licenca": "CC BY 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:The_44_lever_frame_at_St_Albans_South_signalbox.jpg"
+ },
+ {
+  "arquivo": "catalogo.jpg",
+  "titulo": "Card catalogue drawers",
+  "autor": "Carolina Prysyazhnyuk",
+  "licenca": "CC BY-SA 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Card_catalogue_drawers.jpg"
+ },
+ {
+  "arquivo": "via_ferrata.jpg",
+  "titulo": "Klettersteig Speikboden 1",
+  "autor": "Speikboden AG",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Klettersteig_Speikboden_1.jpg"
+ },
+ {
+  "arquivo": "pista.jpg",
+  "titulo": "Athletics track start line numbers 1, 2, 3",
+  "autor": "Santeri Viinamäki",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Athletics_track_start_line_numbers_1,_2,_3.jpg"
+ },
+ {
+  "arquivo": "ciki-logo.png",
+  "titulo": "Logotipo do CIKI (site do congresso)",
+  "autor": "CIKI - Congresso Internacional de Conhecimento e Inovação",
+  "licenca": "uso apenas para identificar o evento",
+  "url_pagina": "https://www.knowledgeconference.cl/"
+ }
+];
+  function escH(x) { return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  P['r5-creditos'] = '<div class="panel-body"><h2 class="pt">' + TITULOS['r5-creditos'] + '</h2>' +
+    '<div class="refs refs3 refscroll">' + CREDITOS.map(function (c) {
+      return '<p><b>' + escH(c.arquivo) + '</b>: ' + escH(c.titulo) + '. ' + escH(c.autor) + ', ' + escH(c.licenca) + '. ' +
+        (c.url_pagina ? '<a href="' + escH(c.url_pagina) + '" target="_blank" rel="noopener noreferrer">[página]</a>' : '') + '</p>';
+    }).join('') + '</div>' +
+    foot([], 'Imagens de fundo e logotipos, com autor e licença. As fotos não aparecem no rodapé dos slides: lá ficam as fontes do conteúdo.') + '</div>';
 
   window.HNV_PANELS = P;
   window.HNV_DETALHES = D;
