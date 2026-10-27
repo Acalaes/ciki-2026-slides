@@ -58,7 +58,8 @@ const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
 const P = new URLSearchParams(location.search);
 const body = document.body, html = document.documentElement;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-if ((P.has('static') || reduced) && !P.has('anim')) body.classList.add('static');
+// a apresentação é conduzida por quem apresenta: só vira estática com ?static (ou ?reduzir, que respeita a configuração do sistema)
+if ((P.has('static') || (reduced && P.has('reduzir'))) && !P.has('anim')) body.classList.add('static');
 if (P.has('lite')) body.classList.add('lite');
 if (P.has('presenter')) body.classList.add('presenter');
 if (P.has('thumb')) body.classList.add('thumb');
@@ -131,7 +132,7 @@ function letterTexture(THREE, word) {
   const c = document.createElement('canvas'); c.width = 400; c.height = 110; const x = c.getContext('2d');
   x.fillStyle = 'rgba(11,12,16,.88)'; x.strokeStyle = C.claro; x.lineWidth = 4;
   x.beginPath(); if (x.roundRect) x.roundRect(4, 4, 392, 102, 14); else x.rect(4, 4, 392, 102); x.fill(); x.stroke();
-  x.fillStyle = C.gelo; x.font = '600 54px Poppins,Arial,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(word, 200, 58);
+  x.fillStyle = C.gelo; x.textAlign = 'center'; x.textBaseline = 'middle'; let fs = 54; x.font = '600 ' + fs + 'px Poppins,Arial,sans-serif'; while (x.measureText(word).width > 360 && fs > 26) { fs -= 2; x.font = '600 ' + fs + 'px Poppins,Arial,sans-serif'; } x.fillText(word, 200, 58);
   return new THREE.CanvasTexture(c);
 }
 function ribbonGeo(THREE, s) {
@@ -152,6 +153,7 @@ function makeCover3D(canvas) {
   renderer.setSize(1920, 1080, false); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1920 / 1080, .1, 100); cam.position.set(0, 0, 10);
   const G = new THREE.Group(); G.position.set(1.45, -1.1, 0); G.scale.setScalar(.98); scene.add(G);
+  const L = new THREE.Group(); L.position.copy(G.position); L.scale.copy(G.scale); scene.add(L); // etiquetas e linhas não giram
   scene.add(new THREE.AmbientLight(0x8a9a98, .6));
   const dl = new THREE.DirectionalLight(0xf4f4f5, .95); dl.position.set(3, 4, 6); scene.add(dl);
   const pl = new THREE.PointLight(0x2b9bdc, 1.6, 30); pl.position.set(-5, -2, 4); scene.add(pl);
@@ -168,30 +170,50 @@ function makeCover3D(canvas) {
   const straps = HG.straps.map(s => { const m = new THREE.Mesh(ribbonGeo(THREE, s), web); G.add(m); return m; });
   const steel = new THREE.MeshStandardMaterial({ color: 0xa7f3d0, metalness: .8, roughness: .3, emissive: 0x0b3b36 });
   function buckle(w, h) { const g = new THREE.Group(), t = .07; [[0, h / 2, w, t], [0, -h / 2, w, t], [-w / 2, 0, t, h], [w / 2, 0, t, h], [0, 0, w, t * .8]].forEach(a => { const b = new THREE.Mesh(new THREE.BoxGeometry(a[2], a[3], .09), steel); b.position.set(a[0], a[1], 0); g.add(b); }); return g; }
-  const bk = [];
+  const bk = []; let lineGeo = null, lineArr = null;
   const LY = [1.0, .35, -.3], LX = 2.55, lp = [];
   HG.anchors.forEach((a, k) => {
     const b = buckle(a.w, a.h); b.position.set(...a.p); b.lookAt(a.p[0] * 3, a.p[1], a.p[2] * 3 + (a.k === 'Evidência' ? 1 : 0)); G.add(b);
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, a.k), transparent: true, depthTest: false })); sp.position.set(LX, LY[k], 0); sp.scale.set(1.25, .34, 1); sp.renderOrder = 10; G.add(sp); bk.push({ b, sp });
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, a.k), transparent: true, depthTest: false })); sp.position.set(LX, LY[k], 0); sp.scale.set(1.25, .34, 1); sp.renderOrder = 10; L.add(sp); bk.push({ b, sp });
     lp.push(a.p[0], a.p[1], a.p[2], LX - .63, LY[k], 0);
   });
   const dgrp = new THREE.Group(); dgrp.position.set(...HG.dring);
   const dmat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, emissive: 0x4db3ea, metalness: .5, roughness: .3 });
   const arc = new THREE.Mesh(new THREE.TorusGeometry(.24, .04, 10, 28, Math.PI), dmat); arc.rotation.z = Math.PI; dgrp.add(arc);
   const bar = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, .48, 10), dmat); bar.rotation.z = Math.PI / 2; dgrp.add(bar); G.add(dgrp);
-  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(LX, -.95, 0); hsp.scale.set(1.25, .34, 1); lp.push(HG.dring[0], HG.dring[1], HG.dring[2], LX - .63, -.95, 0); { const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3)); G.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x4db3ea, transparent: true, opacity: .45 }))); } hsp.renderOrder = 10; G.add(hsp);
+  const hsp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, 'Humano'), transparent: true, depthTest: false })); hsp.position.set(LX, -.95, 0); hsp.scale.set(1.25, .34, 1); lp.push(HG.dring[0], HG.dring[1], HG.dring[2], LX - .63, -.95, 0); const cc = [0, 1, 2].map(i => cn.reduce((q, r) => q + r[i], 0) / cn.length);
+  const XL = [{ k: 'IA neural', g: cc, y: .9 }, { k: 'Harness simbólico', g: [-1.15, -.62, .3], y: -.2 }], xsp = [];
+  XL.forEach(x => { lp.push(x.g[0], x.g[1], x.g[2], -LX + .63, x.y, 0); const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: letterTexture(THREE, x.k), transparent: true, depthTest: false })); sp.position.set(-LX, x.y, 0); sp.scale.set(1.25, .34, 1); sp.renderOrder = 10; sp.material.opacity = 0; sp.visible = false; L.add(sp); xsp.push(sp); });
+  { const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3)); lineGeo = lg; lineArr = lg.attributes.position.array; L.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x4db3ea, transparent: true, opacity: .45 }))); } hsp.renderOrder = 10; L.add(hsp);
   const cols = nodeGeo.attributes.color;
+  const FP = HG.anchors.map(a => a.p).concat([HG.dring]), tv = new THREE.Vector3();
+  function updLines() {
+    if (!lineArr) return; G.updateMatrixWorld(true); L.updateMatrixWorld(true);
+    FP.concat(XL.map(x => x.g)).forEach((q, i) => { tv.set(q[0], q[1], q[2]); G.localToWorld(tv); L.worldToLocal(tv); lineArr[i * 6] = tv.x; lineArr[i * 6 + 1] = tv.y; lineArr[i * 6 + 2] = tv.z; });
+    lineGeo.attributes.position.needsUpdate = true;
+  }
   const api = {
-    canvas, renderer, ok: true, done: false,
+    canvas, renderer, ok: true, done: false, yaw: -.15, pitch: 0, focus: -1, pauseUntil: 0, lt: null,
+    setFocus(k) { if (k < 0 && api.focus >= 0) api.yaw = G.rotation.y; api.focus = k; api.pauseUntil = performance.now() + 8000; },
+    drag(dx, dy) { if (api.focus >= 0) api.setFocus(-1); api.yaw += dx * .008; api.pitch = Math.max(-.5, Math.min(.6, api.pitch + dy * .004)); api.pauseUntil = performance.now() + 6000; },
+    labelBoxes() {
+      G.updateMatrixWorld(true); L.updateMatrixWorld(true); const ppu = 1080 / (2 * 10 * Math.tan(17.5 * Math.PI / 180)), v = new THREE.Vector3();
+      return [[LX, LY[0]], [LX, LY[1]], [LX, LY[2]], [LX, -.95]].map(q => { v.set(q[0], q[1], 0); L.localToWorld(v); v.project(cam); const w = 1.25 * .98 * ppu, h = .34 * .98 * ppu; return { x: (v.x + 1) / 2 * 1920 - w / 2, y: (1 - v.y) / 2 * 1080 - h / 2, w, h }; });
+    },
     render(t, o) {
-      o = o || {}; const tt = api.done ? t + 10 : t, rotY = o.fixed ? -.42 : Math.sin(t * .35) * .5 - .15 + HOOK.mx * .1745, rotX = o.fixed ? .12 : .1 + HOOK.my * .1745;
+      o = o || {}; const tt = api.done ? t + 10 : t, dt = api.lt == null ? 0 : Math.max(0, Math.min(.1, t - api.lt)); api.lt = t;
+      if (!api.done && !o.fixed && performance.now() > api.pauseUntil && api.focus < 0) api.yaw += dt * .22; // giro lento de vitrine
+      let rotY = o.fixed ? -.42 : api.done ? Math.sin(t * .35) * .5 - .15 + HOOK.mx * .1745 : api.yaw;
+      if (api.focus >= 0 && !o.fixed && !api.done) { const fy = -Math.atan2(FP[api.focus][0], FP[api.focus][2]); rotY = fy + Math.PI * 2 * Math.round((G.rotation.y - fy) / (Math.PI * 2)); }
+      const rotX = o.fixed ? .12 : api.done ? .1 + HOOK.my * .1745 : .1 + api.pitch + HOOK.my * .03;
       G.rotation.y += (rotY - G.rotation.y) * (o.fixed ? 1 : .08); G.rotation.x += (rotX - G.rotation.x) * (o.fixed ? 1 : .08);
       straps.forEach((m, k) => { const g = m.geometry.userData, p = ease(clamp((tt - .12 * k) / 1.5, 0, 1)); m.geometry.setDrawRange(0, Math.floor(g.segs * p) * 6); m.visible = p > 0; });
-      bk.forEach((b, k) => { const s = eo(clamp((tt - 1.5 - .2 * k) / .6, 0, 1)); b.b.scale.setScalar(Math.max(.001, s)); const l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); b.sp.material.opacity = l; b.sp.visible = l > 0; });
-      const hs = eo(clamp((tt - 2.3) / .6, 0, 1)); dgrp.scale.setScalar(Math.max(.001, hs)); const hl = clamp((tt - 3.5) / .5, 0, 1); hsp.material.opacity = hl; hsp.visible = hl > 0;
+      bk.forEach((b, k) => { const s = eo(clamp((tt - 1.5 - .2 * k) / .6, 0, 1)); b.b.scale.setScalar(Math.max(.001, s * (api.focus === k ? 1.6 : 1))); b.sp.scale.set(1.25 * (api.focus === k ? 1.15 : 1), .34 * (api.focus === k ? 1.15 : 1), 1); const l = clamp((tt - 2.8 - .25 * k) / .5, 0, 1); b.sp.material.opacity = l; b.sp.visible = l > 0; });
+      const hs = eo(clamp((tt - 2.3) / .6, 0, 1)); dgrp.scale.setScalar(Math.max(.001, hs * (api.focus === 3 ? 1.6 : 1))); hsp.scale.set(1.25 * (api.focus === 3 ? 1.15 : 1), .34 * (api.focus === 3 ? 1.15 : 1), 1); const hl = clamp((tt - 3.5) / .5, 0, 1); hsp.material.opacity = hl; hsp.visible = hl > 0;
       const core = .3 + .7 * clamp((tt - 2.2) / 1.2, 0, 1);
       for (let i = 0; i < cn.length; i++) { const l = cn[i][3], v = core * (.55 + .45 * Math.sin(tt * 2.4 - l * 1.2 + i * .9)); cols.setXYZ(i, .25 * v, .9 * v, .8 * v); }
       cols.needsUpdate = true; edges.material.opacity = .2 + .4 * core; halo.material.opacity = .3 + .7 * core;
+      xsp.forEach((sp, i) => { const l = clamp((tt - 3.4 - .3 * i) / .5, 0, 1); sp.material.opacity = l; sp.visible = l > 0; }); updLines();
       renderer.render(scene, cam);
     }
   };
@@ -237,6 +259,27 @@ function leaveFx() {
   if (cv2.parentNode) cv2.parentNode.removeChild(cv2);
   if (cvGL && cvGL.parentNode) cvGL.parentNode.removeChild(cvGL);
 }
+const HLNOME = ['Evidência', 'Normas', 'Rastro', 'Humano'];
+const HLTXT = ['Cada afirmação aponta para um documento que a sustenta.', 'Regras explícitas definem o que pode ser liberado.', 'Cada passo fica registrado para a auditoria.', 'Uma pessoa revisa e assina a decisão final.'];
+function buildCoverUI(slot, c) { // capa: clicar nas etiquetas destaca a peça; arrastar gira o arnês
+  slot.querySelectorAll('.lbhit').forEach(n => n.remove());
+  const cap = slot.parentNode.querySelector('.hlcap');
+  const show = k => { c.setFocus(k); if (cap) { cap.classList.toggle('on', k >= 0); if (k >= 0) cap.innerHTML = '<b>' + HLNOME[k] + '</b>' + HLTXT[k]; } };
+  c.labelBoxes().forEach((b, k) => {
+    const el = document.createElement('button'); el.className = 'lbhit'; el.type = 'button'; el.setAttribute('aria-label', HLNOME[k] + ': destacar no arnês');
+    el.style.cssText = 'left:' + b.x + 'px;top:' + b.y + 'px;width:' + b.w + 'px;height:' + b.h + 'px';
+    el.addEventListener('click', e => { e.stopPropagation(); show(c.focus === k ? -1 : k); });
+    slot.appendChild(el);
+  });
+  const hb = slot.parentNode.querySelector('.hitbox[data-open="s1-paleta"]');
+  if (hb && !hb._drag) {
+    hb._drag = 1; hb.style.touchAction = 'none'; let sx = 0, sy = 0, lx = 0, ly = 0, down = false, moved = false;
+    hb.addEventListener('pointerdown', e => { if (e.button !== 0) return; down = true; moved = false; sx = lx = e.clientX; sy = ly = e.clientY; });
+    addEventListener('pointermove', e => { if (!down) return; if (!moved && Math.hypot(e.clientX - sx, e.clientY - sy) < 6) return; moved = true; const k = 1920 / stage.getBoundingClientRect().width; cover.c.drag((e.clientX - lx) * k, (e.clientY - ly) * k); lx = e.clientX; ly = e.clientY; });
+    addEventListener('pointerup', () => { if (down && moved) { const blk = ev => { ev.stopPropagation(); ev.preventDefault(); }; stage.addEventListener('click', blk, { capture: true, once: true }); setTimeout(() => stage.removeEventListener('click', blk, true), 60); } down = false; });
+  }
+  if (P.has('focus')) show(+P.get('focus'));
+}
 function enterFx(slide) {
   leaveFx();
   const slot = $('.fxslot', slide); if (!slot) return;
@@ -245,6 +288,7 @@ function enterFx(slide) {
   if (name === 'cover' || name === 'cover12') {
     if (LITE) return;
     const c = coverFor(name === 'cover12'); const cvs = c.is2d ? cv2 : cvGL; slot.appendChild(cvs);
+    if (name === 'cover' && c.labelBoxes) buildCoverUI(slot, c);
     active = { c, cover: true }; t0 = performance.now(); loop(t0); return;
   }
   const sc = sceneFor(name); if (!sc) return;
@@ -432,7 +476,7 @@ function buildDynamic() {
     renderHero(i);
   });
 }
-const CAPCOR = ['#f05a28', '#4db3ea', '#f05a28', '#4db3ea', '#f05a28', '#4db3ea', '#a1a1aa'];
+const CAPCOR = ['#f05a28', '#f05a28', '#f05a28', '#f05a28', '#f05a28', '#f05a28', '#f05a28'];
 
 function countUp(root) {
   $$('[data-count]', root).forEach(e => {

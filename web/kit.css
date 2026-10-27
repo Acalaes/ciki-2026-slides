@@ -75,7 +75,7 @@
 .k.k-ctl [data-step].k-on:not(.k-now):not(.err):not(.block):not(.late) .k-t { fill: #a1a1aa; }
 .k.k-ctl [data-step] .k-p:not(.k-dash) { animation: none; stroke-dasharray: none; }
 
-@media (prefers-reduced-motion: reduce) { .k *, .k [data-step] { animation: none !important; } }
+body.reduzir-movimento .k *, body.reduzir-movimento .k [data-step] { animation: none !important; }
 .static .k *, .static .k [data-step] { animation: none !important; }
 
 /* complementos */
