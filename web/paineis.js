@@ -348,7 +348,7 @@
     '  <span class="k">"prov:usedEntity"</span>:\n    <span class="v">"hnv:fonte/STF_SV13"</span> } }' +
     '</pre></div>' +
     foot([F('prov-dm', 'W3C PROV-DM'), F('hnv-cena2b', 'Log real (cena 2b)')],
-      'Trecho abreviado de logs/prov-20261025T192704-230.json; o parecer tem 7 fontes derivadas. O nome do produto do agente foi omitido do rótulo.')
+      'Trecho abreviado de logs/prov-20261025T192704-230.json; o parecer tem 7 fontes derivadas.')
   );
 
   P['s4-pinoH'] = body(
@@ -705,7 +705,7 @@
     '<iframe class="replay" src="demo/replay.html" title="Replay da demonstração" loading="eager" scrolling="no"></iframe>' +
     '<p>' + sel('ilustrativa, execução real, 25/10/2026') + '</p>' +
     foot([F('hnv-cena2b', 'Log real (cena 2b)'), F('hnv-laco', 'Laço local'), F('hnv-cena1', 'Cena 1')],
-      'Espaço pausa; R reinicia. Os logs foram sanitizados (a lista de ferramentas pessoais saiu); o nome do produto do agente foi omitido nesta cópia.')
+      'Espaço pausa; R reinicia. Os logs foram sanitizados (a lista de ferramentas pessoais saiu).')
   );
 
   (function () {

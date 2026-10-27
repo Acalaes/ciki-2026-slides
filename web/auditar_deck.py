@@ -9,7 +9,7 @@ Verificações (saída diferente de 0 se alguma falhar):
  3. os IDs obrigatórios existem em HNV_PANELS;
  4. âmbar (#F2A541) só em seletores/classes .err, .block, .late;
  5. verde-matrix só dentro de demo\\ (e no painel s8-replay, que apenas embute demo\\replay.html);
- 6. nenhuma ocorrência de "determinístic" nem do termo coloquial proibido (ver TERMO_PROIBIDO);
+ 6. nenhuma ocorrência de "determinístic"; termo coloquial só em demo/ ou em bloco logreal; "Claude Code" tolerado como nome da ferramenta; sem coautoria nos commits;
  7. toda fonte com status diferente de "confirmado" aparece com selo (class="selo") no painel;
  8. não há http(s):// em src/href/@import, exceto <a href> de referências.
 """
@@ -153,6 +153,12 @@ for pid, conteudo in PAINEIS.items():
         erro(f"verde-matrix no painel {pid}")
 
 # ---------------------------------------------------------------- 6. termos proibidos
+# - termo coloquial (TERMO_PROIBIDO): proibido em index.html, no texto autoral de paineis.js, paineis.css, fontes.json e neste script;
+#   tolerado dentro de demo\ e dentro de blocos de log literal (class="logreal" ou data-log="real").
+# - "Claude Code" é tolerado como NOME DA FERRAMENTA em qualquer arquivo do deck;
+#   continuam proibidos "Co-Authored", "Generated with" e Claude/Anthropic como autor.
+# - "Anthropic" só é aceito como editora de trabalho citado, em fontes.json e paineis.js.
+LOG_REAL = re.compile(r"<(\w+)[^>]*(?:class=\"[^\"]*logreal[^\"]*\"|data-log=\"real\")[^>]*>.*?</>", re.S | re.I)
 alvos = {
     "index.html": html, "paineis.js": js_paineis, "paineis.css": css_paineis,
     "fontes.json": ler("fontes.json"), "auditar_deck.py": ler("auditar_deck.py"),
@@ -161,15 +167,29 @@ for f in (pasta / "demo").glob("*"):
     if f.is_file() and f.suffix.lower() in (".html", ".json", ".js", ".css", ".txt", ".md"):
         alvos["demo/" + f.name] = f.read_text(encoding="utf-8", errors="replace")
 for nome, texto in alvos.items():
+    em_demo = nome.startswith("demo/")
+    sem_log = LOG_REAL.sub("", texto)
     if re.search("determin" + "ístic", texto, re.I) and nome != "auditar_deck.py":
         erro(f"termo proibido (determinístico) em {nome}")
-    if re.search(TERMO_PROIBIDO, texto, re.I):
-        erro(f"termo coloquial proibido ('{TERMO_PROIBIDO}...') em {nome}")
-    if nome != "auditar_deck.py":
-        # "Anthropic" só é aceito como editora de um trabalho citado (fontes.json e paineis.js)
-        proibido = r"Claude|Co-Authored" if nome in ("fontes.json", "paineis.js") else r"Anthropic|Claude|Co-Authored"
-        if re.search(proibido, texto):
-            erro(f"menção a ferramenta de IA ou coautoria em {nome}")
+    if not em_demo and re.search(TERMO_PROIBIDO, sem_log, re.I):
+        erro(f"termo coloquial proibido ('{TERMO_PROIBIDO}...') em {nome}, fora de bloco de log literal")
+    if nome == "auditar_deck.py":
+        continue
+    limpo = re.sub(r"Claude Code", "", texto)  # nome da ferramenta
+    proibido = r"Claude|Co-Authored|Generated with" if nome in ("fontes.json", "paineis.js") else r"Anthropic|Claude|Co-Authored|Generated with"
+    if re.search(proibido, limpo):
+        erro(f"menção proibida (Claude fora do nome da ferramenta, Anthropic como autor, coautoria) em {nome}")
+# mensagens de commit: sem coautoria nem "Generated with"
+try:
+    log = subprocess.run(["git", "log", "--format=%H%x1f%B%x1e", "-n", "300"], cwd=pasta, capture_output=True, encoding="utf-8").stdout
+    for reg in log.split(""):
+        if "" not in reg:
+            continue
+        h, msg = reg.split("", 1)
+        if re.search(r"Co-Authored|Generated with|Anthropic", msg, re.I):
+            erro(f"commit {h.strip()[:8]} com coautoria ou 'Generated with'")
+except Exception as e:  # git ausente: apenas avisa
+    AVISOS.append("não foi possível ler o git log: " + str(e))
 
 # ---------------------------------------------------------------- 7. selos
 for pid, conteudo in PAINEIS.items():

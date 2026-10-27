@@ -161,7 +161,7 @@
   "agent": {
     "hnv:modelo": {
       "prov:type": "prov:SoftwareAgent",
-      "prov:label": "modelo do agente de código (sessão 68ea8c1c)"
+      "prov:label": "modelo do Claude Code (sessão 68ea8c1c)"
     },
     "hnv:harness": {
       "prov:type": "prov:SoftwareAgent",
