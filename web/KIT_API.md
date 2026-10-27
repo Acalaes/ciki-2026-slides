@@ -5,7 +5,7 @@ Carregar nesta ordem: `fonts\fonts.css`, `kit.css`, `kit.js`, depois `paineis.cs
 Global: `window.HNV_KIT` (alias `K`). Nenhuma função toca o DOM, exceto `K.step` e `K.play`.
 
 ## Regras visuais (DESIGN_CLEAN_v3)
-Traço 2 px, cantos 8 px, uma tipografia (Archivo), 4 cores: fundo #070D1A (transparente no kit), gelo #E6EEFB, névoa #6F8FC7, âmbar #F2A541 só em erro/bloqueio (classes `err`, `block`, `late`). Preenchimentos são o mesmo gelo/névoa com alfa. Sem ciano, sem gradiente.
+Traço 2 px, cantos 8 px, uma tipografia (Poppins), 4 cores: fundo #070D1A (transparente no kit), gelo #E6EEFB, névoa #6F8FC7, âmbar #F2A541 só em erro/bloqueio (classes `err`, `block`, `late`). Preenchimentos são o mesmo gelo/névoa com alfa. Sem ciano, sem gradiente.
 
 ## Opções comuns (objeto `o`)
 - `step` (número): ordem de construção. Vira `data-step="n"` e `style="--step:n"`.
@@ -27,7 +27,8 @@ Traço 2 px, cantos 8 px, uma tipografia (Archivo), 4 cores: fundo #070D1A (tran
 | `K.dot(o)` | `cx cy r t hollow` | ponto; `t` à direita |
 | `K.ring(o)` | `cx cy r v t dash` | círculo (v=100) ou arco de v% (0 a 100) |
 | `K.text(o)` | `x y t size anchor weight` | texto solto |
-| `K.icon(name, o)` | `name`: `lock check doc person db link clock`; `x y s` | ícone de traço fino |
+| `K.icon(name, o)` | `name`: `lock check doc person db link clock`; `x y s` | ícone de traço fino genérico |
+| `K.pic(name, o)` | `name`: ver lista abaixo; `x y s t size pos` | PICTOGRAMA (48×48, traço 2 px) + palavra por extenso |
 | `K.m(str)` | `x_{i}`, `x^2`, `{num\|den}` | HTML de fórmula (usado por `K.formula`) |
 | `K.group(inner, o)` | `step`, `tone` | agrupa elementos sob um `step` |
 
@@ -46,3 +47,32 @@ const svg = s.svg(900, 200,
   s.box({x:660,y:60,w:240,h:80,t:'Corrigir',tone:'block',step:5}), 'exemplo');
 ```
 Painéis do B3 usam o mesmo kit; `HNV_PANELS[id]` é HTML (título, `K.svg(...)`, legenda, chip) e `HNV_DETALHES[id]` é o HTML da camada 3 (botão "detalhes").
+
+## Pictogramas (camada 1, regra SEM_SIGLAS_v3c): `K.pic(name, o)`
+`o`: `x y` (canto superior esquerdo), `s` (lado em px, padrão 96), `t` (palavra por extenso; padrão = rótulo da lista), `size` (tamanho do rótulo, padrão 32), `pos` (`'below'` padrão | `'right'` | `'none'` sem rótulo), `tone`, `step`.
+O pictograma sempre vem com a palavra: nunca use sem rótulo na camada 1.
+
+| `name` | Figura | Rótulo padrão |
+|---|---|---|
+| `evidencia` | documento com lupa | Evidência |
+| `normas` | balança | Normas |
+| `rastro` | trilha de pontos ligados | Rastro |
+| `humano` | pessoa com carimbo | Humano |
+| `recuperar` | lupa sobre pilha de documentos | Recuperar |
+| `gerar` | rede neural de nós | Gerar |
+| `verificar` | escudo com marca | Verificar |
+| `registrar` | livro-razão | Registrar |
+| `aprovar` | carimbo | Aprovar |
+| `bloqueio` | portão fechado (use `tone:'block'`, âmbar) | Bloqueio |
+| `ontologia` | grafo de nós | Ontologia |
+| `fechadura` | fechadura | Fechadura |
+| `chave` | chave | Chave |
+| `calendario` | calendário | Calendário |
+| `barras` | gráfico de barras | Barras |
+
+Lista em código: `K.PICS` (objeto nome → rótulo). Exemplo: `K.pic('evidencia', {x:200, y:300, s:120, step:1})`.
+
+## Sinais lógicos e fonte
+Fórmulas e siglas só nas camadas 2 e 3, com a explicação por extenso na primeira vez. Os sinais ∧ ∨ ¬ ∀ ∃ → Σ ∘ vêm da fonte local **Noto Sans Math** (`fonts
+otosansmath-*.woff2`, declarada em `kit.css` com `@font-face`), como fallback do Poppins: `font-family: 'Poppins', 'Noto Sans Math', system-ui, sans-serif`.
+`K.box` aceita `mono:true` (código em monoespaçada).
