@@ -5,12 +5,12 @@ Carregar nesta ordem: `fonts\fonts.css`, `kit.css`, `kit.js`, depois `paineis.cs
 Global: `window.HNV_KIT` (alias `K`). Nenhuma função toca o DOM, exceto `K.step` e `K.play`.
 
 ## Regras visuais (DESIGN_CLEAN_v3)
-Traço 2 px, cantos 8 px, uma tipografia (Poppins), 4 cores: fundo #070D1A (transparente no kit), gelo #E6EEFB, névoa #6F8FC7, âmbar #F2A541 só em erro/bloqueio (classes `err`, `block`, `late`). Preenchimentos são o mesmo gelo/névoa com alfa. Sem ciano, sem gradiente.
+Traço 2 px, cantos 8 px, uma tipografia (Poppins), paleta neutra (FUNDO_NEUTRO_v3g): fundo grafite #0b0c10 a #14161c (transparente no kit), cartões #15181f, texto #f4f4f5, zinc #a1a1aa / #71717a, teal #14b8a6 / #5eead4 só como acento (linhas, ícones, números), vermelho #f87171 só em erro/bloqueio (classes `err`, `block`, `late`). Sem azul de fundo, sem âmbar, sem gradiente colorido.
 
 ## Opções comuns (objeto `o`)
 - `step` (número): ordem de construção. Vira `data-step="n"` e `style="--step:n"`.
 - `tone`: `'gelo'` (padrão) | `'nevoa'` | `'err'` | `'block'` | `'late'` (os três últimos são âmbar).
-- `fill`: `true` (alfa do gelo) | `'solid'` (gelo cheio, texto escuro: decisão humana).
+- `fill`: `true` (cartão com borda teal) | `'solid'` (branco com brilho teal, texto escuro: o ponto principal / decisão humana).
 - Coordenadas em unidades do viewBox; as funções não escalam nada.
 
 ## Funções

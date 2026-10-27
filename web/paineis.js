@@ -1,20 +1,43 @@
-/* Camada 2 do deck: painéis de infográfico (conteúdo HTML em strings).
-   Contrato: window.HNV_PANELS = { id: "<html>" }. Estilo em paineis.css (escopo .panel-body).
-   Fontes clicáveis: <button class="fonte" data-src="chave"> (dados em fontes.json / fontes.js). */
+/* Camada 2 do deck (v3, design clean): cada painel = 1 diagrama do kit (kit.js) + título curto + legenda de até 2 linhas + chip da fonte.
+   Parágrafos, tabelas e listas ficam na camada 3: window.HNV_DETALHES[id].
+   Contrato: window.HNV_PANELS = { id: "<html>" }. Fontes clicáveis: <button class="fonte" data-src="chave"> (fontes.json / fontes.js). */
 (function () {
   'use strict';
-  var P = {};
+  var K = window.HNV_KIT;
+  var P = {}, D = {};
+  /* ---------- títulos (TITULOS_v3f): mensagem do diagrama, até 6 palavras, sem sigla, fórmula ou símbolo ---------- */
+  var TITULOS = {
+    's1-ficha': 'Sobre o artigo', 's1-paleta': 'As quatro condições', 's1-harness3d': 'Como ler o arnês da capa',
+    's2-casos': 'A IA alucina em tribunais', 's2-softmax': 'Por que o modelo alucina', 's2-citacoes': 'O que o modelo citou errado',
+    's3-tab1': 'Cada método tem um limite', 's3-rudin': 'Explicar depois não basta',
+    's4-pinoE': 'Como se recupera a evidência', 's4-pinoN': 'Como as normas viram regras', 's4-pinoT': 'Como o rastro é registrado',
+    's4-pinoH': 'Quem libera é a pessoa', 's4-formula': 'Como o sistema decide', 's4-regras': 'As regras em forma de código',
+    's5-fig1': 'A IA propõe, as regras conferem', 's5-calais': 'Três níveis da contribuição', 's5-dsr': 'Os seis ciclos da pesquisa',
+    's5-ponte': 'Como o texto vira regra', 's6-ontologia': 'Como o Citāre organiza conceitos', 's6-regras': 'Quando a fonte está pronta',
+    's6-triplas': 'Como a ontologia liga os fatos', 's7-logs': 'Quantos envios a automação fez', 's7-nasa': 'Esforço percebido nas tarefas',
+    's7-tab4': 'O que cada caso mostra', 's8-replay': 'A execução real, passo a passo', 's8-regua': 'Onde o modelo errou na lei',
+    's8-portao': 'Como o hook barra a citação', 's8-prov': 'O que o parecer registrou', 's9-metodo': 'Como contamos os artigos',
+    's9-cmu': 'Modelo pequeno com bom harness', 's9-contexto': 'Como o termo harness surgiu', 's10-aneis': 'Três ideias combinadas',
+    's10-nucleo': 'Regras do especialista sobre o modelo', 's10-portao': 'Onde isso poderia valer', 's11-desenho': 'Como vamos medir o ganho',
+    's11-limites': 'O que ainda não sabemos', 'r1-respostas': 'Perguntas difíceis e respostas', 'r3-referencias': 'Referências'
+  };
 
   /* ---------- auxiliares ---------- */
   function F(k, l) { return '<button class="fonte" data-src="' + k + '">' + l + '</button>'; }
+  function sel(t, c) { return '<span class="selo ' + (c || '') + '">' + t + '</span>'; }
   function foot(fs, cred) {
     return '<footer class="pf"><div class="fontes">' + fs.join('') + '</div>' + (cred ? '<p class="cred">' + cred + '</p>' : '') + '</footer>';
   }
-  function sel(t, c) { return '<span class="selo ' + (c || '') + '">' + t + '</span>'; }
-  function T(t, sub) { return '<h2 class="pt">' + t + (sub ? '<small>' + sub + '</small>' : '') + '</h2>'; }
-  function body(inner) { return '<div class="panel-body">' + inner + '</div>'; }
-  function svg(w, h, inner, label) {
-    return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + (label || '') + '" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+  function panel(id, title, diagram, legenda, fs, o) {
+    o = o || {};
+    title = TITULOS[id] || title;
+    P[id] = '<div class="panel-body">' +
+      '<h2 class="pt">' + title + '</h2>' +
+      diagram + (legenda ? '<p class="leg">' + legenda + '</p>' : '') + (o.extra || '') + foot((o.selos || []).concat(fs), o.cred) + '</div>';
+  }
+  function det(id, title, html, fs) {
+    title = 'Detalhes: ' + (TITULOS[id] || title);
+    D[id] = '<div class="panel-body det"><h2 class="pt">' + title + '</h2>' + html + (fs ? foot(fs) : '') + '</div>';
   }
   function tbl(cols, head, rows, cls) {
     var cg = '<colgroup>' + cols.map(function (w) { return '<col style="width:' + w + '">'; }).join('') + '</colgroup>';
@@ -26,233 +49,192 @@
     }).join('') + '</tbody>';
     return '<table class="' + (cls || '') + '">' + cg + h + b + '</table>';
   }
-  function cnt(n, fmt) {
-    var txt = fmt === 'k' ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : String(n);
-    return '<span class="cnt ' + (fmt === 'k' ? 'k' : 'u') + '" style="--n:' + n + '"><span>' + txt + '</span></span>';
-  }
   function pct(x, d) { return (x * 100).toFixed(d == null ? 1 : d).replace('.', ','); }
   function fmt(x, d) { return Number(x).toFixed(d).replace('.', ','); }
+  var W = 1660;
 
   /* =========================================================
      SLIDE 1
      ========================================================= */
-  P['s1-ficha'] = body(
-    T('Ficha do artigo') +
-    '<div class="cols c21" style="align-items:start">' +
-    '<dl class="ficha">' +
-    '<dt>Título (EN)</dt><dd><em>Neurosymbolic Artificial Intelligence and Knowledge Engineering: Beyond Hallucinations and Auditable Decisions in the Intelligent State</em></dd>' +
-    '<dt>Artigo</dt><dd>#160 · CIKI 2026 · apresentação em 28/10/2026</dd>' +
-    '<dt>Autor</dt><dd>Alexandre Pinto Calaes · PPGEGC/UFSC</dd>' +
+  panel('s1-ficha', 'Ficha do artigo #160',
+    K.svg(W, 470,
+      K.box({ x: 0, y: 0, w: 640, h: 120, t: 'CALAIS', s: 'modelo de governança', step: 1, fill: true }) +
+      K.arrow({ pts: [[320, 120], [320, 175]], step: 2 }) +
+      K.box({ x: 0, y: 175, w: 640, h: 120, t: 'Arquitetura', s: 'neurossimbólica', step: 3 }) +
+      K.arrow({ pts: [[320, 295], [320, 350]], step: 4 }) +
+      K.box({ x: 0, y: 350, w: 640, h: 120, t: 'Citāre', s: 'sistema de referência', step: 5, tone: 'nevoa' }) +
+      K.icon('doc', { x: 800, y: 20, s: 80, step: 6 }) +
+      K.text({ x: 910, y: 62, t: '#160 · CIKI 2026', size: 44, weight: 'b' }) +
+      K.text({ x: 910, y: 106, t: 'apresentação em 28/10/2026', size: 28, tone: 'nevoa' }) +
+      K.icon('person', { x: 800, y: 175, s: 80, step: 7 }) +
+      K.text({ x: 910, y: 217, t: 'Alexandre Pinto Calaes', size: 44, weight: 'b' }) +
+      K.text({ x: 910, y: 261, t: 'PPGEGC / UFSC', size: 28, tone: 'nevoa' }) +
+      K.icon('db', { x: 800, y: 340, s: 80, step: 8 }) +
+      K.text({ x: 910, y: 382, t: 'CBMSC · ESAG/UDESC', size: 44, weight: 'b' }) +
+      K.text({ x: 910, y: 426, t: 'evidência exploratória, em Santa Catarina', size: 28, tone: 'nevoa' }),
+      'Ficha do artigo: três níveis de contribuição, autor e casos'),
+    'Modelo, arquitetura e sistema de referência; evidência exploratória de dois casos.',
+    [F('art-dsr', 'Artigo: método DSR'), F('art-escopo', 'Artigo: escopo')], { cred: 'Título e dados do artigo #160 (versão final).' });
+  det('s1-ficha', 'Ficha do artigo: detalhes',
+    '<dl class="ficha"><dt>Título (EN)</dt><dd><em>Neurosymbolic Artificial Intelligence and Knowledge Engineering: Beyond Hallucinations and Auditable Decisions in the Intelligent State</em></dd>' +
+    '<dt>Artigo</dt><dd>#160 · CIKI 2026 · apresentação em 28/10/2026</dd><dt>Autor</dt><dd>Alexandre Pinto Calaes · PPGEGC/UFSC</dd>' +
     '<dt>Método</dt><dd>Design Science Research (DSR), em seis ciclos rastreáveis</dd>' +
-    '<dt>Evidência</dt><dd>Aplicações prévias no CBMSC e na ESAG/UDESC: exploratória, em Santa Catarina</dd>' +
-    '<dt>Apoio</dt><dd>CAPES, Finance Code 001</dd>' +
-    '</dl>' +
-    svg(560, 560,
-      '<g class="fd" style="--d:.4s">' +
-      '<rect class="nd az" x="10" y="10" width="540" height="140"/><text class="b" x="30" y="62" style="font-size:38px">CALAIS</text><text class="m" x="30" y="104">modelo de governança e</text><text class="m" x="30" y="134">auditabilidade para IA verticalizada</text></g>' +
-      '<path class="ln az dr" pathLength="1" style="--d:1s" d="M280 150 V210"/><path class="fl" d="M266 206 h28 l-14 18z"/>' +
-      '<g class="fd" style="--d:1.3s">' +
-      '<rect class="nd" x="10" y="230" width="540" height="140"/><text class="b" x="30" y="282" style="font-size:38px">Arquitetura</text><text class="m" x="30" y="324">recuperação, geração neural,</text><text class="m" x="30" y="354">verificação, registro, decisão humana</text></g>' +
-      '<path class="ln az dr" pathLength="1" style="--d:1.9s" d="M280 370 V430"/><path class="fl" d="M266 426 h28 l-14 18z"/>' +
-      '<g class="fd" style="--d:2.2s">' +
-      '<rect class="nd" x="10" y="450" width="540" height="100"/><text class="b" x="30" y="496" style="font-size:38px">Citāre</text><text class="m" x="30" y="534">artefato de referência (sistema)</text></g>',
-      'Três níveis: CALAIS, arquitetura e Citāre') +
-    '</div>' +
-    foot([F('art-dsr', 'Artigo: método DSR'), F('art-escopo', 'Artigo: escopo da evidência')],
-      'Título e dados do artigo #160 (versão final). Autoria e vínculo conforme o artigo e a capa.')
-  );
+    '<dt>Evidência</dt><dd>Aplicações prévias no CBMSC e na ESAG/UDESC: exploratória, em Santa Catarina</dd><dt>Apoio</dt><dd>CAPES, Finance Code 001</dd></dl>',
+    [F('art-dsr', 'Artigo: método DSR'), F('art-escopo', 'Artigo: escopo')]);
 
-  P['s1-paleta'] = body(
-    T('As quatro condições e as cores', 'Cada coluna é um pino da fechadura: falta um e o resultado não abre.') +
-    '<div class="cols c4">' +
-    [
-      ['E', 'Evidência', 'O que sustenta a afirmação: documentos recuperados e ligados à resposta.', 'E(y, R)', ''],
-      ['N', 'Norma', 'As regras aplicáveis conferem a resposta; o sistema pode bloquear.', 'N(y, Ω)', ''],
-      ['T', 'Rastro', 'O caminho fica registrado: fontes, verificações e decisões.', 'T(y)', ''],
-      ['H', 'Humano', 'Quem decide manter, modificar ou rejeitar a recomendação.', 'H(y)', 'luz']
-    ].map(function (c, i) {
-      return '<div class="card ri" style="--d:' + (0.2 + i * 0.2) + 's;' + (c[4] ? 'background:var(--ink);border-color:var(--ink);color:#0A1428' : '') + '">' +
-        '<div class="big" style="font-size:150px;' + (c[4] ? '' : 'color:var(--az)') + '">' + c[0] + '</div>' +
-        '<h3 style="' + (c[4] ? 'color:#0A1428' : '') + '">' + c[1] + '</h3>' +
-        '<p style="font-size:28px;margin:8px 0 14px">' + c[2] + '</p>' +
-        '<p class="sans" style="font-size:30px;font-weight:600;font-style:italic">' + c[3] + '</p></div>';
-    }).join('') +
-    '</div>' +
-    '<div class="cols c3" style="margin-top:6px">' +
-    '<p><span class="sw az"></span>Azul: verificado e registrado</p>' +
-    '<p class="block"><span class="sw block"></span>Âmbar: onde o sistema para</p>' +
-    '<p><span class="sw luz"></span>Luz clara: decisão humana</p>' +
-    '</div>' +
-    foot([F('art-eq', 'Artigo: Equações 2 e 3')],
-      'Símbolos conforme as Equações 2 e 3 do artigo (Seção 3.1). Âmbar aparece apenas para erro ou bloqueio.')
-  );
+  /* s1-paleta: quatro pinos + legenda de cores */
+  (function () {
+    var it = [['evidencia', 'Evidência', 'E = evidência'], ['normas', 'Normas', 'N = norma'], ['rastro', 'Rastro', 'T = rastro'], ['humano', 'Humano', 'H = humano']];
+    var g = '';
+    it.forEach(function (x, i) {
+      var h = i === 3;
+      g += K.box({ x: i * 420, y: 0, w: 380, h: 330, t: '', step: i + 1, fill: true, tone: h ? 'gelo' : 'gelo' });
+      g += K.pic(x[0], { x: i * 420 + 142, y: 50, s: 96, pos: 'none', step: i + 1, tone: h ? null : null });
+      g += K.text({ x: i * 420 + 190, y: 220, t: x[1], size: 36, anchor: 'middle', weight: 'b' });
+      g += K.text({ x: i * 420 + 190, y: 276, t: x[2], size: 28, anchor: 'middle', tone: 'nevoa' });
+    });
+    g += K.dot({ cx: 20, cy: 400, r: 14, hollow: true, tone: 'nevoa', t: 'verificado e registrado', step: 5 }) +
+      K.dot({ cx: 660, cy: 400, r: 14, tone: 'block', t: 'o sistema para', step: 6 }) +
+      K.dot({ cx: 1040, cy: 400, r: 14, t: 'decisão humana', step: 7 });
+    panel('s1-paleta', 'Quatro condições', K.svg(W, 440, g, 'Quatro condições: evidência, normas, rastro e humano, e a legenda de cores'),
+      'Falta uma condição e a fechadura não abre; só a pessoa libera.', [F('art-eq', 'Artigo: Equações 2 e 3')]);
+  })();
+  det('s1-paleta', 'As quatro condições: detalhes',
+    tbl(['120px', '1fr', '240px'], ['Pino', 'O que garante', 'Símbolo'], [
+      ['E', 'Documentos recuperados e ligados à resposta', 'E(y, R)'], ['N', 'Regras aplicáveis conferem; o sistema pode bloquear', 'N(y, Ω)'],
+      ['T', 'Fontes, verificações e decisões registradas', 'T(y)'], ['H', 'Quem decide manter, modificar ou rejeitar', 'H(y)']]),
+    [F('art-eq', 'Artigo: Equações 2 e 3')]);
 
-  P['s1-harness3d'] = body(
-    T('O que cada parte do harness representa', 'Legenda da cena 3D da capa; é uma metáfora visual, não um diagrama de código.') +
-    '<div class="cols" style="grid-template-columns:640px 1fr;align-items:center">' +
-    svg(640, 620,
-      /* faixas (skills) */
-      '<g fill="none" stroke-width="10" stroke-linecap="round" stroke="#1E3A66">' +
-      '<path class="dr" pathLength="1" style="--d:.3s" d="M200 90 C60 230 60 400 200 540"/>' +
-      '<path class="dr" pathLength="1" style="--d:.5s" d="M440 90 C580 230 580 400 440 540"/>' +
-      '<path class="dr" pathLength="1" style="--d:.7s" d="M320 70 C250 230 250 400 320 560"/>' +
-      '<path class="dr" pathLength="1" style="--d:.9s" d="M320 70 C390 230 390 400 320 560"/></g>' +
-      '<g fill="none" stroke="#6F8FC7" stroke-width="2.5">' +
-      '<path class="dr" pathLength="1" style="--d:.3s" d="M200 90 C60 230 60 400 200 540"/>' +
-      '<path class="dr" pathLength="1" style="--d:.5s" d="M440 90 C580 230 580 400 440 540"/></g>' +
-      /* anéis (hooks) */
-      '<g fill="none" stroke="#E6EEFB" stroke-width="5">' +
-      '<ellipse class="dr" pathLength="1" style="--d:1.2s" cx="320" cy="260" rx="160" ry="44"/>' +
-      '<ellipse class="dr" pathLength="1" style="--d:1.4s" cx="320" cy="370" rx="160" ry="44"/></g>' +
-      /* núcleo neural */
-      '<g class="fd" style="--d:1.9s"><circle cx="320" cy="315" r="86" fill="#0E1A33" stroke="#7BA3EE" stroke-width="3"/>' +
-      '<g stroke="#6F8FC7" stroke-width="2"><path d="M280 285 L330 270 L360 320 L300 350 L280 285 M330 270 L300 350 M360 320 L280 285"/></g>' +
-      '<g fill="#7BA3EE"><circle class="pl" cx="280" cy="285" r="9"/><circle class="pl" style="animation-delay:.5s" cx="330" cy="270" r="9"/><circle class="pl" style="animation-delay:1s" cx="360" cy="320" r="9"/><circle class="pl" style="animation-delay:1.5s" cx="300" cy="350" r="9"/></g></g>' +
-      /* ancoragens E N T H */
-      [['E', 150, 60], ['N', 490, 60], ['T', 150, 540], ['H', 490, 540]].map(function (a, i) {
-        return '<g class="pp" style="--d:' + (1.0 + i * .12) + 's"><rect x="' + (a[1] - 24) + '" y="' + (a[2] - 24) + '" width="48" height="48" fill="' + (a[0] === 'H' ? '#E6EEFB' : '#1E3A66') + '" stroke="' + (a[0] === 'H' ? '#E6EEFB' : '#7BA3EE') + '" stroke-width="3"/>' +
-          '<text class="b' + (a[0] === 'H' ? ' luz' : '') + '" x="' + a[1] + '" y="' + (a[2] + 10) + '" text-anchor="middle" style="font-size:30px">' + a[0] + '</text></g>';
-      }).join('') +
-      /* fivela */
-      '<g class="pp" style="--d:2.3s"><rect x="272" y="572" width="96" height="44" rx="6" fill="#E6EEFB"/><rect x="298" y="582" width="44" height="24" fill="#0A1428"/></g>',
-      'Esquema do harness: núcleo, faixas, anéis, ancoragens e fivela') +
-    '<div style="display:grid;gap:16px">' +
-    [
-      ['sw az', 'Núcleo luminoso', 'modelo neural: lê e escreve linguagem natural; propõe, não decide'],
-      ['sw', 'Faixas curvas', 'skills e instruções: guia macio, orienta o modelo mas não obriga'],
-      ['sw luz', 'Anéis rígidos', 'hooks: regra dura, executada pelo harness (bloqueia, não negocia)'],
-      ['sw az', 'Quatro ancoragens E N T H', 'evidência, norma, rastro e humano: as quatro condições do artigo'],
-      ['sw luz', 'Fivela', 'aprovação humana: só a pessoa fecha e libera']
-    ].map(function (r) {
-      return '<p><span class="' + r[0] + '"></span><b>' + r[1] + '.</b> ' + r[2] + '</p>';
-    }).join('') +
-    '</div></div>' +
-    foot([F('hnv-readme', 'Mapa guia macio × regra dura'), F('art-eq', 'Artigo: Equações 2 e 3')],
-      'Metáfora visual da capa; o mapa guia macio × regra dura vem do README da demonstração.')
-  );
+  /* s1-harness3d */
+  panel('s1-harness3d', 'Legenda do harness 3D',
+    K.svg(W, 560,
+      K.ring({ cx: 330, cy: 280, r: 250, dash: true, tone: 'nevoa', step: 1 }) +
+      K.ring({ cx: 330, cy: 280, r: 190, step: 2 }) +
+      K.node({ cx: 330, cy: 280, r: 76, t: ['modelo', 'neural'], size: 26, step: 3, fill: true }) +
+      K.pic('evidencia', { x: 282, y: -10, s: 96, pos: 'none', step: 4 }) + K.pic('normas', { x: 532, y: 232, s: 96, pos: 'none', step: 5 }) +
+      K.pic('rastro', { x: 282, y: 474, s: 96, pos: 'none', step: 6 }) + K.pic('humano', { x: 32, y: 232, s: 96, pos: 'none', step: 7 }) +
+      K.text({ x: 392, y: 54, t: 'Evidência', size: 28 }) + K.text({ x: 580, y: 360, t: 'Normas', size: 28, anchor: 'middle' }) + K.text({ x: 392, y: 530, t: 'Rastro', size: 28 }) + K.text({ x: 80, y: 360, t: 'Humano', size: 28, anchor: 'middle' }) +
+      K.dot({ cx: 900, cy: 90, r: 12, hollow: true, tone: 'nevoa', t: 'núcleo: modelo neural', step: 8 }) +
+      K.dot({ cx: 900, cy: 170, r: 12, hollow: true, tone: 'nevoa', t: 'anel tracejado: skills (guia macio)', step: 9 }) +
+      K.dot({ cx: 900, cy: 250, r: 12, hollow: true, t: 'anel contínuo: hooks (regra dura)', step: 10 }) +
+      K.dot({ cx: 900, cy: 330, r: 12, hollow: true, t: 'âncoras: evidência, normas, rastro, humano', step: 11 }) +
+      K.dot({ cx: 900, cy: 410, r: 12, t: 'fivela: aprovação humana', step: 12 }),
+      'Esquema do harness: núcleo, anéis e âncoras'),
+    'Metáfora visual da capa: o modelo propõe, o anel rígido confere, a pessoa fecha.',
+    [F('hnv-readme', 'Mapa guia macio × regra dura'), F('art-eq', 'Artigo: Equações 2 e 3')], { selos: [sel('metáfora visual', 'sol')] });
+
+  det('s1-harness3d', 'Harness 3D: detalhes',
+    '<ul class="pt-list"><li>Núcleo luminoso: modelo neural; lê e escreve linguagem natural, propõe e não decide.</li><li>Faixas e anel tracejado: skills e instruções, o guia macio.</li><li>Anel contínuo: hooks, a regra dura executada pelo harness.</li><li>Quatro âncoras: evidência, normas, rastro e humano (E, N, T e H nas equações do artigo).</li><li>Fivela: aprovação humana; só a pessoa fecha e libera.</li></ul>',
+    [F('hnv-readme', 'Mapa guia macio × regra dura'), F('art-eq', 'Artigo: Equações 2 e 3')]);
 
   /* =========================================================
      SLIDE 2
      ========================================================= */
   (function () {
     var tot = 2217, us = 1514, br = 41, rest = tot - us - br;
-    var w = function (x) { return (x / tot * 100).toFixed(2) + '%'; };
-    var l = function (x) { return ((x) / tot * 100).toFixed(2) + '%'; };
-    P['s2-casos'] = body(
-      T('Casos de alucinação em tribunais e taxas em testes') +
-      '<div class="cols c2" style="gap:56px;align-items:start">' +
-      '<div style="display:grid;gap:18px">' +
-      '<div class="kv"><span class="big">' + cnt(tot, 'k') + '</span><span class="mut" style="font-size:30px">casos<br>(25/10/2026)</span></div>' +
-      '<div class="bar-trk" style="height:60px"><i class="bar" style="left:0;width:' + w(us) + ';--d:.3s"></i>' +
-      '<i class="bar luz" style="left:' + w(us) + ';width:' + w(br) + ';--d:.9s"></i>' +
-      '<i class="bar cz" style="left:' + l(us + br) + ';width:' + w(rest) + ';--d:1.1s"></i></div>' +
-      tbl(['1fr', '150px', '140px'], ['País', 'Casos', 'Parcela'], [
-        ['<span class="sw az" style="width:26px;height:26px"></span>EUA', cnt(us, 'k'), pct(us / tot) + '%'],
-        ['<span class="sw luz" style="width:26px;height:26px"></span>Brasil', cnt(br), pct(br / tot) + '%'],
-        ['<span class="sw" style="width:26px;height:26px;background:#6A7690;border-color:#6A7690"></span>Demais países', cnt(rest), pct(rest / tot) + '%']
-      ]) +
-      '<p class="nota" style="font-size:26px">Demais países = total − EUA − Brasil (cálculo do autor). Base mantida por Damien Charlotin.</p>' +
-      '</div>' +
-      '<div style="display:grid;gap:26px">' +
-      '<h3>Taxa de erro em perguntas jurídicas verificáveis</h3>' +
-      '<div style="display:grid;gap:10px"><p>Modelos de linguagem gerais (Dahl et al.) ' + sel('preprint') + '</p>' +
-      '<div class="rng-row"><div class="bar-trk gridbg"><i class="bar" style="left:58%;width:30%;--d:.5s"></i></div><span class="val">58–88%</span></div></div>' +
-      '<div style="display:grid;gap:10px"><p>Ferramentas jurídicas com RAG (Magesh et al.) ' + sel('preprint') + '</p>' +
-      '<div class="rng-row"><div class="bar-trk gridbg"><i class="bar" style="left:17%;width:16%;--d:.9s"></i></div><span class="val">17–33%</span></div></div>' +
-      '<div class="rng-row" style="margin-top:-12px"><div class="axis"><span>0</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div><span></span></div>' +
-      '<p class="nota" style="font-size:26px">Cada faixa vai da menor à maior taxa entre os sistemas testados. Nas versões publicadas em periódicos, os limites divergem (69–88% e “mais de 17%”).</p>' +
-      '</div></div>' +
-      foot([F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')],
-        'Charlotin, AI Hallucination Cases Database, consultada em 25/10/2026. Dahl e Magesh: faixas das versões preprint (arXiv).')
-    );
+    var g = K.text({ x: 0, y: 110, t: '2.217', size: 120, weight: 'b' }) + K.text({ x: 400, y: 70, t: 'casos em tribunais', size: 32 }) + K.text({ x: 400, y: 108, t: '25/10/2026', size: 28, tone: 'nevoa' });
+    g += K.bar({ x: 240, y: 150, w: 520, h: 44, v: us, max: tot, t: 'EUA', val: '1.514', step: 1 }) +
+      K.bar({ x: 240, y: 224, w: 520, h: 44, v: br, max: tot, t: 'Brasil', val: '41', step: 2 }) +
+      K.bar({ x: 240, y: 298, w: 520, h: 44, v: rest, max: tot, t: 'Demais', val: '662', step: 3, tone: 'nevoa' });
+    g += K.text({ x: 1000, y: 100, t: 'erro em perguntas jurídicas', size: 32 }) +
+      K.bar({ x: 1180, y: 150, w: 400, h: 44, v: 88, v0: 58, max: 100, t: 'LLM geral', val: '58–88%', step: 4 }) +
+      K.bar({ x: 1180, y: 224, w: 400, h: 44, v: 33, v0: 17, max: 100, t: 'RAG jurídico', val: '17–33%', step: 5 }) +
+      K.text({ x: 1180, y: 318, t: '0', size: 26, tone: 'nevoa' }) + K.text({ x: 1380, y: 318, t: '50%', size: 26, tone: 'nevoa', anchor: 'middle' }) + K.text({ x: 1580, y: 318, t: '100%', size: 26, tone: 'nevoa', anchor: 'end' });
+    panel('s2-casos', '2.217 casos; erro em testes', K.svg(W, 380, g, 'Casos de alucinação em tribunais e taxas de erro em testes'),
+      'Casos em tribunais (Brasil: 41) e taxas de erro de dois testes publicados como preprint.',
+      [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')], { selos: [sel('preprint')], cred: 'Demais = total − EUA − Brasil (cálculo do autor).' });
   })();
+  det('s2-casos', 'Casos e taxas: detalhes',
+    tbl(['1fr', '200px', '200px'], ['País', 'Casos', 'Parcela'], [['EUA', '1.514', '68,3%'], ['Brasil', '41', '1,8%'], ['Demais países (total − EUA − Brasil)', '662', '29,9%']]) +
+    '<p class="nota">Cada faixa vai da menor à maior taxa entre os sistemas testados. Nas versões publicadas em periódicos, os limites divergem (69–88% e “mais de 17%”).</p>',
+    [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')]);
 
   (function () {
     var z = [['XXXIII', 3.0], ['XXI', 2.2], ['II', 1.6], ['V', 1.1], ['caput', 0.6]];
     var s = 0; z.forEach(function (a) { s += Math.exp(a[1]); });
     var pr = z.map(function (a) { return Math.exp(a[1]) / s; });
-    var rows = z.map(function (a, i) {
-      var bad = i === 0;
-      return '<div class="bar-row" style="grid-template-columns:150px 1fr 330px">' +
-        '<span class="sans" style="font-weight:600;font-size:30px">' + a[0] + '</span>' +
-        '<div class="bar-trk" style="height:42px"><i class="bar' + (bad ? ' err' : '') + '" style="left:0;width:' + (pr[i] * 100).toFixed(1) + '%;--d:' + (0.4 + i * 0.25) + 's"></i></div>' +
-        '<span class="sans' + (bad ? ' err' : '') + '" style="font-size:28px">z = ' + fmt(a[1], 1) + ' → ' + pct(pr[i]) + '%</span></div>';
-    }).join('');
-    P['s2-softmax'] = body(
-      T('Por que um modelo de linguagem alucina: ele escolhe o plausível, não o verdadeiro') +
-      '<div class="cols" style="grid-template-columns:1fr 1fr;gap:30px;align-items:center">' +
-      '<div><span class="eq" style="font-size:74px;padding:12px 24px">softmax(<i>z</i>)<sub><i>i</i></sub> <span class="op">=</span> <span class="frac"><span>e<sup><i>z<sub>i</sub></i></sup></span><span>Σ<sub><i>j</i>=1</sub><sup><i>K</i></sup> e<sup><i>z<sub>j</sub></i></sup></span></span></span></div>' +
-      '<div><span class="eq" style="font-size:50px;padding:12px 24px">P(<i>y<sub>t</sub></i> | <i>y</i><sub>&lt;<i>t</i></sub>, <i>x</i>) <span class="op">=</span> softmax(<i>W h<sub>t</sub></i>)<sub><i>y<sub>t</sub></i></sub></span></div></div>' +
-      '<div class="cols c2" style="gap:50px;align-items:center">' +
-      '<div style="display:grid;gap:14px">' +
-      '<p class="mut" style="font-size:26px">Qual inciso do art. 37 trata de nepotismo? Valores z hipotéticos; probabilidades calculadas pela fórmula. ' + sel('ilustrativo', 'sol') + '</p>' + rows + '</div>' +
-      '<ul class="pt-list">' +
-      '<li>A rede dá uma nota <i>z</i> a cada palavra possível; a softmax transforma as notas em probabilidades que somam 100%.</li>' +
-      '<li>O modelo escreve o que tem maior probabilidade ou sorteia entre as mais prováveis.</li>' +
-      '<li class="err">Nada na fórmula consulta se a fonte existe: um inciso inexistente pode ser a opção mais provável.</li></ul></div>' +
-      foot([F('huang2025', 'Huang et al. (2025)'), F('softmax', 'Definição da softmax')],
-        'Explicação didática. Huang et al. (2025) é a revisão sobre alucinação em modelos de linguagem citada no artigo.')
-    );
+    var g = K.formula({ x: 0, y: 0, w: 900, h: 150, size: 70, t: 'softmax(z)_i = {e^{z_i}|Σ_{j=1}^{K} e^{z_j}}' });
+    g += K.text({ x: 1000, y: 36, t: 'próxima palavra: qual inciso?', size: 30, tone: 'nevoa' });
+    z.forEach(function (a, i) {
+      g += K.bar({ x: 1180, y: 70 + i * 66, w: 330, h: 42, v: pr[i], max: 0.6, t: a[0], val: pct(pr[i]) + '%', step: 1 + i, tone: i === 0 ? 'err' : 'gelo' });
+    });
+    g += K.text({ x: 0, y: 300, t: 'plausível, mas sem fonte', size: 30, tone: 'err' });
+    panel('s2-softmax', 'Por que o modelo alucina', K.svg(W, 420, g, 'Fórmula softmax e barras de probabilidade com uma barra âmbar'),
+      'O modelo escolhe o provável, não o verdadeiro. Valores ilustrativos.',
+      [F('huang2025', 'Huang et al. (2025)'), F('softmax', 'Definição da softmax')], { selos: [sel('ilustrativo', 'sol')] });
+    det('s2-softmax', 'Softmax: detalhes',
+      '<div class="eqrow">' + K.svg(1200, 110, K.formula({ x: 0, y: 0, w: 1200, h: 110, size: 54, t: 'P(y_t | y_{<t}, x) = softmax(W h_t)_{y_t}' }), 'Equação') + '</div>' +
+      '<ul class="pt-list"><li>A rede dá uma nota z a cada palavra possível; a softmax transforma as notas em probabilidades que somam 100%.</li><li>O modelo escreve a mais provável ou sorteia entre as mais prováveis.</li><li>Nada na fórmula consulta se a fonte existe. Valores z hipotéticos; as probabilidades saem da fórmula.</li></ul>',
+      [F('huang2025', 'Huang et al. (2025)'), F('softmax', 'Definição da softmax')]);
   })();
 
-  P['s2-citacoes'] = body(
-    T('Checagem manual: o que o modelo local escreveu sem harness', 'Modelo local de 3 bilhões de parâmetros, três rodadas; conferência em fonte oficial, 25/10/2026.') +
-    tbl(['100px', '480px', '330px', '1fr'], ['Rodada', 'Citação do modelo', 'Veredito', 'O que a fonte oficial mostra'], [
-      ['1 e 2', 'art. 37, inciso XXXIII, da Constituição', '<span class="chip err">inexistente</span>', 'O art. 37 vai só até o inciso XXII.'],
-      ['2', 'Decreto nº 4.653/2002, sobre nomeação de parentes', '<span class="chip err">atribuição falsa</span>', 'É de 27/03/2003, estrutura do Ministério do Turismo; não trata de nepotismo.'],
-      ['3', 'art. 37, inciso XXI, “proíbe o nepotismo”', '<span class="chip err">atribuição falsa</span>', 'O inciso XXI trata de licitação.'],
-      ['3', 'Lei nº 8.112/1990, “principal instrumento” contra nepotismo', '<span class="chip">lei real, sem base</span>', 'Regime dos servidores civis da União; não se aplica a todos os entes.'],
-      ['3', 'ADI 2.958 do STF, como decisão sobre nepotismo', '<span class="chip">pertinência não comprovada</span>', 'O número existe; o assunto cadastrado é outro (Agentes Políticos, Ministério Público).'],
-      ['2', 'Decisão do STJ, sem número', '<span class="chip">não verificável</span>', 'Sem número não há como conferir; o verificador não pega referência vaga.']
-    ]) +
-    foot([F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')],
-      'Fonte: logs/cena1/checagem_manual.json. Nas três rodadas houve ao menos uma citação inexistente ou com conteúdo falso.')
-  );
+  panel('s2-citacoes', 'Checagem manual: três rodadas',
+    K.svg(W, 470,
+      [['Rodada 1', 0, [['art. 37, XXXIII', 'err']]],
+       ['Rodada 2', 150, [['art. 37, XXXIII', 'err'], ['Decreto 4.653/2002', 'err'], ['STJ sem número', 'nevoa']]],
+       ['Rodada 3', 300, [['art. 37, XXI', 'err'], ['Lei 8.112/1990', 'nevoa'], ['ADI 2.958', 'nevoa']]]].map(function (r, i) {
+        var o = K.lane({ x: 0, y: r[1], w: W, h: 130, t: r[0], step: i * 4 + 1 });
+        r[2].forEach(function (c, j) {
+          o += K.box({ x: 260 + j * 460, y: r[1] + 22, w: 420, h: 86, t: c[0], step: i * 4 + 2 + j, tone: c[1], size: 30 });
+        });
+        return o;
+      }).join('') + K.dot({ cx: 20, cy: 450, r: 12, tone: 'err', t: 'inexistente ou com conteúdo falso', step: 14 }) + K.dot({ cx: 700, cy: 450, r: 12, hollow: true, tone: 'nevoa', t: 'real, mas sem base ou não conferível', step: 15 }),
+      'Três rodadas do modelo local 3B, sem harness'),
+    'O modelo local de 3B, sem harness, errou em todas as rodadas.',
+    [F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')]);
+  det('s2-citacoes', 'Checagem manual: detalhes',
+    tbl(['110px', '480px', '1fr'], ['Rodada', 'Citação do modelo', 'O que a fonte oficial mostra'], [
+      ['1 e 2', 'art. 37, inciso XXXIII', 'O art. 37 vai só até o inciso XXII.'],
+      ['2', 'Decreto nº 4.653/2002', 'É de 27/03/2003, estrutura do Ministério do Turismo; não trata de nepotismo.'],
+      ['3', 'art. 37, inciso XXI, “proíbe o nepotismo”', 'O inciso XXI trata de licitação.'],
+      ['3', 'Lei nº 8.112/1990', 'Regime dos servidores civis da União; não se aplica a todos os entes.'],
+      ['3', 'ADI 2.958 do STF', 'O número existe; o assunto cadastrado é outro.'],
+      ['2', 'Decisão do STJ, sem número', 'Sem número não há como conferir.']]),
+    [F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')]);
 
   /* =========================================================
      SLIDE 3
      ========================================================= */
-  P['s3-tab1'] = body(
-    T('Tabela 1: o que cada abordagem entrega') +
-    tbl(['170px', '1.2fr', '1.1fr', '1.1fr', '1fr', '1.2fr'],
-      ['Abordagem', 'Fundamentação externa', 'Regras executáveis', 'Proveniência', 'Controle humano', 'Limitação principal'], [
-        ['LLM puro', 'Não inerente', 'Não inerente', 'Baixa ou não garantida', 'Depende da implementação', 'Alucinação e opacidade'],
-        ['XAI post-hoc', 'Não altera a fundamentação', 'Não assegura conformidade', 'Parcial', 'Apoia a interpretação', 'Fidelidade da explicação'],
-        ['Sistema simbólico', 'Depende da base de conhecimento', 'Forte', 'Alta, se registrada', 'Configurável', 'Rigidez e manutenção'],
-        ['RAG', 'Nativa na recuperação, não na fidelidade final', 'Não inerente', 'Possível, se as fontes forem preservadas', 'Depende da implementação', 'Erros de recuperação ou de citação'],
-        ['IA neurossimbólica', 'Integrável', 'Potencialmente forte', 'Depende da arquitetura', 'Configurável', 'Complexidade de integração e validação'],
-        { cls: 'dest', c: ['Arquitetura proposta', 'Documentos recuperados e vinculados', 'Regras explícitas verificam e podem bloquear', 'Fontes, verificações e decisões registradas', 'Aprovação nos fluxos relevantes', 'Evidência ainda situada e sem linha de base comum'] }
-      ]) +
-    foot([F('art-tab1', 'Artigo: Tabela 1'), F('rudin', 'Rudin (2019)'), sel('síntese dos autores'), sel('não é resultado experimental', 'sol')],
-      'Fonte do artigo: síntese dos autores a partir de Rudin (2019), Lewis et al. (2020), Moreau e Missier (2013) e Garcez e Lamb (2023). Não validada pelos autores citados.')
-  );
+  (function () {
+    var it = [['LLM puro', 'alucinação e opacidade'], ['XAI post-hoc', 'fidelidade da explicação'], ['Simbólico', 'rigidez e manutenção'], ['RAG', 'erro de citação'], ['Neurossimbólica', 'integração e validação'], ['Arquitetura proposta', 'sem base comum']];
+    var g = '';
+    it.forEach(function (x, i) {
+      var last = i === 5;
+      g += K.box({ x: i * 280, y: 0, w: 260, h: 130, t: x[0].split(' ').length > 1 && x[0].length > 12 ? x[0].split(' ') : x[0], size: 26, step: i + 1, fill: last ? 'solid' : true });
+      g += K.arrow({ pts: [[i * 280 + 130, 130], [i * 280 + 130, 200]], step: i + 1, tone: 'nevoa' });
+      g += K.box({ x: i * 280, y: 200, w: 260, h: 130, t: x[1].split(' '), size: 28, step: i + 1, tone: last ? 'gelo' : 'nevoa' });
+    });
+    g += K.text({ x: 0, y: 390, t: 'abordagem', size: 26, tone: 'nevoa' }) + K.text({ x: 0, y: 420, t: 'limitação principal', size: 26, tone: 'nevoa' });
+    panel('s3-tab1', 'Cada abordagem tem um limite', K.svg(W, 440, g, 'Seis abordagens e a limitação principal de cada uma'),
+      'A arquitetura proposta ainda tem evidência situada e sem linha de base comum.',
+      [F('art-tab1', 'Artigo: Tabela 1'), F('rudin', 'Rudin (2019)')], { selos: [sel('síntese dos autores')] });
+  })();
+  det('s3-tab1', 'Tabela 1: detalhes',
+    tbl(['170px', '1.2fr', '1.1fr', '1.1fr', '1fr', '1.2fr'], ['Abordagem', 'Fundamentação externa', 'Regras executáveis', 'Proveniência', 'Controle humano', 'Limitação principal'], [
+      ['LLM puro', 'Não inerente', 'Não inerente', 'Baixa ou não garantida', 'Depende da implementação', 'Alucinação e opacidade'],
+      ['XAI post-hoc', 'Não altera a fundamentação', 'Não assegura conformidade', 'Parcial', 'Apoia a interpretação', 'Fidelidade da explicação'],
+      ['Sistema simbólico', 'Depende da base de conhecimento', 'Forte', 'Alta, se registrada', 'Configurável', 'Rigidez e manutenção'],
+      ['RAG', 'Nativa na recuperação, não na fidelidade final', 'Não inerente', 'Possível, se as fontes forem preservadas', 'Depende da implementação', 'Erros de recuperação ou de citação'],
+      ['IA neurossimbólica', 'Integrável', 'Potencialmente forte', 'Depende da arquitetura', 'Configurável', 'Complexidade de integração e validação'],
+      { cls: 'dest', c: ['Arquitetura proposta', 'Documentos recuperados e vinculados', 'Regras explícitas verificam e podem bloquear', 'Fontes, verificações e decisões registradas', 'Aprovação nos fluxos relevantes', 'Evidência ainda situada e sem linha de base comum'] }]) +
+    '<p>' + sel('síntese dos autores') + ' ' + sel('não é resultado experimental', 'sol') + '</p>',
+    [F('art-tab1', 'Artigo: Tabela 1')]);
 
-  P['s3-rudin'] = body(
-    T('Rudin (2019): o argumento sobre explicações a posteriori') +
-    '<div class="cols c12" style="gap:56px;align-items:stretch">' +
-    '<div class="card" style="display:grid;gap:14px;align-content:start">' +
-    '<p class="sans" style="font-size:30px;font-weight:600;color:var(--mut)">Cynthia Rudin · 2019</p>' +
-    '<p style="font-size:42px;line-height:1.2;font-style:italic">“Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead.”</p>' +
-    '<p class="mut">Nature Machine Intelligence, volume 1, páginas 206–215.</p>' +
-    '<p class="nota" style="font-size:26px">A autora recomenda modelos interpretáveis. O artigo usa o argumento sobre a fidelidade das explicações para defender mecanismos verificáveis.</p></div>' +
-    '<div style="display:grid;gap:20px;align-content:start">' +
-    '<h3>O que o artigo aproveita</h3>' +
-    '<ul class="pt-list">' +
-    '<li>Explicações a posteriori podem não representar a lógica real da caixa-preta em contextos críticos.</li>' +
-    '<li>Em decisões de alto impacto, elas não substituem mecanismos verificáveis.</li>' +
-    '<li>Explicar ajuda a compreender, mas não substitui evidência nem responsabilização.</li></ul>' +
-    svg(760, 190,
-      '<line class="ln" x1="10" y1="40" x2="750" y2="40"/>' +
-      '<g class="fd" style="--d:.3s"><circle class="fl m" cx="60" cy="40" r="14"/><text x="30" y="92" style="font-size:26px">decide</text></g>' +
-      '<g class="fd" style="--d:.8s"><circle class="fl" cx="360" cy="40" r="14"/><text x="260" y="92" style="font-size:26px">explica depois</text></g>' +
-      '<line class="ln az" x1="10" y1="150" x2="750" y2="150"/>' +
-      '<g class="fd" style="--d:1.2s"><circle class="fl luz" cx="60" cy="150" r="14"/><text x="30" y="124" class="m" style="font-size:26px">verifica antes</text></g>' +
-      '<g class="fd" style="--d:1.6s"><circle class="fl luz" cx="360" cy="150" r="14"/><text x="300" y="184" style="font-size:26px">assina</text></g>',
-      'Duas linhas do tempo: explicar depois e verificar antes') +
-    '</div></div>' +
-    foot([F('rudin', 'Rudin (2019)'), F('art-tab1', 'Artigo: Tabela 1')],
-      'Referência: Rudin, C. (2019). Nature Machine Intelligence, 1, 206–215. As três linhas resumem o uso do argumento no artigo (Seções 1, 2.1 e 4.2).')
-  );
+  panel('s3-rudin', 'Explicar depois não basta',
+    K.svg(W, 400,
+      K.lane({ x: 0, y: 0, w: W, h: 170, t: '', step: 1 }) + K.lane({ x: 0, y: 220, w: W, h: 170, t: '', step: 5 }) +
+      K.box({ x: 60, y: 45, w: 330, h: 80, t: 'decide', step: 2, tone: 'nevoa' }) + K.arrow({ pts: [[390, 85], [560, 85]], step: 3, tone: 'nevoa' }) +
+      K.box({ x: 560, y: 45, w: 330, h: 80, t: 'dano', step: 3, tone: 'err' }) + K.arrow({ pts: [[890, 85], [1060, 85]], step: 4, tone: 'nevoa' }) +
+      K.box({ x: 1060, y: 45, w: 420, h: 80, t: 'explica depois', step: 4, tone: 'nevoa' }) +
+      K.box({ x: 60, y: 265, w: 330, h: 80, t: 'verifica antes', step: 6, fill: true }) + K.arrow({ pts: [[390, 305], [560, 305]], step: 7 }) +
+      K.box({ x: 560, y: 265, w: 330, h: 80, t: 'assina', step: 8, fill: 'solid' }),
+      'Duas linhas do tempo: explicar depois e verificar antes'),
+    'Em decisão de alto impacto, a prova vem antes da assinatura (Rudin, 2019).',
+    [F('rudin', 'Rudin (2019)'), F('art-tab1', 'Artigo: Tabela 1')]);
+  det('s3-rudin', 'Rudin (2019): detalhes',
+    '<p class="quote">“Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead.”</p><p class="nota">Nature Machine Intelligence, 1, 206–215. A autora recomenda modelos interpretáveis; o artigo usa o argumento sobre a fidelidade das explicações para defender mecanismos verificáveis.</p>' +
+    '<ul class="pt-list"><li>Explicações a posteriori podem não representar a lógica real da caixa-preta em contextos críticos.</li><li>Em decisões de alto impacto, elas não substituem mecanismos verificáveis.</li><li>Explicar ajuda a compreender, mas não substitui evidência nem responsabilização.</li></ul>',
+    [F('rudin', 'Rudin (2019)')]);
 
   /* =========================================================
      SLIDE 4
@@ -260,759 +242,567 @@
   (function () {
     var seed = 7, rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
     var pts = [];
-    for (var i = 0; i < 52; i++) pts.push({ x: 30 + rnd() * 620, y: 30 + rnd() * 290, s: rnd() });
+    for (var i = 0; i < 40; i++) pts.push({ x: 40 + rnd() * 520, y: 60 + rnd() * 300, s: rnd() });
     var order = pts.map(function (p, i) { return i; }).sort(function (a, b) { return pts[b].s - pts[a].s; });
     var top = order.slice(0, 5);
-    var dots = pts.map(function (p, i) {
+    var g = K.formula({ x: 0, y: 0, w: 1000, h: 110, size: 76, t: 'R_k(q) = TopK_{d∈D} s(q,d)' });
+    g += K.box({ x: 0, y: 150, w: 600, h: 400, t: '', step: 1, tone: 'nevoa' }) + K.text({ x: 20, y: 530, t: 'coleção D', size: 28, tone: 'nevoa' }) + K.text({ x: 1000, y: 70, t: 'q = consulta · D = coleção · s = relevância', size: 26, tone: 'nevoa' });
+    var dots = '';
+    pts.forEach(function (p, i) {
       var t = top.indexOf(i) >= 0;
-      return '<circle class="' + (t ? 'fl pl' : 'fl m') + ' pp" style="--d:' + (0.2 + i * 0.015).toFixed(2) + 's" cx="' + p.x.toFixed(0) + '" cy="' + p.y.toFixed(0) + '" r="' + (5 + p.s * 9).toFixed(1) + '" ' + (t ? '' : 'opacity=".55"') + '/>';
-    }).join('');
-    var rk = top.map(function (id, k) {
-      return '<g class="fd" style="--d:' + (1.4 + k * .18) + 's"><rect class="nd az" x="990" y="' + (30 + k * 58) + '" width="300" height="46"/><text x="1010" y="' + (62 + k * 58) + '" style="font-size:26px">documento d' + (k + 1) + ' · s = ' + fmt(pts[id].s, 2) + '</text></g>';
-    }).join('');
-    P['s4-pinoE'] = body(
-      T('Pino E: evidência recuperada', 'Equação 1: o sistema escolhe, na coleção, os k documentos mais relevantes para a consulta.') +
-      '<div><span class="eq">R<sub><i>k</i></sub>(<i>q</i>) <span class="op">=</span> TopK<sub><i>d</i> <span class="op">∈</span> <i>D</i></sub> <i>s</i>(<i>q</i>, <i>d</i>)</span></div>' +
-      svg(1660, 360,
-        '<rect class="nd" x="0" y="0" width="680" height="350"/><g transform="translate(0,0)">' + dots + '</g>' +
-        '<text class="m" x="20" y="340" style="font-size:26px;display:none"></text>' +
-        '<g class="fd" style="--d:1s"><path class="ln az dr" pathLength="1" style="--d:1.1s" d="M690 175 H960"/><path class="fl" d="M956 161 l24 14 l-24 14z"/>' +
-        '<rect class="nd az" x="740" y="120" width="170" height="110"/><text class="b" x="825" y="168" text-anchor="middle" style="font-size:32px">s(q, d)</text><text class="m" x="825" y="204" text-anchor="middle" style="font-size:26px">relevância</text></g>' +
-        '<rect class="nd" x="970" y="0" width="340" height="350"/>' + rk +
-        '<text x="1010" y="334" class="m" style="font-size:26px">k = 5 · R<tspan baseline-shift="sub" font-size="18">k</tspan>(q)</text>' +
-        '<g class="fd" style="--d:.2s"><text x="0" y="-12" style="font-size:0"></text></g>' +
-        '<g transform="translate(1340,60)"><text x="0" y="0" class="m" style="font-size:26px">pontos = documentos</text><text x="0" y="40" class="m" style="font-size:26px">tamanho = relevância</text><text x="0" y="80" class="m" style="font-size:26px">azul pulsante = top-k</text></g>',
-        'Funil: coleção D, função de relevância e k documentos recuperados') +
-      '<div class="cols c2" style="gap:36px">' +
-      '<p><i>q</i> = consulta · <i>D</i> = coleção · <i>s</i>(<i>q</i>, <i>d</i>) = relevância · <i>R<sub>k</sub></i>(<i>q</i>) = os <i>k</i> documentos recuperados</p>' +
-      '<p class="mut">Recuperar não prova que cada documento seja suficiente ou correto. Pontuações do desenho são ilustrativas.</p></div>' +
-      foot([F('art-eq', 'Artigo: Equação 1')], 'Equação 1 do artigo (Seção 3.1), baseada em Lewis et al. (2020). Dados do desenho: ilustrativos, não medidos.')
-    );
+      dots += K.dot({ cx: p.x, cy: 150 + p.y - 40, r: 5 + p.s * 8, tone: t ? 'gelo' : 'nevoa', step: 2 + (t ? 3 : 0) });
+    });
+    g += dots;
+    g += K.arrow({ pts: [[600, 350], [700, 350]], step: 3 }) + K.box({ x: 700, y: 300, w: 220, h: 100, t: 's(q, d)', s: 'relevância', step: 3, fill: true });
+    g += K.arrow({ pts: [[920, 350], [1040, 350]], step: 4 });
+    for (var k = 0; k < 5; k++) g += K.box({ x: 1040, y: 160 + k * 74, w: 360, h: 56, t: 'documento d' + (k + 1), step: 5 + k * 0.2, fill: true, size: 26 });
+    g += K.text({ x: 1040, y: 560, t: 'R_k(q): os k mais relevantes', size: 28, tone: 'nevoa' });
+    panel('s4-pinoE', 'Evidência recuperada', K.svg(W, 600, g, 'Coleção, função de relevância e k documentos recuperados'),
+      'Recuperar não prova que cada documento seja suficiente ou correto.', [F('art-eq', 'Artigo: Equação 1')], { selos: [sel('pontuações ilustrativas', 'sol')] });
+    det('s4-pinoE', 'Equação 1: detalhes',
+      '<ul class="pt-list"><li>E = evidência. <i>q</i> = consulta; <i>D</i> = coleção; <i>s</i>(<i>q</i>, <i>d</i>) = relevância; <i>R<sub>k</sub></i>(<i>q</i>) = os <i>k</i> documentos recuperados.</li><li>O sistema escolhe, na coleção, os k documentos mais relevantes; não prova que cada um seja suficiente ou correto.</li><li>Pontuações do desenho: ilustrativas, não medidas.</li></ul>',
+      [F('art-eq', 'Artigo: Equação 1')]);
   })();
 
-  P['s4-pinoN'] = body(
-    T('Pino N: a norma e os princípios LIMPE', 'Constituição, art. 37: legalidade, impessoalidade, moralidade, publicidade e eficiência.') +
-    tbl(['330px', '1fr', '1fr'], ['Princípio', 'Mecanismo relacionado', 'Evidência exigida'], [
-      ['<span class="big" style="font-size:54px;color:var(--az);margin-right:14px">L</span>Legalidade', 'Regras normativas e validação de conformidade', 'Norma aplicável, resultado da verificação e exceções'],
-      ['<span class="big" style="font-size:54px;color:var(--az);margin-right:14px">I</span>Impessoalidade', 'Critérios uniformes e testes de consistência', 'Resultados para casos equivalentes e auditoria de viés'],
-      ['<span class="big" style="font-size:54px;color:var(--az);margin-right:14px">M</span>Moralidade', 'Responsabilização e registro de intervenções', 'Autor, justificativa, alterações e decisões humanas'],
-      ['<span class="big" style="font-size:54px;color:var(--az);margin-right:14px">P</span>Publicidade', 'Explicação, proveniência e contestabilidade', 'Fontes, regras e trajetória acessíveis, conforme sigilo e proteção de dados'],
-      ['<span class="big" style="font-size:54px;color:var(--az);margin-right:14px">E</span>Eficiência', 'Automação assistida e recuperação documental', 'Tempo, custo, qualidade e retrabalho medidos comparativamente']
-    ]) +
-    '<p class="nota"><b>LIMPE é uma camada de avaliação jurídico-administrativa</b>, não substitui as capacidades técnicas. Eficiência se mede, não se presume.</p>' +
-    foot([F('art-limpe', 'Artigo: Tabela 2')], 'Tabela 2 do artigo (Seção 2.2): síntese dos autores com base em Brasil (1988), Busuioc (2021), De Fine Licht e De Fine Licht (2020), Pádua e Lorenzetto (2024), Bollotti e Wachowicz (2024) e Tabassi (2023).')
-  );
+  (function () {
+    var it = [['L', 'Legalidade'], ['I', 'Impessoalidade'], ['M', 'Moralidade'], ['P', 'Publicidade'], ['E', 'Eficiência']];
+    var g = '';
+    it.forEach(function (x, i) {
+      g += K.box({ x: i * 340, y: 0, w: 316, h: 250, t: x[1], size: 27, step: i + 1, fill: true });
+      g += K.text({ x: i * 340 + 158, y: 80, t: x[0], size: 80, weight: 'b', anchor: 'middle' });
+    });
+    g = g.replace(/<text class="k-t k-b7" x="(\d+)" y="70"/g, '<text class="k-t k-b7" x="$1" y="70"');
+    g += K.arrow({ pts: [[830, 250], [830, 330]], step: 6 }) + K.box({ x: 500, y: 330, w: 660, h: 100, t: 'regras que o sistema confere', step: 7, fill: 'solid', size: 32 });
+    panel('s4-pinoN', 'Norma: princípios do art. 37', K.svg(W, 450, g, 'Cinco princípios LIMPE levando às regras verificáveis'),
+      'LIMPE = legalidade, impessoalidade, moralidade, publicidade, eficiência. Viram regras conferidas.', [F('art-limpe', 'Artigo: Tabela 2')]);
+    det('s4-pinoN', 'Tabela 2 (LIMPE): detalhes',
+      tbl(['280px', '1fr', '1fr'], ['Princípio', 'Mecanismo relacionado', 'Evidência exigida'], [
+        ['Legalidade', 'Regras normativas e validação de conformidade', 'Norma aplicável, resultado da verificação e exceções'],
+        ['Impessoalidade', 'Critérios uniformes e testes de consistência', 'Resultados para casos equivalentes e auditoria de viés'],
+        ['Moralidade', 'Responsabilização e registro de intervenções', 'Autor, justificativa, alterações e decisões humanas'],
+        ['Publicidade', 'Explicação, proveniência e contestabilidade', 'Fontes, regras e trajetória acessíveis, conforme sigilo'],
+        ['Eficiência', 'Automação assistida e recuperação documental', 'Tempo, custo, qualidade e retrabalho medidos']]) +
+      '<p class="nota">LIMPE é uma camada de avaliação jurídico-administrativa; não substitui as capacidades técnicas.</p>', [F('art-limpe', 'Artigo: Tabela 2')]);
+  })();
 
-  P['s4-pinoT'] = body(
-    T('Pino T: o rastro em padrão W3C PROV', 'Grafo PROV-DM do parecer da demonstração (execução real de 25/10/2026).') +
-    '<div class="cols" style="grid-template-columns:900px 1fr;gap:34px;align-items:start">' +
-    svg(900, 640,
-      '<defs><marker id="ar-t" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl" d="M0 0 L12 6 L0 12z"/></marker></defs>' +
-      /* arestas */
-      '<g class="ln az" style="fill:none;stroke-width:3">' +
-      '<path class="dr" pathLength="1" style="--d:.4s" marker-end="url(#ar-t)" d="M130 270 V112"/>' +
-      '<path class="dr" pathLength="1" style="--d:.6s" marker-end="url(#ar-t)" d="M450 270 V112"/>' +
-      '<path class="dr" pathLength="1" style="--d:.8s" marker-end="url(#ar-t)" d="M770 470 V112"/>' +
-      '<path class="dr" pathLength="1" style="--d:1s" marker-end="url(#ar-t)" d="M130 430 V308"/>' +
-      '<path class="dr" pathLength="1" style="--d:1.2s" marker-end="url(#ar-t)" d="M380 308 L190 440"/>' +
-      '<path class="dr" pathLength="1" style="--d:1.4s" marker-end="url(#ar-t)" d="M520 308 L700 450"/>' +
-      '<path class="dr" pathLength="1" style="--d:1.6s" marker-end="url(#ar-t)" d="M170 500 C230 580 300 588 378 584"/></g>' +
-      /* rótulos */
-      '<g class="m" style="font-size:24px"><text class="m" x="144" y="200" style="font-size:22px">wasAssociatedWith</text><text class="m" x="464" y="200" style="font-size:22px">wasAssociatedWith</text>' +
-      '<text class="m" x="756" y="300" text-anchor="end" style="font-size:22px">wasAttributedTo</text><text class="m" x="144" y="352" style="font-size:22px">wasGeneratedBy</text>' +
-      '<text class="m" x="268" y="412" style="font-size:22px">used</text><text class="m" x="640" y="400" style="font-size:22px">used</text><text class="m" x="200" y="626" style="font-size:22px">wasDerivedFrom</text></g>' +
-      /* agentes */
-      [['modelo', 130], ['harness', 450], ['especialista', 770]].map(function (a, i) {
-        return '<g class="fd" style="--d:' + (0.1 + i * .1) + 's"><polygon class="nd luz" points="' + (a[1] - 100) + ',100 ' + (a[1] - 100) + ',30 ' + a[1] + ',8 ' + (a[1] + 100) + ',30 ' + (a[1] + 100) + ',100"/>' +
-          '<text class="luz b" x="' + a[1] + '" y="68" text-anchor="middle" style="font-size:28px">' + a[0] + '</text></g>';
-      }).join('') +
-      /* atividades */
-      '<g class="fd" style="--d:.3s"><rect class="nd az" x="30" y="270" width="200" height="38"/><text x="130" y="298" text-anchor="middle" style="font-size:26px">geração</text></g>' +
-      '<g class="fd" style="--d:.5s"><rect class="nd az" x="340" y="270" width="220" height="38"/><text x="450" y="298" text-anchor="middle" style="font-size:26px">verificação</text></g>' +
-      /* entidades */
-      '<g class="fd" style="--d:.7s"><ellipse class="nd" cx="130" cy="465" rx="100" ry="38"/><text x="130" y="474" text-anchor="middle" style="font-size:26px">parecer</text></g>' +
-      '<g class="fd" style="--d:.9s"><ellipse class="nd" cx="770" cy="490" rx="110" ry="38"/><text x="770" y="499" text-anchor="middle" style="font-size:26px">ontologia</text></g>' +
-      '<g class="fd" style="--d:1.7s"><ellipse class="nd az" cx="520" cy="580" rx="140" ry="40"/><text x="520" y="589" text-anchor="middle" style="font-size:26px">7 fontes</text></g>',
-      'Grafo PROV-DM com entidades, atividades e agentes') +
-    '<pre class="js" aria-label="Trecho do prov-*.json real">' +
-    '<span class="k">"hnv:parecer-59eacca6ff47"</span>: {\n' +
-    '  <span class="k">"prov:type"</span>: <span class="v">"hnv:Parecer"</span>,\n' +
-    '  <span class="k">"hnv:sha256"</span>: <span class="v">"59eacca6ff47…"</span>,\n' +
-    '  <span class="k">"hnv:status"</span>: <span class="t">"aguardando aprovação humana"</span> },\n\n' +
-    '<span class="k">"hnv:fonte/STF_SV13"</span>: {\n' +
-    '  <span class="k">"prov:type"</span>: <span class="v">"hnv:Sumula"</span>,\n' +
-    '  <span class="k">"prov:label"</span>: <span class="v">"STF, Súmula Vinculante 13"</span>,\n' +
-    '  <span class="k">"hnv:statusValidacao"</span>:\n    <span class="v">"pendente de validação"</span> },\n\n' +
-    '<span class="k">"wasDerivedFrom"</span>: { <span class="k">"_:d7"</span>: {\n' +
-    '  <span class="k">"prov:generatedEntity"</span>:\n    <span class="v">"hnv:parecer-59eacca6ff47"</span>,\n' +
-    '  <span class="k">"prov:usedEntity"</span>:\n    <span class="v">"hnv:fonte/STF_SV13"</span> } }' +
-    '</pre></div>' +
-    foot([F('prov-dm', 'W3C PROV-DM'), F('hnv-cena2b', 'Log real (cena 2b)')],
-      'Trecho abreviado de logs/prov-20261025T192704-230.json; o parecer tem 7 fontes derivadas.')
-  );
+  panel('s4-pinoT', 'Rastro: proveniência registrada',
+    K.svg(W, 580,
+      [['modelo', 200], ['harness', 700], ['especialista', 1300]].map(function (a, i) { return K.box({ x: a[1] - 130, y: 0, w: 260, h: 80, t: a[0], step: i + 1, tone: 'nevoa' }); }).join('') +
+      K.box({ x: 70, y: 220, w: 260, h: 80, t: 'geração', step: 4, fill: true }) + K.box({ x: 570, y: 220, w: 260, h: 80, t: 'verificação', step: 5, fill: true }) +
+      K.box({ x: 70, y: 480, w: 260, h: 80, t: 'parecer', step: 6, fill: 'solid' }) + K.box({ x: 1170, y: 480, w: 260, h: 80, t: 'ontologia', step: 7 }) + K.box({ x: 620, y: 480, w: 320, h: 80, t: '7 fontes', step: 8, fill: true }) +
+      K.arrow({ pts: [[200, 220], [200, 80]], step: 4, tone: 'nevoa' }) + K.arrow({ pts: [[700, 220], [700, 80]], step: 5, tone: 'nevoa' }) + K.arrow({ pts: [[1300, 480], [1300, 80]], step: 7, tone: 'nevoa', t: 'atribuída a', tx: 1400, ty: 280, anchor: 'start' }) +
+      K.arrow({ pts: [[200, 480], [200, 300]], step: 6, t: 'gerado por', tx: 220, ty: 400, anchor: 'start' }) +
+      K.arrow({ pts: [[600, 300], [250, 480]], step: 6, t: 'usou', tx: 360, ty: 370 }) + K.arrow({ pts: [[800, 300], [1230, 480]], step: 7, t: 'usou', tx: 1060, ty: 370 }) +
+      K.arrow({ pts: [[330, 540], [620, 540]], step: 8, t: 'derivado de', tx: 475, ty: 520 }),
+      'Grafo PROV: agentes, atividades e entidades do parecer'),
+    'PROV (padrão W3C de proveniência): quem gerou, o que foi usado e de quais fontes deriva.',
+    [F('prov-dm', 'W3C PROV-DM'), F('hnv-cena2b', 'Log real (cena 2b)')], { cred: 'Registro real de 25/10/2026 (prov-20261025T192704-230).' });
+  det('s4-pinoT', 'Registro PROV: detalhes',
+    '<pre class="js"><span class="k">"hnv:parecer-59eacca6ff47"</span>: {\n  "prov:type": <span class="v">"hnv:Parecer"</span>,\n  "hnv:sha256": <span class="v">"59eacca6ff47…"</span>,\n  "hnv:status": <span class="t">"aguardando aprovação humana"</span> }\n\n<span class="k">"hnv:fonte/STF_SV13"</span>: {\n  "prov:type": <span class="v">"hnv:Sumula"</span>,\n  "prov:label": <span class="v">"STF, Súmula Vinculante 13"</span>,\n  "hnv:statusValidacao": <span class="v">"pendente de validação"</span> }\n\n<span class="k">"wasDerivedFrom"</span>: { "_:d7": {\n  "prov:generatedEntity": <span class="v">"hnv:parecer-59eacca6ff47"</span>,\n  "prov:usedEntity": <span class="v">"hnv:fonte/STF_SV13"</span> } }</pre>' +
+    '<p class="nota">Trecho abreviado; o parecer tem 7 fontes derivadas.</p>', [F('prov-dm', 'W3C PROV-DM'), F('hnv-cena2b', 'Log real (cena 2b)')]);
 
-  P['s4-pinoH'] = body(
-    T('Pino H: a liberação é uma decisão humana', 'Equação 3: a recomendação admissível só entra no resultado se a pessoa responsável decidir mantê-la.') +
-    '<div><span class="eq xl">L(<i>y</i>) <span class="op">=</span> At(<i>y</i>) <span class="op">∧</span> H(<i>y</i>)</span></div>' +
-    '<div class="cols" style="grid-template-columns:560px 1fr;gap:56px;align-items:center">' +
-    svg(560, 300,
-      '<path class="ln dr" pathLength="1" d="M10 90 H170" style="--d:.2s"/><path class="ln dr" pathLength="1" d="M10 210 H170" style="--d:.4s"/>' +
-      '<path class="nd az dr" pathLength="1" d="M170 40 H290 A110 110 0 0 1 290 260 H170 Z" style="--d:.6s"/>' +
-      '<path class="ln az dr" pathLength="1" d="M400 150 H540" style="--d:1.2s"/>' +
-      '<text class="b" x="230" y="162" style="font-size:36px">AND</text>' +
-      '<g class="fd" style="--d:.3s"><text x="10" y="70" style="font-size:28px">At(y) = V</text></g>' +
-      '<g class="fd" style="--d:.5s"><text x="10" y="248" style="font-size:28px">H(y) = F</text></g>' +
-      '<g class="pp" style="--d:1.4s"><circle class="fl block" cx="540" cy="150" r="14"/></g>' +
-      '<text class="block" x="420" y="124" style="font-size:28px">L(y) = F</text>',
-      'Porta AND com At verdadeiro, H falso e saída falsa') +
-    '<div>' + tbl(['1fr', '1fr', '1fr'], ['At(y)', 'H(y)', 'L(y)'], [
-      ['F', 'F', 'F'], ['F', 'V', 'F'],
-      { cls: '', c: ['V', 'F', '<span class="block">F: não liberado</span>'] },
-      { cls: 'dest', c: ['V', 'V', 'V: liberado'] }
-    ]) + '<p class="nota" style="margin-top:14px">Na demonstração real (cena 2b), o parecer ficou em <b>“aguardando aprovação humana”</b>: At verdadeiro, H ainda falso.</p></div></div>' +
-    foot([F('art-eq', 'Artigo: Equação 3'), F('hnv-cena2b', 'Log real (cena 2b)')],
-      'F = falso, V = verdadeiro. A pessoa pode manter, modificar ou rejeitar a recomendação (artigo, Seção 3.1).')
-  );
+  panel('s4-pinoH', 'O humano libera',
+    K.svg(W, 480,
+      K.formula({ x: 0, y: 0, w: 1100, h: 120, size: 84, t: 'L(y) = At(y) ∧ H(y)' }) + K.text({ x: 0, y: 150, t: 'L = liberação · At = admissível · H = decisão humana', size: 28, tone: 'nevoa' }) +
+      K.gate({ x: 640, y: 200, w: 170, h: 200, t: '∧', ins: ['admissível', 'humano: ainda não'], inTone: [null, 'block'], out: 'liberação: não', outTone: 'block', step: 1, stub: 90 }) +
+      K.pic('bloqueio', { x: 1180, y: 214, s: 96, tone: 'block', step: 3 }),
+      'Porta AND: admissível, sem aprovação humana'),
+    'Na demonstração, o parecer ficou “aguardando aprovação humana”.',
+    [F('art-eq', 'Artigo: Equação 3'), F('hnv-cena2b', 'Log real (cena 2b)')]);
+  det('s4-pinoH', 'Equação 3: detalhes',
+    tbl(['1fr', '1fr', '1fr'], ['At(y)', 'H(y)', 'L(y)'], [['F', 'F', 'F'], ['F', 'V', 'F'], ['V', 'F', '<span class="block">F: não liberado</span>'], { cls: 'dest', c: ['V', 'V', 'V: liberado'] }]) +
+    '<p class="nota">F = falso, V = verdadeiro. A pessoa pode manter, modificar ou rejeitar a recomendação (artigo, Seção 3.1).</p>', [F('art-eq', 'Artigo: Equação 3')]);
 
-  P['s4-formula'] = body(
-    T('A fórmula da admissibilidade', 'Equação 2: uma especificação da arquitetura, não uma garantia experimental de legalidade ou correção.') +
-    '<div><span class="eq xl" style="font-size:96px">At(<i>y</i>) <span class="op">=</span> E(<i>y</i>, <i>R</i>) <span class="op">∧</span> N(<i>y</i>, Ω) <span class="op">∧</span> T(<i>y</i>)</span></div>' +
-    '<p class="mut" style="font-size:28px"><i>E</i> = suporte evidencial · <i>N</i> = conformidade com as regras Ω · <i>T</i> = rastreabilidade ' + sel('especificação, não garantia', 'sol') + '</p>' +
-    '<h3>O que a demonstração registrou (F = falso, V = verdadeiro)</h3>' +
-    tbl(['520px', '230px', '1fr', '320px'], ['Execução', 'E ∧ N ∧ T', 'O que o hook apontou', 'Resultado'], [
-      ['Cena 2b: rascunho do modelo local', '<b>F ∧ F ∧ F</b>', '2 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
+  panel('s4-formula', 'Admissível = evidência, norma e rastro',
+    K.svg(W, 480,
+      K.formula({ x: 0, y: 0, w: 1500, h: 120, size: 78, t: 'At(y) = E(y, R) ∧ N(y, Ω) ∧ T(y)' }) +
+      K.text({ x: 0, y: 150, t: 'At = admissível · E = evidência · N = norma · T = rastro', size: 28, tone: 'nevoa' }) +
+      K.gate({ x: 620, y: 190, w: 170, h: 250, t: '∧', ins: ['evidência', 'norma', 'rastro'], out: 'admissível', step: 1, stub: 80 }) +
+      K.text({ x: 1160, y: 330, t: 'especificação,', size: 32, tone: 'nevoa' }) + K.text({ x: 1160, y: 372, t: 'não garantia', size: 32, tone: 'nevoa' }),
+      'Porta AND com três entradas: evidência, norma e rastro'),
+    'Um pino falso bloqueia: nos logs reais, F ∧ F ∧ F e F ∧ V ∧ V bloquearam.',
+    [F('art-eq', 'Artigo: Equação 2'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')]);
+  det('s4-formula', 'Equação 2 e execuções: detalhes',
+    tbl(['520px', '230px', '1fr', '300px'], ['Execução', 'E ∧ N ∧ T', 'O que o hook apontou', 'Resultado'], [
+      ['Cena 2b: rascunho do modelo local 3B', '<b>F ∧ F ∧ F</b>', '2 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
       ['Laço local, rodada 1', '<b>F ∧ F ∧ F</b>', '3 citações bloqueadas', '<span class="block">bloqueado (exit 2)</span>'],
-      ['Laço local, rodadas 2 e 3', '<b>F ∧ V ∧ V</b>', '3 e depois 1 citação bloqueada', '<span class="block">bloqueado (exit 2)</span>'],
-      { cls: 'dest', c: ['Cena 2b: após a correção (modelo de fronteira)', '<b>V ∧ V ∧ V</b>', 'todas as citações na ontologia', 'admissível; aguarda o humano'] }
-    ]) +
-    foot([F('art-eq', 'Artigo: Equação 2'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')],
-      'Valores E, N e T lidos dos logs reais de 25/10/2026 (hnv-demo). Bloqueio exige falha em ao menos um dos três.')
-  );
+      ['Laço local, rodadas 2 e 3', '<b>F ∧ V ∧ V</b>', '3 e depois 1 bloqueada', '<span class="block">bloqueado (exit 2)</span>'],
+      { cls: 'dest', c: ['Cena 2b: após a correção (modelo de fronteira)', '<b>V ∧ V ∧ V</b>', 'todas as citações na ontologia', 'admissível; aguarda o humano'] }]) +
+    '<p class="nota">N e T caem junto quando nenhuma citação passa. E = suporte evidencial; N = conformidade com Ω; T = rastreabilidade. F = falso, V = verdadeiro.</p>',
+    [F('art-eq', 'Artigo: Equação 2'), F('hnv-cena2b', 'Cena 2b'), F('hnv-laco', 'Laço local')]);
 
   (function () {
     var rows = [];
     for (var i = 0; i < 16; i++) {
-      var e = !!(i & 8), n = !!(i & 4), t = !!(i & 2), h = !!(i & 1);
-      var at = e && n && t, l = at && h;
+      var e = !!(i & 8), n = !!(i & 4), t = !!(i & 2), h = !!(i & 1), at = e && n && t, l = at && h;
       var f = function (b) { return b ? 'V' : 'F'; };
-      var last = f(l);
-      if (at && !h) last = '<span class="block">F</span>';
-      var r = [f(e), f(n), f(t), f(h), f(at), last];
+      var r = [f(e), f(n), f(t), f(h), f(at), at && !h ? '<span class="block">F</span>' : f(l)];
       rows.push(l ? { cls: 'dest', c: r.map(function (x) { return x === 'V' ? '<b>V</b>' : x; }) } : r);
     }
-    P['s4-regras'] = body(
-      T('As regras como código e como tabela-verdade', 'Pseudocódigo ilustrativo das Equações 2 e 3 em lógica de regras (estilo Prolog).') +
-      '<div class="cols" style="grid-template-columns:660px 1fr;gap:40px;align-items:start">' +
-      '<div style="display:grid;gap:18px">' +
-      '<pre class="js" style="font-size:30px;font-stretch:84%;line-height:1.45">' +
-      '<span class="k">% Y é admissível se E, N e T valem.</span>\n' +
-      '<span class="t">admissivel</span>(Y) <span class="v">:-</span> evidencia(Y),\n' +
-      '                  norma(Y),\n' +
-      '                  rastro(Y).\n\n' +
-      '<span class="k">% Y é liberada se admissível e o humano aprova.</span>\n' +
-      '<span class="t">liberada</span>(Y) <span class="v">:-</span> admissivel(Y),\n' +
-      '                humano(Y).</pre>' +
-      '<p>' + sel('pseudocódigo ilustrativo, do autor') + '</p>' +
-      '<p class="mut" style="font-size:26px"><b>:-</b> lê-se “se”; a vírgula é ∧ (e).</p></div>' +
-      '<div style="display:grid;gap:20px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">' + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(0, 8), 'tv') + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(8), 'tv') + '</div>' +
-      tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['admissivel', 'evidencia', 'norma', 'rastro', 'humano', 'liberada'], [['At(y)', 'E(y, R)', 'N(y, Ω)', 'T(y)', 'H(y)', 'L(y)']], 'tv') + '</div></div>' +
-      foot([F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')],
-        'Tabela-verdade completa (16 linhas) calculada a partir das Equações 2 e 3. Só a linha destacada libera; em âmbar, a que é admissível mas não liberada.')
-    );
+    panel('s4-regras', 'Regras e tabela-verdade',
+      K.svg(W, 420,
+        K.box({ x: 0, y: 40, w: 760, h: 150, t: ['admissivel(Y) :-', 'evidencia(Y), norma(Y), rastro(Y).'], size: 32, step: 1, fill: true, mono: true }) +
+        K.arrow({ pts: [[380, 190], [380, 250]], step: 2 }) +
+        K.box({ x: 0, y: 250, w: 760, h: 150, t: ['liberada(Y) :-', 'admissivel(Y), humano(Y).'], size: 32, step: 3, fill: 'solid', mono: true }) +
+        K.text({ x: 0, y: 20, t: 'pseudocódigo ilustrativo', size: 26, tone: 'nevoa' }) +
+        K.formula({ x: 900, y: 50, w: 760, h: 100, size: 58, t: 'At = E ∧ N ∧ T', step: 4 }) + K.text({ x: 900, y: 170, t: 'admissível = evidência, norma, rastro', size: 26, tone: 'nevoa' }) +
+        K.formula({ x: 900, y: 250, w: 760, h: 100, size: 58, t: 'L = At ∧ H', step: 5 }) + K.text({ x: 900, y: 370, t: 'liberação = admissível e humano', size: 26, tone: 'nevoa' }),
+        'Duas regras em pseudocódigo e as equações correspondentes'),
+      'O código é ilustrativo e espelha as Equações 2 e 3; a vírgula é ∧.',
+      [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')], { selos: [sel('ilustrativo, do autor', 'sol')] });
+    det('s4-regras', 'Tabela-verdade (16 linhas): detalhes',
+      '<div class="dois">' + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(0, 8), 'tv') + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(8), 'tv') + '</div>' +
+      '<p class="nota">Só a linha destacada libera; em âmbar, a admissível mas não liberada. “:-” lê-se “se”.</p>', [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')]);
   })();
 
   /* =========================================================
      SLIDE 5
      ========================================================= */
   (function () {
-    var lanes = [['Documentos', 20], ['Neural', 150], ['Simbólico', 280], ['Humano', 410]];
-    var bg = lanes.map(function (l, i) {
-      return '<rect x="0" y="' + (l[1] - 12) + '" width="1660" height="108" fill="' + (i % 2 ? '#0A1226' : '#0E1A33') + '" opacity=".8"/>' +
-        '<text class="m" x="14" y="' + (l[1] + 52) + '" style="font-size:28px">' + l[0] + '</text>';
-    }).join('');
-    function node(i, lane, t, s, cls, d) {
-      var x = 190 + i * 245, y = lanes[lane][1];
-      return '<g class="fd" style="--d:' + d + 's"><rect class="nd ' + (cls || '') + '" x="' + x + '" y="' + y + '" width="230" height="84"/>' +
-        '<text class="b ' + (cls === 'luz' ? 'luz' : '') + '" x="' + (x + 115) + '" y="' + (y + 36) + '" text-anchor="middle" style="font-size:28px">' + t + '</text>' +
-        '<text class="' + (cls === 'luz' ? 'luz' : 'm') + '" x="' + (x + 115) + '" y="' + (y + 68) + '" text-anchor="middle" style="font-size:26px">' + s + '</text></g>';
-    }
-    P['s5-fig1'] = body(
-      T('Figura 1 redesenhada: neural propõe, simbólico verifica') +
-      svg(1660, 520,
-        '<defs><marker id="ar-f" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl" d="M0 0 L12 6 L0 12z"/></marker>' +
-        '<marker id="ar-fb" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl block" d="M0 0 L12 6 L0 12z"/></marker></defs>' + bg +
-        '<g class="ln az" style="stroke-width:3">' +
-        '<path class="dr" pathLength="1" style="--d:.3s" marker-end="url(#ar-f)" d="M420 62 H433"/>' +
-        '<path class="dr" pathLength="1" style="--d:.7s" marker-end="url(#ar-f)" d="M663 62 H678 V192 H678"/>' +
-        '<path class="dr" pathLength="1" style="--d:1.1s" marker-end="url(#ar-f)" d="M908 192 H923 V322 H923"/>' +
-        '<path class="dr" pathLength="1" style="--d:1.5s" marker-end="url(#ar-f)" d="M1153 322 H1168"/>' +
-        '<path class="dr" pathLength="1" style="--d:1.9s" marker-end="url(#ar-f)" d="M1398 322 H1413 V452 H1413"/></g>' +
-        '<path class="ln block dr" pathLength="1" style="--d:2.4s" marker-end="url(#ar-fb)" d="M1038 280 V266 H793 V238"/>' +
-        '<text class="block" x="830" y="254" style="font-size:26px">bloqueia e devolve para correção</text>' +
-        node(0, 0, 'Consulta', 'q e coleção D', '', .1) +
-        node(1, 0, 'Recuperar', 'R_k(q)', '', .5) +
-        node(2, 1, 'Gerar', 'modelo neural, y', '', .9) +
-        node(3, 2, 'Verificar', 'E e N (regras Ω)', 'az', 1.3) +
-        node(4, 2, 'Registrar', 'T, em PROV', 'az', 1.7) +
-        node(5, 3, 'Aprovar', 'H(y), então L(y)', 'luz', 2.1),
-        'Raias documentos, neural, simbólico e humano com o fluxo da arquitetura') +
-      '<p class="nota">Redesenho a partir da Figura 1 e da Seção 3.1 do artigo. Se a verificação encontra problema, bloqueia a resposta e a devolve para correção; a liberação depende da decisão humana.</p>' +
-      foot([F('art-arq', 'Artigo: Figura 1 e Seção 3.1')], 'Redesenho do autor do painel; a figura original está no artigo. O nó “Verificar” reúne evidência (E) e norma (N); “Registrar” cobre o rastro (T).')
-    );
+    var ln = [['Documentos', 8], ['Neural', 138], ['Simbólico', 268], ['Humano', 398]];
+    var g = ln.map(function (l, i) { return K.lane({ x: 0, y: l[1], w: W, h: 108, t: l[0], step: 0.1 * i, size: 26 }); }).join('');
+    function nd(i, lane, t, s, o) { o = o || {}; o.x = 220 + i * 240; o.y = ln[lane][1] + 12; o.w = 222; o.h = 84; o.t = t; o.s = s; o.size = 28; return K.box(o); }
+    g += nd(0, 0, 'Consulta', 'q e coleção D', { step: 1, tone: 'nevoa' }) + nd(1, 0, 'Recuperar', 'R_k(q)', { step: 3 }) +
+      nd(2, 1, 'Gerar', 'modelo neural', { step: 5 }) + nd(3, 2, 'Verificar', 'E e N (regras Ω)', { step: 7, fill: true }) +
+      nd(4, 2, 'Registrar', 'T, em PROV', { step: 9, fill: true }) + nd(5, 3, 'Aprovar', 'H(y), então L(y)', { step: 11, fill: 'solid' });
+    g += K.arrow({ pts: [[442, 62], [460, 62]], step: 2 }) + K.arrow({ pts: [[682, 62], [700, 62], [700, 192], [700, 192]], step: 4 }) +
+      K.arrow({ pts: [[922, 192], [940, 192], [940, 322]], step: 6 }) + K.arrow({ pts: [[1162, 322], [1180, 322]], step: 8 }) +
+      K.arrow({ pts: [[1402, 322], [1420, 322], [1420, 452]], step: 10 }) +
+      K.arrow({ pts: [[1050, 280], [1050, 262], [811, 262], [811, 238]], tone: 'block', step: 12, t: 'bloqueia e devolve para correção', tx: 1090, ty: 252, anchor: 'start' });
+    panel('s5-fig1', 'Neural propõe, simbólico verifica', K.svg(W, 520, g, 'Figura 1 redesenhada: fluxo em quatro raias'),
+      'Se a verificação acha problema, bloqueia e devolve; a liberação é humana.', [F('art-arq', 'Artigo: Figura 1 e Seção 3.1')],
+      { cred: 'Redesenho do autor a partir da Figura 1 e da Seção 3.1 do artigo.' });
+    det('s5-fig1', 'Figura 1: detalhes',
+      '<ul class="pt-list"><li>A consulta q e a coleção D guiam a recuperação; o modelo neural gera y.</li><li>Regras explícitas dão evidência, norma e o registro do caminho; problemas bloqueiam a resposta e a devolvem para correção.</li><li>O nó “Verificar” reúne evidência (E) e norma (N); “Registrar” cobre o rastro (T).</li><li>A liberação depende da decisão humana.</li></ul>',
+      [F('art-arq', 'Artigo: Figura 1 e Seção 3.1')]);
   })();
 
-  P['s5-calais'] = body(
-    T('Três níveis de contribuição', 'Do modelo de governança ao sistema que o opera.') +
-    '<div class="cols" style="grid-template-columns:1fr 480px;gap:40px;align-items:stretch">' +
-    '<div class="card" style="background:var(--nt);border-color:var(--neb);padding:26px 30px;display:grid;gap:18px">' +
-    '<div><h3 style="font-size:40px">CALAIS</h3><p class="mut">Modelo de governança e auditabilidade para IA verticalizada, isto é, configurada ao domínio, às suas evidências, regras e responsabilidades.</p></div>' +
-    '<div class="card" style="background:var(--nt2);border-color:var(--az);display:grid;gap:14px">' +
-    '<div><h3 style="font-size:36px">Arquitetura neurossimbólica</h3><p class="mut">Traduz as condições em componentes: recuperação documental, geração neural, checagem por regras, correção, registro da origem e decisão humana.</p></div>' +
-    '<div class="card" style="background:var(--aco);border-color:var(--ink)"><h3 style="font-size:34px">Citāre</h3><p>Artefato de referência: o sistema que hoje operacionaliza o CALAIS por meio dessa arquitetura.</p></div></div></div>' +
-    '<div style="display:grid;gap:18px;align-content:center">' +
-    '<p class="mut">Aplicações prévias informaram o design:</p>' +
-    '<div class="card"><h3>CBMSC</h3><p class="mut">processo público-operacional</p></div>' +
-    '<div class="card"><h3>ESAG/UDESC</h3><p class="mut">processo público-acadêmico de seleção</p></div>' +
-    '<p>' + sel('exploratório') + '</p></div></div>' +
-    '<div class="card" style="border-color:var(--az)"><p style="font-size:28px"><b>CALAIS = harness vertical.</b> O artigo #160 não usa a palavra “harness”; em 2026, a engenharia de agentes passou a chamar assim o conjunto de regras e ferramentas em torno do modelo. ' + F('bockeler2026', 'Böckeler (2026)') + ' ' + F('galster2026', 'Galster et al. (2026)') + '</p></div>' +
-    foot([F('art-arq', 'Artigo: Seções 1 e 3.1'), F('art-escopo', 'Artigo: escopo da evidência')], 'Definição dos três níveis conforme a Introdução do artigo.')
-  );
+  panel('s5-calais', 'Três níveis de contribuição',
+    K.svg(W, 540,
+      K.box({ x: 0, y: 0, w: 1060, h: 540, t: '', step: 1, tone: 'nevoa' }) + K.text({ x: 30, y: 54, t: 'CALAIS', size: 44, weight: 'b' }) + K.text({ x: 30, y: 94, t: 'modelo de governança', size: 28, tone: 'nevoa' }) +
+      K.box({ x: 40, y: 130, w: 980, h: 380, t: '', step: 2 }) + K.text({ x: 70, y: 184, t: 'Arquitetura neurossimbólica', size: 40, weight: 'b' }) + K.text({ x: 70, y: 224, t: 'componentes que operam o modelo', size: 28, tone: 'nevoa' }) +
+      K.box({ x: 80, y: 270, w: 900, h: 210, t: ['Citāre', 'sistema de referência'], size: 40, step: 3, fill: 'solid' }) +
+      K.arrow({ pts: [[1060, 270], [1180, 270]], step: 4, tone: 'nevoa', dash: true }) +
+      K.box({ x: 1180, y: 190, w: 480, h: 160, t: ['= harness', 'vertical'], size: 40, step: 5, fill: true }) +
+      K.box({ x: 1180, y: 400, w: 480, h: 110, t: 'CBMSC · ESAG/UDESC', s: 'aplicações prévias', step: 6, tone: 'nevoa' }),
+      'Três níveis aninhados e a ponte com o harness'),
+    'CALAIS = harness vertical: o artigo não usa a palavra “harness”.',
+    [F('art-arq', 'Artigo: Seções 1 e 3.1'), F('bockeler2026', 'Böckeler (2026)'), F('galster2026', 'Galster et al. (2026)')]);
+  det('s5-calais', 'Três níveis: detalhes',
+    '<ul class="pt-list"><li><b>CALAIS:</b> modelo de governança e auditabilidade para IA verticalizada, configurada ao domínio, às suas evidências, regras e responsabilidades.</li><li><b>Arquitetura neurossimbólica:</b> recuperação documental, geração neural, checagem por regras, correção, registro da origem e decisão humana.</li><li><b>Citāre:</b> artefato de referência que hoje operacionaliza o CALAIS por essa arquitetura.</li><li><b>Ponte:</b> em 2026, a engenharia de agentes passou a chamar de harness o conjunto de regras e ferramentas em torno do modelo.</li></ul><p class="nota">A demonstração mostra que as partes funcionam juntas; efeito e comparação exigem estudo próprio.</p>',
+    [F('art-arq', 'Artigo: Seções 1 e 3.1'), F('bockeler2026', 'Böckeler (2026)'), F('galster2026', 'Galster et al. (2026)')]);
 
-  P['s5-dsr'] = body(
-    T('Tabela 3: seis ciclos de Design Science Research') +
-    '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-bottom:4px">' +
-    ['Problema', 'Requisitos', 'Design', 'Demonstração', 'Avaliação', 'Refinamento'].map(function (c, i) {
-      return '<div class="fd" style="--d:' + (0.2 + i * .2) + 's;background:' + (i === 5 ? 'var(--ink)' : 'var(--aco)') + ';color:' + (i === 5 ? '#0A1428' : 'var(--ink)') + ';font:600 28px/1 var(--fd);padding:20px 10px 20px 36px;clip-path:polygon(0 0,calc(100% - 26px) 0,100% 50%,calc(100% - 26px) 100%,0 100%,26px 50%);margin-right:-8px">' + c + '</div>';
-    }).join('') + '</div>' +
+  panel('s5-dsr', 'Seis ciclos de DSR',
+    K.svg(W, 300,
+      ['Problema', 'Requisitos', 'Design', 'Demonstração', 'Avaliação', 'Refinamento'].map(function (c, i) {
+        return K.box({ x: i * 280, y: 40, w: 250, h: 120, t: c, size: 30, step: i + 1, fill: i === 5 ? 'solid' : true }) +
+          (i < 5 ? K.arrow({ pts: [[i * 280 + 250, 100], [i * 280 + 280, 100]], step: i + 1 }) : '');
+      }).join('') + K.arrow({ pts: [[1405, 160], [1405, 240], [125, 240], [125, 162]], step: 7, tone: 'nevoa', dash: true, t: 'ajustes voltam ao problema', tx: 760, ty: 280 }),
+      'Seis ciclos do Design Science Research com retorno'),
+    'O refinamento volta ao problema: o artefato evolui com a aplicação.',
+    [F('art-dsr', 'Artigo: Tabela 3')]);
+  det('s5-dsr', 'Tabela 3: detalhes',
     tbl(['210px', '1fr', '1fr'], ['Ciclo', 'Atividade realizada', 'Evidência ou produto'], [
       ['Problema', 'Análise de processos decisórios com uso intensivo de documentos', 'Necessidade de evidência, regra, rastro e decisão humana'],
       ['Requisitos', 'Levantamento com documentos e especialistas do domínio', 'Requisitos funcionais e salvaguardas'],
       ['Design', 'Integração de RAG, regras, logs e revisão humana', 'Arquitetura e fluxo de decisão'],
       ['Demonstração', 'Aplicação no CBMSC e versão derivada na ESAG/UDESC', 'Registros dos dois contextos'],
       ['Avaliação', 'Análise descritiva de uso, carga percebida e ocorrências', 'Tabelas, logs e respostas ao Raw NASA-TLX'],
-      ['Refinamento', 'Ajustes derivados da aplicação e da revisão por especialistas', 'Evolução do artefato e de suas regras']
-    ]) +
-    foot([F('art-dsr', 'Artigo: Tabela 3')], 'Fonte do artigo: elaborada pelo autor com base em Peffers et al. (2007), adaptando a sequência às atividades efetivamente realizadas.')
-  );
+      ['Refinamento', 'Ajustes da aplicação e da revisão por especialistas', 'Evolução do artefato e de suas regras']]),
+    [F('art-dsr', 'Artigo: Tabela 3')]);
 
-  P['s5-ponte'] = body(
-    T('A ponte: como a saída neural vira entrada de regras', 'O texto é convertido em símbolos discretos (citações) que as regras conseguem conferir.') +
-    '<div class="cols c3" style="gap:20px">' +
-    '<div><span class="eq" style="font-size:54px"><i>y</i> <span class="op">=</span> <i>f</i>(<i>x</i>)</span><p class="mut" style="font-size:26px;margin-top:8px">neural: texto, probabilístico</p></div>' +
-    '<div><span class="eq" style="font-size:54px"><i>g</i>(<i>y</i>) <span class="op">=</span> N(<i>y</i>, Ω) <span class="op">∧</span> T(<i>y</i>)</span><p class="mut" style="font-size:26px;margin-top:8px">simbólico: V ou F</p></div>' +
-    '<div><span class="eq" style="font-size:54px">(<i>g</i> <span class="op">∘</span> <i>f</i>)(<i>x</i>) <span class="op">=</span> <i>g</i>(<i>f</i>(<i>x</i>))</span><p class="mut" style="font-size:26px;margin-top:8px">composição das duas etapas</p></div></div>' +
-    svg(1660, 330,
-      '<defs><marker id="ar-p" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl" d="M0 0 L12 6 L0 12z"/></marker>' +
-      '<marker id="ar-pb" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl block" d="M0 0 L12 6 L0 12z"/></marker></defs>' +
-      '<rect x="285" y="0" width="520" height="330" fill="none" stroke="#6F8FC7" stroke-width="2" stroke-dasharray="10 8" opacity=".7"/>' +
-      '<text class="m" x="305" y="38" style="font-size:26px">neural (guia macio)</text>' +
-      '<rect x="835" y="0" width="825" height="330" fill="#0E1A33" stroke="#7BA3EE" stroke-width="2.5"/>' +
-      '<text class="m" x="855" y="38" style="font-size:26px">simbólico (regra dura)</text>' +
-      [['Pedido', 'x', 20, ''], ['Modelo', 'f', 310, ''], ['Texto', 'y', 560, ''], ['Extrair', 'φ(y)', 860, 'az'], ['Conferir', 'C ∈ Ω', 1130, 'az'], ['Resultado', 'V ou F', 1400, 'az']].map(function (n, i) {
-        var w = i === 0 || i === 2 ? 220 : 230;
-        return '<g class="fd" style="--d:' + (0.2 + i * .35) + 's"><rect class="nd ' + n[3] + '" x="' + n[2] + '" y="120" width="' + (n[2] === 20 ? 235 : w) + '" height="100"/>' +
-          '<text class="b" x="' + (n[2] + (n[2] === 20 ? 117 : w / 2)) + '" y="160" text-anchor="middle" style="font-size:30px">' + n[0] + '</text>' +
-          '<text class="m" x="' + (n[2] + (n[2] === 20 ? 117 : w / 2)) + '" y="200" text-anchor="middle" style="font-size:28px;font-style:italic">' + n[1] + '</text></g>';
-      }).join('') +
-      '<g class="ln az" style="stroke-width:3"><path class="dr" pathLength="1" style="--d:.5s" marker-end="url(#ar-p)" d="M255 170 H305"/>' +
-      '<path class="dr" pathLength="1" style="--d:.9s" marker-end="url(#ar-p)" d="M540 170 H555"/>' +
-      '<path class="dr" pathLength="1" style="--d:1.3s" marker-end="url(#ar-p)" d="M780 170 H855"/>' +
-      '<path class="dr" pathLength="1" style="--d:1.7s" marker-end="url(#ar-p)" d="M1090 170 H1125"/>' +
-      '<path class="dr" pathLength="1" style="--d:2.1s" marker-end="url(#ar-p)" d="M1360 170 H1395"/></g>' +
-      '<text class="b" x="822" y="96" text-anchor="middle" style="font-size:26px">a ponte</text>' +
-      '<path class="ln block dr" pathLength="1" style="--d:2.6s" marker-end="url(#ar-pb)" d="M1515 220 V290 H425 V224"/>' +
-      '<text class="block" x="640" y="278" style="font-size:26px">F: bloqueio, devolve ao modelo (exit 2)</text>',
-      'Fluxo do pedido ao resultado, com a ponte entre o modelo e as regras') +
-    '<p>' + sel('esquema ilustrativo, do autor') + '</p>' +
-    '<div class="cols c2" style="gap:44px">' +
-    '<p><b>Neural:</b> escreve em linguagem natural; a saída é uma sequência provável de palavras.</p>' +
-    '<p><b>Simbólico:</b> extrai as citações por padrões de texto, consulta uma lista fechada (a ontologia) e devolve V ou F; F bloqueia.</p></div>' +
-    foot([F('pseudocodigo', 'Esquema (ilustrativo)'), F('hnv-readme', 'README da demonstração'), F('art-eq', 'Artigo: Equação 2')],
-      'Notação g ∘ f ilustrativa, do autor deste painel: f é o modelo, g reúne a verificação e o registro. A extração φ usa padrões de texto na demonstração.')
-  );
+  panel('s5-ponte', 'A ponte: texto vira símbolo',
+    K.svg(W, 400,
+      K.lane({ x: 230, y: 0, w: 520, h: 330, t: '', tone: 'nevoa', step: 0.1 }) + K.lane({ x: 770, y: 0, w: 890, h: 330, t: '', step: 0.2 }) +
+      K.text({ x: 250, y: 40, t: 'neural', size: 28, tone: 'nevoa' }) + K.text({ x: 790, y: 40, t: 'simbólico', size: 28 }) +
+      K.box({ x: 0, y: 110, w: 200, h: 110, t: 'Pedido', s: 'x', step: 1, tone: 'nevoa' }) + K.arrow({ pts: [[200, 165], [270, 165]], step: 2 }) +
+      K.box({ x: 270, y: 110, w: 200, h: 110, t: 'Modelo', s: 'f', step: 3, tone: 'nevoa' }) + K.arrow({ pts: [[470, 165], [520, 165]], step: 4, tone: 'nevoa' }) +
+      K.box({ x: 520, y: 110, w: 200, h: 110, t: 'Texto', s: 'y', step: 5, tone: 'nevoa' }) + K.arrow({ pts: [[720, 165], [820, 165]], step: 6, t: 'a ponte', tx: 770, ty: 135 }) +
+      K.box({ x: 820, y: 110, w: 220, h: 110, t: 'Extrair', s: 'φ(y): citações', step: 7, fill: true }) + K.arrow({ pts: [[1040, 165], [1090, 165]], step: 8 }) +
+      K.box({ x: 1090, y: 110, w: 220, h: 110, t: 'Conferir', s: 'C ∈ Ω', step: 9, fill: true }) + K.arrow({ pts: [[1310, 165], [1360, 165]], step: 10 }) +
+      K.box({ x: 1360, y: 110, w: 260, h: 110, t: 'Resultado', s: 'V ou F', step: 11, fill: 'solid' }) +
+      K.arrow({ pts: [[1490, 220], [1490, 300], [370, 300], [370, 222]], tone: 'block', step: 12, t: 'F: bloqueia e devolve ao modelo', tx: 930, ty: 290 }),
+      'Do texto neural às regras simbólicas'),
+    'A saída neural vira citações discretas que as regras conseguem conferir.',
+    [F('pseudocodigo', 'Esquema (ilustrativo)'), F('hnv-readme', 'README da demonstração'), F('art-eq', 'Artigo: Equação 2')], { selos: [sel('esquema ilustrativo', 'sol')] });
+  det('s5-ponte', 'A ponte: detalhes',
+    '<div class="eqrow">' + K.svg(1500, 130, K.formula({ x: 0, y: 0, w: 500, h: 110, size: 60, t: 'y = f(x)' }) + K.formula({ x: 520, y: 0, w: 520, h: 110, size: 60, t: 'g(y) = N(y,Ω) ∧ T(y)' }) + K.formula({ x: 1060, y: 0, w: 440, h: 110, size: 60, t: '(g ∘ f)(x) = g(f(x))' }), 'Equações') + '</div>' +
+    '<ul class="pt-list"><li><b>Neural:</b> escreve em linguagem natural; a saída é uma sequência provável de palavras.</li><li><b>Simbólico:</b> extrai as citações por padrões de texto, consulta uma lista fechada (a ontologia) e devolve V ou F; F bloqueia.</li><li>Notação g ∘ f ilustrativa, do autor deste painel.</li></ul>',
+    [F('pseudocodigo', 'Esquema (ilustrativo)'), F('hnv-readme', 'README da demonstração')]);
 
   /* =========================================================
      SLIDE 6
      ========================================================= */
   (function () {
     var X = function (i) { return i * 276; };
-    function nd(i, y, a, b, cls, d) {
-      var lz = cls === 'luz' ? ' luz' : '';
-      return '<g class="fd" style="--d:' + d + 's"><rect class="nd ' + (cls || '') + '" x="' + X(i) + '" y="' + y + '" width="230" height="84"/>' +
-        '<text class="b' + lz + '" x="' + (X(i) + 115) + '" y="' + (y + 36) + '" text-anchor="middle" style="font-size:26px">' + a + '</text>' +
-        '<text class="' + (lz ? 'luz' : 'm') + '" x="' + (X(i) + 115) + '" y="' + (y + 68) + '" text-anchor="middle" style="font-size:26px">' + b + '</text></g>';
-    }
-    function lab(x, y, t, anchor) { return '<text class="m" x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'middle') + '" style="font-size:26px">' + t + '</text>'; }
-    P['s6-ontologia'] = body(
-      T('A ontologia do Citāre: classes e instâncias') +
-      '<div style="position:relative">' +
-      svg(1660, 520,
-        '<defs><marker id="ar-o" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl" d="M0 0 L12 6 L0 12z"/></marker></defs>' +
-        '<g class="ln az" style="stroke-width:3">' +
-        [0, 1, 2, 3, 4].map(function (i) { return '<path class="dr" pathLength="1" style="--d:' + (0.3 + i * .3) + 's" marker-end="url(#ar-o)" d="M' + (X(i) + 230) + ' 92 H' + (X(i + 1) - 2) + '"/>'; }).join('') +
-        '<path class="dr ln t" pathLength="1" style="--d:1.9s" marker-end="url(#ar-o)" d="M1495 134 V228"/>' +
-        '<path class="dr" pathLength="1" style="--d:2.2s" marker-end="url(#ar-o)" d="M1380 272 H1336"/>' +
-        '<path class="dr" pathLength="1" style="--d:2.5s" marker-end="url(#ar-o)" d="M1104 272 H1060"/>' +
-        '<path class="dr" pathLength="1" style="--d:2.8s" marker-end="url(#ar-o)" d="M943 228 V134"/>' +
-        '<path class="dr" pathLength="1" style="--d:3.1s" marker-end="url(#ar-o)" d="M1380 452 H1336"/>' +
-        '<path class="dr" pathLength="1" style="--d:3.4s" marker-end="url(#ar-o)" d="M1104 452 H1060"/></g>' +
-        lab(X(0) + 253, 36, 'tem seção') + lab(X(1) + 253, 36, 'contém') + lab(X(2) + 253, 36, 'expressa') + lab(X(3) + 253, 36, 'é citada por') + lab(X(4) + 253, 36, 'identifica') +
-        lab(1480, 190, 'tem uma cópia em PDF', 'end') + lab(1357, 222, 'contém') + lab(1082, 222, 'apoia, após validação') + lab(925, 190, 'vínculo de evidência', 'end') +
-        lab(1357, 402, 'confere') + lab(1082, 402, 'produz resultado') +
-        nd(0, 50, 'Artigo 42', ': Artigo', '', .1) + nd(1, 50, 'Introdução', ': Seção', '', .4) + nd(2, 50, 'Parágrafo 4', ': Parágrafo', '', .7) +
-        nd(3, 50, 'Afirmação A1', ': Afirmação', 'az', 1.0) + nd(4, 50, '(Silva, 2022)', ': Citação', '', 1.3) + nd(5, 50, 'Obra de Silva', ': Fonte', '', 1.6) +
-        nd(5, 230, 'PDF da obra', ': Arquivo PDF', '', 2.1) + nd(4, 230, 'Trecho p. 4', ': Trecho', '', 2.4) + nd(3, 230, 'Afirmação A1', ': Afirmação', 'az', 2.7) +
-        nd(5, 410, 'Auditoria 7', ': Auditoria', '', 3.0) + nd(4, 410, 'Fonte / PDF', ': Fonte', '', 3.3) + nd(3, 410, 'evidence_ready', ': Estado', 'luz', 3.6),
-        'Cadeia do artigo até o trecho e a auditoria da fonte') +
-      '<div class="card" style="position:absolute;left:0;top:226px;width:800px;height:290px;padding:16px 22px;display:grid;gap:10px;align-content:start;font-size:26px;line-height:1.25">' +
-      '<p><b>Ontologia:</b> “especificação explícita e formal de uma conceitualização compartilhada” (Studer, Benjamins e Fensel, 1998, a partir de Gruber, 1993).</p>' +
-      '<p><b>T-box</b> (terminologia): as classes e as relações. Três grupos: Conteúdo acadêmico, Evidência e fonte, Controle.</p>' +
-      '<p><b>A-box</b> (asserções): as instâncias e suas ligações, como Artigo 42 e Auditoria 7.</p></div></div>' +
-      '<p class="nota"><b>O artigo foi redigido e conferido com o Citāre, com revisão humana.</b> Dados do CBMSC/ESAG não avaliam o Citāre. Instâncias do desenho são fictícias. ' + sel('material didático') + '</p>' +
-      foot([F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)'), F('art-citare', 'Artigo: declaração de uso')],
-        'Atividade 1 de Desenvolvimento de Ontologias, v05 (30/09/2026). O desenho reproduz a cadeia e a árvore da atividade; as classes intermediárias são didáticas.')
-    );
+    function nd(i, y, a, b, o) { o = o || {}; o.x = X(i); o.y = y; o.w = 230; o.h = 84; o.t = a; o.s = b; o.size = 26; return K.box(o); }
+    function lab(x, y, t, anchor) { return K.text({ x: x, y: y, t: t, size: 26, tone: 'nevoa', anchor: anchor || 'middle' }); }
+    var g = '';
+    var rel = ['tem seção', 'contém', 'expressa', 'é citada por', 'identifica'];
+    for (var i = 0; i < 5; i++) g += K.arrow({ pts: [[X(i) + 230, 92], [X(i + 1) - 2, 92]], step: 2 + i }) + lab(X(i) + 253, 40, rel[i]);
+    g += nd(0, 50, 'Artigo 42', ': Artigo', { step: 1 }) + nd(1, 50, 'Introdução', ': Seção', { step: 2 }) + nd(2, 50, 'Parágrafo 4', ': Parágrafo', { step: 3 }) +
+      nd(3, 50, 'Afirmação A1', ': Afirmação', { step: 4, fill: true }) + nd(4, 50, '(Silva, 2022)', ': Citação', { step: 5 }) + nd(5, 50, 'Obra de Silva', ': Fonte', { step: 6 });
+    g += K.arrow({ pts: [[1495, 134], [1495, 228]], dash: true, step: 7 }) + lab(1480, 176, 'tem cópia em PDF', 'end') +
+      nd(5, 230, 'PDF da obra', ': Arquivo PDF', { step: 7 }) + K.arrow({ pts: [[1380, 272], [1336, 272]], step: 8 }) + lab(1357, 216, 'contém') +
+      nd(4, 230, 'Trecho p. 4', ': Trecho', { step: 8 }) + K.arrow({ pts: [[1104, 272], [1060, 272]], step: 9 }) + lab(1082, 216, 'apoia, após validação') +
+      nd(3, 230, 'Afirmação A1', ': Afirmação', { step: 9, fill: true }) + K.arrow({ pts: [[943, 228], [943, 134]], step: 10 }) + lab(925, 176, 'vínculo de evidência', 'end');
+    g += nd(5, 410, 'Auditoria 7', ': Auditoria', { step: 11 }) + K.arrow({ pts: [[1380, 452], [1336, 452]], step: 12 }) + lab(1357, 402, 'confere') +
+      nd(4, 410, 'Fonte / PDF', ': Fonte', { step: 12 }) + K.arrow({ pts: [[1104, 452], [1060, 452]], step: 13 }) + lab(1082, 402, 'produz resultado') +
+      nd(3, 410, 'evidence_ready', ': Estado', { step: 13, fill: 'solid' });
+    g += K.dot({ cx: 20, cy: 270, r: 12, hollow: true, tone: 'nevoa', t: 'caixa = instância', step: 14 }) + K.text({ x: 54, y: 322, t: ': Classe', size: 26, tone: 'nevoa' }) +
+      K.text({ x: 54, y: 380, t: 'exemplo fictício', size: 26, tone: 'nevoa' });
+    panel('s6-ontologia', 'Ontologia do Citāre', K.svg(W, 520, g, 'Cadeia do artigo ao trecho e à auditoria da fonte'),
+      'O artigo foi conferido com o Citāre, com revisão humana. Dados do CBMSC/ESAG não avaliam o Citāre.',
+      [F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)'), F('art-citare', 'Artigo: declaração de uso')], { selos: [sel('material didático', 'sol')] });
   })();
+  det('s6-ontologia', 'Ontologia: detalhes',
+    '<ul class="pt-list"><li><b>Ontologia:</b> “especificação explícita e formal de uma conceitualização compartilhada” (Studer, Benjamins e Fensel, 1998, a partir de Gruber, 1993).</li><li><b>T-box</b> (terminologia): classes e relações. Três grupos: Conteúdo acadêmico (Artigo, Seção, Parágrafo, Afirmação, Citação); Evidência e fonte (Fonte, Arquivo PDF, Trecho); Controle (Auditoria, Estado).</li><li><b>A-box</b> (asserções): instâncias e suas ligações, como Artigo 42 e Auditoria 7.</li><li>Instâncias do desenho são fictícias, para ensinar a leitura; as classes intermediárias são didáticas.</li></ul><p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b></p>',
+    [F('ont-citare', 'Ontologia do Citāre (v05)'), F('studer1998', 'Studer et al. (1998)')]);
 
-  P['s6-regras'] = body(
-    T('Autoria, ano e DOI; os quatro estados da fonte') +
-    '<div class="cols" style="grid-template-columns:1fr 700px;gap:40px;align-items:start">' +
-    '<div style="display:grid;gap:12px"><h3>Estado da fonte no Citāre</h3>' +
-    svg(940, 200,
-      [['quarantined', 'em quarentena: dado ausente ou divergente', 0], ['identity_verified', 'identidade confirmada', 1], ['text_verified', 'texto conferido: pode anexar', 2], ['evidence_ready', 'trecho validado para a afirmação', 3]].map(function (s, i) {
-        var h = 50 + i * 38, y = 200 - h, x = i * 235;
-        return '<g class="fd" style="--d:' + (0.3 + i * .5) + 's"><rect class="nd ' + (i === 3 ? 'luz' : i === 0 ? 'cz' : 'az') + '" x="' + x + '" y="' + y + '" width="225" height="' + h + '"/>' +
-          '<text class="b ' + (i === 3 ? 'luz' : '') + '" x="' + (x + 12) + '" y="' + (y + 32) + '" style="font-size:26px">' + s[0].replace('_', '_') + '</text></g>';
+  panel('s6-regras', 'Estados da fonte e bloqueios',
+    K.svg(W, 520,
+      [['quarantined', 'em quarentena', 'nevoa'], ['identity_verified', 'identidade', 'gelo'], ['text_verified', 'texto conferido', 'gelo'], ['evidence_ready', 'evidência pronta', 'gelo']].map(function (s, i) {
+        return K.box({ x: i * 415, y: 210 - i * 70, w: 385, h: 100, t: s[0], s: s[1], size: 28, step: i + 1, tone: s[2], fill: i === 3 ? 'solid' : (i ? true : false) });
       }).join('') +
-      [['em quarentena', 0], ['identidade', 1], ['texto', 2], ['evidência', 3]].map(function () { return ''; }).join(''),
-      'Quatro degraus: quarentena, identidade, texto, evidência') +
-    '<ul class="pt-list" style="gap:4px"><li style="font-size:26px">quarantined: dado ausente, não confirmado ou divergente</li><li style="font-size:26px">identity_verified: obra identificada; origem do texto ainda não</li><li style="font-size:26px">text_verified: pode ser anexada ao artigo</li><li style="font-size:26px">evidence_ready: trecho validado ligado a uma afirmação</li></ul></div>' +
-    '<div style="display:grid;gap:12px"><h3>A exportação formal bloqueia na etapa</h3>' +
-    [['bibliographic_match', 'o marcador não achou a obra certa entre as fontes do artigo'], ['recovery', 'a recuperação do PDF falhou'], ['source_audit', 'fonte em quarentena ou sem auditoria atual'], ['exact_evidence', 'falta o vínculo desta afirmação exata ao trecho']].map(function (b) {
-      return '<div class="card block" style="padding:12px 18px"><p class="block sans" style="font-weight:600;font-size:28px">' + b[0] + '</p><p style="font-size:26px">' + b[1] + '</p></div>';
-    }).join('') + '</div></div>' +
-    '<div class="card" style="display:grid;gap:12px"><div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><span class="chip ok">autoria</span><span class="chip ok">ano</span><span class="chip ok">DOI</span><span class="mut" style="font-size:26px">o marcador (Silva, 2022) precisa corresponder a uma obra registrada; o DOI identifica cada obra</span></div>' +
-    '<p style="font-size:26px"><b>Conferido com o Citāre. Declaração de uso de IA do artigo:</b> o autor usou o Citāre, plataforma de assessoria acadêmica com supervisão humana, para apoiar a redação e a verificação de citações; o texto foi guiado pelas fontes da coleção do autor (RAG), com regras de autoria, ano e DOI. Todo conteúdo e toda citação sugeridos foram revisados e aprovados pelo autor, que assume plena responsabilidade, sem atribuir autoria à IA.</p></div>' +
-    '<p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b> ' + sel('material didático') + '</p>' +
-    foot([F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')],
-      'Declaração traduzida do artigo (seção “AI use disclosure”). Estados e etapas: Atividade de Ontologia v05.')
-  );
+      K.arrow({ pts: [[192, 310], [192, 400]], tone: 'block', step: 5 }) +
+      K.box({ x: 0, y: 400, w: 800, h: 110, t: 'exportação bloqueia', s: 'na etapa que falta', size: 30, tone: 'block', step: 6 }) +
+      K.arrow({ pts: [[1437, 310], [1437, 400]], step: 7 }) + K.box({ x: 1040, y: 400, w: 620, h: 110, t: 'exportação passa', s: 'cada citação tem evidência exata', size: 30, step: 8, fill: true }),
+      'Quatro estados da fonte e onde a exportação bloqueia'),
+    'Conferido com o Citāre, com revisão humana. Dados do CBMSC/ESAG não avaliam o Citāre.',
+    [F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')], { selos: [sel('material didático', 'sol')] });
+  det('s6-regras', 'Regras e declaração: detalhes',
+    '<p><span class="chip">autoria</span> <span class="chip">ano</span> <span class="chip">DOI</span> O marcador (Silva, 2022) precisa corresponder a uma obra registrada; o DOI identifica cada obra.</p>' +
+    '<ul class="pt-list"><li><b>quarantined:</b> dado ausente, não confirmado ou divergente.</li><li><b>identity_verified:</b> obra identificada; origem do texto ainda não.</li><li><b>text_verified:</b> pode ser anexada ao artigo.</li><li><b>evidence_ready:</b> trecho validado ligado a uma afirmação.</li><li><b>Bloqueios:</b> bibliographic_match (obra não achada entre as fontes), recovery (PDF não recuperado), source_audit (fonte em quarentena), exact_evidence (falta o vínculo da afirmação exata).</li></ul>' +
+    '<p class="nota"><b>Declaração de uso de IA do artigo:</b> o autor usou o Citāre, plataforma de assessoria acadêmica com supervisão humana, para apoiar a redação e a verificação de citações; o texto foi guiado pelas fontes da coleção do autor (RAG), com regras de autoria, ano e DOI. Todo conteúdo e toda citação sugeridos foram revisados e aprovados pelo autor, que assume plena responsabilidade, sem atribuir autoria à IA.</p>' +
+    '<p class="nota"><b>Dados do CBMSC/ESAG não avaliam o Citāre.</b></p>',
+    [F('art-citare', 'Artigo: declaração de uso de IA'), F('ont-citare', 'Ontologia do Citāre (v05)')]);
 
-  P['s6-triplas'] = body(
-    T('Triplas da ontologia e a recuperação (Equação 1)', 'Sujeito, predicado e objeto: o formato de dados em RDF/OWL.') +
-    '<div class="cols" style="grid-template-columns:1fr 640px;gap:40px;align-items:start">' +
+  panel('s6-triplas', 'Triplas e recuperação (Eq. 1)',
+    K.svg(W, 470,
+      K.formula({ x: 0, y: 0, w: 1100, h: 110, size: 66, t: 'R_k(q) = TopK_{d∈D} s(q,d)', step: 1 }) + K.text({ x: 1000, y: 70, t: 'R = documentos recuperados', size: 26, tone: 'nevoa' }) +
+      [[':A1', 'afirmação'], [':CitSilva2022', 'citação'], [':ObraSilva2022', 'obra'], [':PDFSilva2022', 'cópia em PDF'], [':Trecho_p4', 'trecho']].map(function (n, i) {
+        return K.box({ x: i * 340, y: 300, w: 300, h: 100, t: n[0], s: n[1], size: 26, step: 2 + i, fill: i === 0 });
+      }).join('') +
+      ['temCitacao', 'identifica', 'temCopiaEm', 'contem'].map(function (p, i) { return K.arrow({ pts: [[i * 340 + 300, 350], [i * 340 + 340, 350]], step: 3 + i, t: p, tx: i * 340 + 320, ty: 440, size: 26 }); }).join('') +
+      K.arrow({ pts: [[1530, 300], [1530, 220], [150, 220], [150, 298]], step: 8, t: 'podeApoiar (após validação)', tx: 840, ty: 205 }),
+      'Triplas sujeito, predicado e objeto e a volta ao trecho'),
+    'A recuperação traz candidatos; a tripla “podeApoiar” só vale após validação.',
+    [F('ont-citare', 'Ontologia do Citāre (v05)'), F('art-eq', 'Artigo: Equação 1'), F('pseudocodigo', 'Triplas (ilustrativas)')], { selos: [sel('triplas ilustrativas, do autor', 'sol')] });
+  det('s6-triplas', 'Triplas: detalhes',
     tbl(['1fr', '1fr', '1fr'], ['Sujeito', 'Predicado', 'Objeto'], [
-      [':Artigo42', 'a', ':Artigo'], [':Artigo42', ':temSecao', ':Introducao'], [':Introducao', ':contem', ':Paragrafo4'], [':Paragrafo4', ':expressa', ':A1'],
-      [':A1', ':temCitacao', ':CitSilva2022'], [':CitSilva2022', ':identifica', ':ObraSilva2022'], [':ObraSilva2022', ':temCopiaEm', ':PDFSilva2022'], [':PDFSilva2022', ':contem', ':Trecho_p4'],
-      { cls: 'dest', c: [':Trecho_p4', ':podeApoiar', ':A1'] }, [':Auditoria7', ':confere', ':PDFSilva2022'], [':Auditoria7', ':produzResultado', ':EvidenceReady']
-    ], 'trip') +
-    '<div style="display:grid;gap:18px">' +
-    '<div class="card"><span class="eq" style="font-size:60px;border:none;padding:0;background:none">R<sub><i>k</i></sub>(<i>q</i>) <span class="op">=</span> TopK<sub><i>d</i> <span class="op">∈</span> <i>D</i></sub> <i>s</i>(<i>q</i>, <i>d</i>)</span>' +
-    '<p style="font-size:27px;margin-top:10px">A recuperação (Eq. 1) traz trechos candidatos. A tripla destacada só passa a valer depois da validação: estar no mesmo PDF não basta.</p></div>' +
-    '<p>' + sel('triplas ilustrativas, do autor') + '</p>' +
-    '<p class="nota" style="font-size:26px">Modelagem do autor do painel a partir da Atividade v05; os nomes dos predicados são adaptados e a instância (Silva, 2022) é fictícia.</p></div></div>' +
-    foot([F('ont-citare', 'Ontologia do Citāre (v05)'), F('art-eq', 'Artigo: Equação 1'), F('pseudocodigo', 'Triplas (ilustrativas)')],
-      'Notação Turtle simplificada: “a” significa “é instância de”. Dados do CBMSC/ESAG não avaliam o Citāre.')
-  );
+      [':Artigo42', 'a', ':Artigo'], [':Artigo42', ':temSecao', ':Introducao'], [':Introducao', ':contem', ':Paragrafo4'], [':Paragrafo4', ':expressa', ':A1'], [':A1', ':temCitacao', ':CitSilva2022'],
+      [':CitSilva2022', ':identifica', ':ObraSilva2022'], [':ObraSilva2022', ':temCopiaEm', ':PDFSilva2022'], [':PDFSilva2022', ':contem', ':Trecho_p4'],
+      { cls: 'dest', c: [':Trecho_p4', ':podeApoiar', ':A1'] }, [':Auditoria7', ':confere', ':PDFSilva2022'], [':Auditoria7', ':produzResultado', ':EvidenceReady']], 'trip') +
+    '<p class="nota">Modelagem do autor a partir da Atividade v05; “a” significa “é instância de”; predicados adaptados; instância (Silva, 2022) fictícia. Dados do CBMSC/ESAG não avaliam o Citāre.</p>',
+    [F('ont-citare', 'Ontologia do Citāre (v05)'), F('pseudocodigo', 'Triplas (ilustrativas)')]);
 
   /* =========================================================
      SLIDE 7
      ========================================================= */
   (function () {
-    var meses = [['jan', 4], ['fev', 28], ['mar', 31], ['abr', 30], ['mai', 31], ['jun', 30], ['jul', 31], ['ago', 7]];
-    var tot = 192, cw = 1660 / tot, cells = '', labs = '', i = 0, acc = 0;
-    meses.forEach(function (m) {
-      for (var d = 0; d < m[1]; d++, i++) {
-        cells += '<rect class="fd" style="--d:' + (0.2 + i * 0.012).toFixed(2) + 's" x="' + (i * cw + 1).toFixed(1) + '" y="0" width="' + (cw - 2).toFixed(1) + '" height="54" fill="' + (m[1] < 8 ? '#2C4F86' : '#1E3A66') + '" stroke="#6F8FC7" stroke-width=".8"/>';
-      }
-      if (m[1] > 20) labs += '<text class="m" x="' + ((acc + m[1] / 2) * cw).toFixed(0) + '" y="92" text-anchor="middle" style="font-size:26px">' + m[0] + '</text>';
+    var meses = [['', 4], ['fev', 28], ['mar', 31], ['abr', 30], ['mai', 31], ['jun', 30], ['jul', 31], ['', 7]];
+    var u = W / 192, g = K.arrow({ pts: [[0, 60], [W, 60]], noHead: true, step: 1 }), acc = 0;
+    meses.forEach(function (m, i) {
+      g += K.arrow({ pts: [[acc * u, 44], [acc * u, 76]], noHead: true, step: 1 + i * 0.1 });
+      if (m[0]) g += K.text({ x: (acc + m[1] / 2) * u, y: 110, t: m[0], size: 28, anchor: 'middle', tone: 'nevoa' });
       acc += m[1];
     });
-    var seg = 2813 / 9054;
-    P['s7-logs'] = body(
-      T('CBMSC: o que os logs de envio mostram', 'Janeiro a agosto de 2026, artefato de envio de mensagens.') +
-      '<div class="cols c3" style="align-items:end">' +
-      '<div><span class="big" style="font-size:96px">' + cnt(9054, 'k') + '</span><p class="mut">registros de envio</p></div>' +
-      '<div><span class="big" style="font-size:96px">~' + cnt(191) + '</span><p class="mut">dias, de 28/01 a 07/08/2026</p></div>' +
-      '<div><span class="big" style="font-size:96px;color:#C2CBDD">' + cnt(2813, 'k') + '</span><p class="mut">envios sem sucesso</p></div></div>' +
-      svg(1660, 104, cells + labs, 'Calendário ilustrativo de cerca de 191 dias, de 28 de janeiro a 7 de agosto de 2026') +
-      '<p class="mut" style="font-size:26px;margin-top:-10px">Calendário ilustrativo: só o total do período (9.054 em ~191 dias); não há dado por dia. ' + sel('ilustrativo', 'sol') + '</p>' +
-      '<div style="display:grid;gap:10px"><div class="bar-trk" style="height:50px"><i class="bar aco" style="left:0;width:' + (100 - seg * 100).toFixed(2) + '%;--d:.5s"></i>' +
-      '<i class="bar cz" style="left:' + (100 - seg * 100).toFixed(2) + '%;width:' + (seg * 100).toFixed(2) + '%;--d:1.2s"></i></div>' +
-      '<p class="mut" style="font-size:26px">Cinza: 2.813 sem sucesso (' + pct(seg) + '% dos 9.054). Azul: os demais 6.241 (diferença, cálculo do autor). Sem sucesso não é bloqueio.</p></div>' +
-      '<div class="cols" style="grid-template-columns:repeat(3,1fr) 1.35fr;gap:18px;align-items:stretch">' +
-      '<div class="card"><span class="val">' + cnt(137) + '</span><p style="font-size:26px">falhas de conexão</p></div>' +
-      '<div class="card"><span class="val">' + cnt(143) + '</span><p style="font-size:26px">estados close</p></div>' +
-      '<div class="card"><span class="val">' + cnt(1018, 'k') + '</span><p style="font-size:26px">erros de aquecimento</p></div>' +
-      '<p class="nota" style="font-size:27px"><b>Processos diferentes, não somados.</b> Nenhum evento classificado como banimento ou restrição de linha pela Meta foi localizado. Isso não é risco zero: não há campo exclusivo para detectar todo banimento.</p></div>' +
-      '<p>' + sel('exploratório, SC') + '</p>' +
-      foot([F('art-logs', 'Artigo: logs do CBMSC'), F('art-escopo', 'Artigo: escopo')], 'Seção 4.1 do artigo: de 28/01 a 07/08 são 192 dias contando as duas pontas; o artigo diz “aproximadamente 191”.')
-    );
+    g += K.arrow({ pts: [[W, 44], [W, 76]], noHead: true, step: 2 }) + K.text({ x: 0, y: 28, t: '28/01/2026', size: 28 }) + K.text({ x: W, y: 28, t: '07/08/2026', size: 28, anchor: 'end' }) +
+      K.text({ x: W / 2, y: 28, t: '~191 dias (ilustrativo)', size: 28, anchor: 'middle', tone: 'nevoa' });
+    g += K.bar({ x: 300, y: 170, w: 1000, h: 56, v: 9054, max: 9054, t: 'registros de envio', val: '9.054', step: 3 }) +
+      K.bar({ x: 300, y: 260, w: 1000, h: 56, v: 2813, max: 9054, t: 'sem sucesso', val: '2.813', step: 4, tone: 'nevoa' });
+    g += K.box({ x: 0, y: 370, w: 520, h: 90, t: '137 falhas de conexão', size: 28, step: 5, tone: 'nevoa' }) + K.box({ x: 570, y: 370, w: 520, h: 90, t: '143 estados close', size: 28, step: 6, tone: 'nevoa' }) +
+      K.box({ x: 1140, y: 370, w: 520, h: 90, t: '1.018 erros de aquecimento', size: 28, step: 7, tone: 'nevoa' });
+    panel('s7-logs', 'CBMSC: logs de envio', K.svg(W, 480, g, 'Régua do período, barra de 9.054 registros com 2.813 sem sucesso e três contagens'),
+      'Calendário ilustrativo: só o total do período (9.054 em ~191 dias). Nenhum bloqueio explícito localizado.',
+      [F('art-logs', 'Artigo: logs do CBMSC'), F('art-escopo', 'Artigo: escopo')], { selos: [sel('exploratório, SC')], cred: 'Contagens em processos diferentes não são somadas. Sem sucesso não é bloqueio.' });
+    det('s7-logs', 'Logs do CBMSC: detalhes',
+      '<ul class="pt-list"><li>Período de 28/01 a 07/08/2026: 192 dias contando as duas pontas; o artigo diz “aproximadamente 191”.</li><li>9.054 registros de envio; 2.813 sem sucesso (31,1%); os demais 6.241 são a diferença (cálculo do autor).</li><li>137 falhas de conexão, 143 estados close e 1.018 erros de aquecimento: processos diferentes, não somados.</li><li>Nenhum evento classificado como banimento ou restrição de linha pela Meta foi localizado. Isso não é risco zero: não há campo exclusivo para detectar todo banimento.</li><li>O artigo informa só o total do período; não há dado por dia.</li></ul>',
+      [F('art-logs', 'Artigo: logs do CBMSC')]);
   })();
 
   (function () {
-    var sc = [15.83, 15.83, 5.00, 3.33, 1.67, 0.00];
-    var X = function (v) { return 40 + v * 15.8; };
-    var ticks = '', dots = '';
-    for (var v = 0; v <= 100; v += 10) ticks += '<line class="grid" x1="' + X(v) + '" y1="70" x2="' + X(v) + '" y2="150"/><text class="m" x="' + X(v) + '" y="182" text-anchor="middle" style="font-size:26px">' + v + '</text>';
+    var sc = [15.83, 15.83, 5.00, 3.33, 1.67, 0.00], X = function (v) { return 40 + v * 15.8; };
+    var g = K.arrow({ pts: [[40, 200], [1620, 200]], noHead: true, step: 1 });
+    for (var v = 0; v <= 100; v += 10) g += K.arrow({ pts: [[X(v), 190], [X(v), 210]], noHead: true, step: 1 }) + K.text({ x: X(v), y: 250, t: String(v), size: 26, anchor: 'middle', tone: 'nevoa' });
     var seen = {};
-    sc.forEach(function (s, i) {
-      var k = s.toFixed(2); seen[k] = (seen[k] || 0) + 1;
-      dots += '<circle class="fl pp" style="--d:' + (0.4 + i * .25) + 's" cx="' + X(s) + '" cy="' + (110 - (seen[k] - 1) * 30) + '" r="13"/>';
-    });
-    P['s7-nasa'] = body(
-      T('NASA-TLX bruto: seis registros de tarefas', 'TLX bruto = (1/6) Σ s<sub>i</sub>, sobre as seis dimensões (0 a 100); quanto menor, menor a carga percebida.') +
-      svg(1660, 200,
-        ticks + '<line class="ln" x1="40" y1="150" x2="1620" y2="150"/>' + dots +
-        '<line class="ln az dr" pathLength="1" style="--d:1.9s" x1="' + X(6.94) + '" y1="40" x2="' + X(6.94) + '" y2="150"/>' +
-        '<text class="b" x="' + (X(6.94) + 10) + '" y="34" style="font-size:28px">média 6,94</text>' +
-        '<line class="ln t dr" pathLength="1" style="--d:2.2s" x1="' + X(4.17) + '" y1="58" x2="' + X(4.17) + '" y2="150"/>' +
-        '<text class="m" x="' + (X(4.17) + 340) + '" y="34" text-anchor="end" style="font-size:0"></text>' +
-        '<text x="' + (X(15.83) + 40) + '" y="124" style="font-size:28px">mediana 4,17 (linha tracejada)</text>',
-        'Pontos de 0 a 15,83 numa escala de 0 a 100, com média e mediana') +
-      '<div class="cols" style="grid-template-columns:760px 1fr;gap:44px;align-items:start">' +
-      tbl(['110px', '1fr', '150px'], ['Registro', 'Tarefa', 'Pontuação'], [
-        ['R1', 'Salvar análise de entrevista', '15,83'], ['R2', 'Salvar regras de decisão', '15,83'], ['R3', 'Salvar diagrama BPMN', '5,00'],
-        ['R4', 'Salvar diagrama BPMN', '3,33'], ['R5', 'Salvar diagrama BPMN', '1,67'], ['R6', 'Salvar diagrama BPMN', '0,00']
-      ]) +
-      '<div style="display:grid;gap:14px"><h3>Como ler</h3><ul class="pt-list">' +
-      '<li>São <b>tarefas, não pessoas</b>: seis registros, dois identificadores.</li>' +
-      '<li>Cinco registros vêm da mesma conta, logo não são independentes.</li>' +
-      '<li>Sem comparação manual e sem inferência populacional.</li>' +
-      '<li>O zero foi mantido: a tabela e a auditoria confirmaram o envio.</li></ul></div></div>' +
-      '<p>' + sel('exploratório') + ' ' + sel('sem inferência', 'sol') + '</p>' +
-      foot([F('art-nasa', 'Artigo: Tabela 5'), F('hart1988', 'Hart e Staveland (1988)')], 'Média 6,94; mediana 4,17; faixa 0,00 a 15,83 (Raw NASA-TLX = média simples de seis dimensões).')
-    );
+    sc.forEach(function (s, i) { var k = s.toFixed(2); seen[k] = (seen[k] || 0) + 1; g += K.dot({ cx: X(s), cy: 200 - (seen[k] - 1) * 34, r: 12, step: 2 + i * 0.4 }); });
+    g += K.arrow({ pts: [[X(6.94), 120], [X(6.94), 200]], noHead: true, step: 6, tone: 'nevoa', dash: true }) + K.text({ x: X(6.94) + 14, y: 112, t: 'média 6,94', size: 30, weight: 'b' }) +
+      K.text({ x: X(4.17) - 10, y: 300, t: 'mediana 4,17', size: 30, tone: 'nevoa', anchor: 'start' });
+    g += K.text({ x: 40, y: 60, t: 'escala 0–100: menor valor, menor carga percebida', size: 28, tone: 'nevoa' });
+    panel('s7-nasa', 'Esforço percebido: seis tarefas', K.svg(W, 340, g, 'Seis pontos entre 0 e 15,83 numa escala de 0 a 100'),
+      'NASA-TLX bruto: são tarefas, não pessoas; cinco registros vêm da mesma conta.',
+      [F('art-nasa', 'Artigo: Tabela 5'), F('hart1988', 'Hart e Staveland (1988)')], { selos: [sel('exploratório'), sel('sem inferência', 'sol')] });
+    det('s7-nasa', 'Tabela 5: detalhes',
+      tbl(['110px', '1fr', '170px'], ['Registro', 'Tarefa', 'Pontuação'], [['R1', 'Salvar análise de entrevista', '15,83'], ['R2', 'Salvar regras de decisão', '15,83'], ['R3', 'Salvar diagrama BPMN', '5,00'], ['R4', 'Salvar diagrama BPMN', '3,33'], ['R5', 'Salvar diagrama BPMN', '1,67'], ['R6', 'Salvar diagrama BPMN', '0,00']]) +
+      '<p class="nota">TLX bruto = (1/6) Σ s<sub>i</sub> sobre seis dimensões (0 a 100). Média 6,94; mediana 4,17. Dois identificadores; sem comparação manual; o zero foi mantido porque a tabela e a auditoria confirmaram o envio.</p>',
+      [F('art-nasa', 'Artigo: Tabela 5'), F('hart1988', 'Hart e Staveland (1988)')]);
   })();
 
-  P['s7-tab4'] = body(
-    T('Tabela 4: o que cada caso permite afirmar', 'Evidência delimitada: contextos, etapas e medidas diferentes.') +
-    tbl(['300px', '1fr', '1fr'], ['Dimensão', 'CBMSC', 'ESAG/UDESC'], [
-      ['Contexto', 'Processo público-operacional', 'Processo público-acadêmico de seleção'],
-      ['Etapa', 'Operação assistida observada', 'Versão derivada em fase beta'],
-      ['Raw NASA-TLX', '<span class="az">●</span> Seis registros associados a dois identificadores', '<span class="mut">○</span> Não identificado no material analisado'],
-      ['Logs de operação', '<span class="az">●</span> Disponíveis para envio de mensagens, infraestrutura e aquecimento', '<span class="mut">○</span> Nenhuma medida diretamente comparável identificada'],
-      { cls: 'dest', c: ['Salvaguardas comuns', 'Documentos, regras e decisão humana', 'Documentos, regras e decisão humana'] }
-    ]) +
-    '<p class="nota"><b>● disponível · ○ não identificado.</b> Os dois casos não são comparados quantitativamente e não avaliam o Citāre.</p>' +
-    foot([F('art-tab4', 'Artigo: Tabela 4'), F('art-escopo', 'Artigo: escopo')], 'Tabela 4 do artigo (Seção 4.1), traduzida. ESAG/UDESC: versão beta; não foram identificadas medidas comparáveis.')
-  );
+  (function () {
+    var rows = [['Contexto', 'operacional', 'seleção acadêmica', null, null], ['Etapa', 'operação observada', 'versão beta', null, null],
+      ['NASA-TLX', 'seis registros', 'não identificado', true, false], ['Logs', 'disponíveis', 'sem medida comparável', true, false]];
+    var g = K.box({ x: 360, y: 0, w: 640, h: 80, t: 'CBMSC', size: 34, step: 1, fill: true }) + K.box({ x: 1020, y: 0, w: 640, h: 80, t: 'ESAG/UDESC', size: 34, step: 1, fill: true });
+    rows.forEach(function (r, i) {
+      var y = 110 + i * 100;
+      g += K.text({ x: 0, y: y + 40, t: r[0], size: 30, tone: 'nevoa' });
+      g += K.box({ x: 360, y: y, w: 640, h: 80, t: r[1], size: 28, step: 2 + i, tone: r[3] === true ? 'gelo' : 'nevoa' }) +
+        K.box({ x: 1020, y: y, w: 640, h: 80, t: r[2], size: 28, step: 2 + i, tone: r[4] === false ? 'nevoa' : 'nevoa' });
+      if (r[3] === true) g += K.dot({ cx: 392, cy: y + 40, r: 11, step: 2 + i }) + K.dot({ cx: 1052, cy: y + 40, r: 11, hollow: true, tone: 'nevoa', step: 2 + i });
+    });
+    panel('s7-tab4', 'O que cada caso mostra', K.svg(W, 520, g, 'Dois casos lado a lado com medidas disponíveis e não identificadas'),
+      'Os casos não são comparados quantitativamente e não avaliam o Citāre.', [F('art-tab4', 'Artigo: Tabela 4'), F('art-escopo', 'Artigo: escopo')],
+      { cred: '● disponível · ○ não identificado no material analisado.' });
+    det('s7-tab4', 'Tabela 4: detalhes',
+      tbl(['300px', '1fr', '1fr'], ['Dimensão', 'CBMSC', 'ESAG/UDESC'], [
+        ['Contexto', 'Processo público-operacional', 'Processo público-acadêmico de seleção'], ['Etapa', 'Operação assistida observada', 'Versão derivada em fase beta'],
+        ['Raw NASA-TLX', 'Seis registros associados a dois identificadores', 'Não identificado no material analisado'],
+        ['Logs de operação', 'Disponíveis para envio de mensagens, infraestrutura e aquecimento', 'Nenhuma medida diretamente comparável identificada'],
+        { cls: 'dest', c: ['Salvaguardas comuns', 'Documentos, regras e decisão humana', 'Documentos, regras e decisão humana'] }]),
+      [F('art-tab4', 'Artigo: Tabela 4')]);
+  })();
 
   /* =========================================================
      SLIDE 8
      ========================================================= */
-  P['s8-replay'] = body(
-    T('Replay da execução real', 'Gerado só a partir dos logs de 25/10/2026; cerca de 87 segundos.') +
+  P['s8-replay'] = '<div class="panel-body"><h2 class="pt">' + TITULOS['s8-replay'] + '</h2>' +
     '<iframe class="replay" src="demo/replay.html" title="Replay da demonstração" loading="eager" scrolling="no"></iframe>' +
-    '<p>' + sel('ilustrativa, execução real, 25/10/2026') + '</p>' +
-    foot([F('hnv-cena2b', 'Log real (cena 2b)'), F('hnv-laco', 'Laço local'), F('hnv-cena1', 'Cena 1')],
-      'Espaço pausa; R reinicia. Os logs foram sanitizados (a lista de ferramentas pessoais saiu).')
-  );
+    '<p class="leg">Erro: modelo local 3B. Correção: modelo de fronteira (Sonnet, via Claude Code), cena induzida.</p>' +
+    foot([sel('ilustrativa, execução real, 25/10/2026'), F('hnv-cena2b', 'Log real (cena 2b)'), F('hnv-laco', 'Laço local'), F('hnv-cena1', 'Cena 1')], 'Espaço pausa; R reinicia. Logs sanitizados (sem a lista de ferramentas pessoais).') + '</div>';
+  det('s8-replay', 'Replay: detalhes',
+    '<ul class="pt-list"><li>Cena 1, sem harness: o 3B citou o inciso XXXIII, que não existe.</li><li>Cena 2a: o parecer cita 13 fontes, todas da ontologia; o hook respondeu OK.</li><li>Cena 2b (induzida): o rascunho do 3B foi entregue ao Claude Code (Sonnet); o hook bloqueou (exit 2) e, após a correção, deu OK.</li><li>Laço local do 3B sozinho: 3, 3 e 1 bloqueadas; não liberado.</li></ul>',
+    [F('hnv-cena2b', 'Log real (cena 2b)'), F('hnv-laco', 'Laço local'), F('hnv-cena1', 'Cena 1')]);
 
   (function () {
-    var u = 45, x0 = 40, ticks = '', lab = {};
-    ['I', 'V', 'X', 'XV', 'XX', 'XXII'].forEach(function (r, i) { lab[[1, 5, 10, 15, 20, 22][i]] = r; });
+    var x0 = 40, u = 45, g = K.arrow({ pts: [[x0, 160], [x0 + 22 * u, 160]], noHead: true, step: 1 }) +
+      K.arrow({ pts: [[x0 + 22 * u, 160], [x0 + 33 * u, 160]], noHead: true, dash: true, tone: 'nevoa', step: 2 });
+    var lab = { 1: 'I', 5: 'V', 10: 'X', 15: 'XV', 20: 'XX', 22: 'XXII' };
     for (var k = 1; k <= 22; k++) {
-      var x = x0 + k * u;
-      ticks += '<line class="ln' + (k === 21 ? ' az' : '') + ' dr" pathLength="1" style="--d:' + (0.15 + k * .06).toFixed(2) + 's" x1="' + x + '" y1="' + (k === 21 ? 60 : 78) + '" x2="' + x + '" y2="120"/>';
-      if (lab[k]) ticks += '<text x="' + x + '" y="156" text-anchor="middle" style="font-size:26px">' + lab[k] + '</text>';
+      g += K.arrow({ pts: [[x0 + k * u, k === 21 ? 100 : 128], [x0 + k * u, 160]], noHead: true, step: 1 + k * 0.08, tone: k === 21 ? 'gelo' : 'gelo' });
+      if (lab[k]) g += K.text({ x: x0 + k * u, y: 200, t: lab[k], size: 28, anchor: 'middle' });
     }
-    P['s8-regua'] = body(
-      T('Régua do art. 37: onde o modelo errou', 'O artigo 37 da Constituição tem 22 incisos; o modelo citou o XXXIII.') +
-      svg(1660, 250,
-        '<line class="ln" x1="' + x0 + '" y1="120" x2="' + (x0 + 22 * u) + '" y2="120"/>' +
-        '<line class="ln t" x1="' + (x0 + 22 * u) + '" y1="120" x2="' + (x0 + 33 * u) + '" y2="120" opacity=".6"/>' + ticks +
-        '<text class="m" x="' + (x0 + 27 * u) + '" y="156" text-anchor="middle" style="font-size:26px">sem incisos</text>' +
-        '<g class="fy" style="--d:1.9s"><line class="ln err" x1="' + (x0 + 33 * u) + '" y1="70" x2="' + (x0 + 33 * u) + '" y2="130"/><circle class="fl err" cx="' + (x0 + 33 * u) + '" cy="52" r="14"/>' +
-        '<text class="err b" x="' + (x0 + 33 * u) + '" y="30" text-anchor="middle" style="font-size:28px">XXXIII</text></g>' +
-        '<text class="b" x="' + (x0 + 21 * u) + '" y="44" text-anchor="middle" style="font-size:26px">XXI: licitação</text>' +
-        [2, 5].map(function (k) { return '<circle class="fl" cx="' + (x0 + k * u) + '" cy="196" r="9"/>'; }).join('') +
-        '<text class="m" x="' + (x0 + 6 * u) + '" y="204" style="font-size:26px">pontos azuis: incisos II e V, que estão na ontologia da demonstração</text>',
-        'Régua com 22 incisos do art. 37 e o inciso XXXIII fora da ponta') +
-      '<div class="cols c3" style="gap:20px">' +
-      '<div class="card"><h3>Rodada 1</h3><p><span class="chip err">art. 37, XXXIII</span></p><p class="mut" style="font-size:27px;margin-top:10px">inciso inexistente</p></div>' +
-      '<div class="card"><h3>Rodada 2</h3><p style="display:grid;gap:8px;justify-items:start"><span class="chip err">art. 37, XXXIII</span><span class="chip err">Decreto 4.653/2002</span><span class="chip">decisão do STJ sem número</span></p></div>' +
-      '<div class="card"><h3>Rodada 3</h3><p style="display:grid;gap:8px;justify-items:start"><span class="chip err">art. 37, XXI, “proíbe o nepotismo”</span><span class="chip">Lei 8.112/1990</span><span class="chip">ADI 2.958</span></p></div></div>' +
-      '<p class="nota"><b>Em âmbar:</b> inexistente ou com conteúdo falso. <b>Em cinza-azulado:</b> real, mas sem base ou não conferível. XXXIII só aparece nas rodadas 1 e 2.</p>' +
-      foot([F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')], 'Fontes: checagem manual de 25/10/2026 e texto do art. 37 no Planalto. Modelo local 3B (qwen2.5:3b), sem harness; ele errou nas três rodadas.')
-    );
+    g += K.text({ x: x0 + 21 * u, y: 80, t: 'XXI: licitação', size: 28, anchor: 'middle' });
+    g += K.arrow({ pts: [[x0 + 33 * u, 88], [x0 + 33 * u, 160]], noHead: true, tone: 'err', step: 5 }) + K.dot({ cx: x0 + 33 * u, cy: 70, r: 14, tone: 'err', step: 5 }) +
+      K.text({ x: x0 + 33 * u, y: 36, t: 'XXXIII', size: 34, weight: 'b', tone: 'err', anchor: 'middle' }) + K.text({ x: x0 + 27 * u, y: 200, t: 'sem incisos', size: 28, tone: 'nevoa', anchor: 'middle' });
+    g += K.box({ x: 0, y: 270, w: 500, h: 120, t: 'Rodada 1', s: 'XXXIII', size: 30, step: 6, tone: 'err' }) + K.box({ x: 540, y: 270, w: 500, h: 120, t: 'Rodada 2', s: 'XXXIII · Decreto 4.653', size: 30, step: 7, tone: 'err' }) +
+      K.box({ x: 1080, y: 270, w: 500, h: 120, t: 'Rodada 3', s: 'XXI como nepotismo', size: 30, step: 8, tone: 'err' });
+    panel('s8-regua', 'Régua do art. 37', K.svg(W, 420, g, 'Régua com 22 incisos do art. 37 e o inciso XXXIII fora da ponta'),
+      'O art. 37 tem 22 incisos; o modelo 3B citou o XXXIII nas rodadas 1 e 2.',
+      [F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')]);
+    det('s8-regua', 'Régua: detalhes',
+      '<ul class="pt-list"><li>Rodada 1: art. 37, XXXIII (inexistente).</li><li>Rodada 2: art. 37, XXXIII (inexistente), Decreto 4.653/2002 (atribuição falsa) e decisão do STJ sem número (não verificável).</li><li>Rodada 3: art. 37, XXI como “proíbe o nepotismo” (atribuição falsa; o XXI trata de licitação), Lei 8.112/1990 (real, sem base) e ADI 2.958 (pertinência não comprovada).</li><li>Na ontologia da demonstração estão apenas o caput, o II, o V e o § 4º.</li></ul>',
+      [F('hnv-cena1', 'Checagem manual (cena 1)'), F('cf-art37', 'Constituição, art. 37')]);
   })();
 
   (function () {
-    function nd(x, y, w, h, t, s, cls, d) {
-      return '<g class="fd" style="--d:' + d + 's"><rect class="nd ' + (cls || '') + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/>' +
-        '<text class="b ' + (cls === 'luz' ? 'luz' : cls === 'block' ? 'block' : '') + '" x="' + (x + w / 2) + '" y="' + (y + (s ? 32 : h / 2 + 9)) + '" text-anchor="middle" style="font-size:26px">' + t + '</text>' +
-        (s ? '<text class="' + (cls === 'luz' ? 'luz' : 'm') + '" x="' + (x + w / 2) + '" y="' + (y + 62) + '" text-anchor="middle" style="font-size:26px">' + s + '</text>' : '') + '</g>';
-    }
-    var sq = '';
-    var grupos = [['Norma', 3, 'fl'], ['Dispositivo', 12, 'fl luz'], ['Súmula', 1, 'fl m'], ['Precedente', 2, 'fl cz']];
+    var g = '';
+    g += K.box({ x: 0, y: 0, w: 380, h: 70, t: 'Pedido do servidor', step: 1, tone: 'nevoa' }) + K.arrow({ pts: [[190, 70], [190, 110]], step: 2, tone: 'nevoa' }) +
+      K.box({ x: 0, y: 110, w: 380, h: 80, t: 'Modelo neural', s: 'guia macio: skill', step: 3, tone: 'nevoa' }) + K.arrow({ pts: [[190, 190], [190, 230]], step: 4 }) +
+      K.box({ x: 0, y: 230, w: 380, h: 70, t: 'Grava o parecer', step: 5 }) + K.arrow({ pts: [[190, 300], [190, 340]], step: 6 }) +
+      K.box({ x: 0, y: 340, w: 380, h: 80, t: 'Hook de verificação', s: 'regra dura', step: 7, fill: true }) +
+      K.arrow({ pts: [[380, 380], [480, 380]], step: 8 }) + K.box({ x: 480, y: 340, w: 380, h: 80, t: 'Ontologia', s: '18 fontes', step: 8 }) +
+      K.arrow({ pts: [[190, 420], [190, 470]], step: 9 }) + K.box({ x: 0, y: 470, w: 380, h: 70, t: 'exit 0: registro PROV', size: 26, step: 9, fill: true }) +
+      K.arrow({ pts: [[190, 540], [190, 580]], step: 10 }) + K.box({ x: 0, y: 580, w: 380, h: 70, t: 'Aguardando humano', step: 10, fill: 'solid' }) +
+      K.arrow({ pts: [[380, 405], [440, 405], [440, 510], [480, 510]], step: 11, tone: 'block' }) +
+      K.box({ x: 480, y: 470, w: 380, h: 80, t: 'exit 2: BLOQUEIO', s: 'volta ao modelo', step: 11, tone: 'block' }) +
+      K.arrow({ pts: [[860, 510], [920, 510], [920, 150], [382, 150]], step: 12, tone: 'block' });
     var n = 0;
-    grupos.forEach(function (g) { for (var i = 0; i < g[1]; i++, n++) sq += '<rect class="' + g[2] + ' pp" style="--d:' + (0.2 + n * .06).toFixed(2) + 's" x="' + ((n % 9) * 52) + '" y="' + (Math.floor(n / 9) * 52) + '" width="42" height="42"/>'; });
-    P['s8-portao'] = body(
-      T('O portão: do pedido à aprovação humana', 'Fluxo da demonstração (README) e o que ela não faz.') +
-      '<div class="cols" style="grid-template-columns:1000px 1fr;gap:34px;align-items:start">' +
-      svg(1000, 630,
-        '<defs><marker id="ar-g" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl" d="M0 0 L12 6 L0 12z"/></marker>' +
-        '<marker id="ar-gb" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path class="fl block" d="M0 0 L12 6 L0 12z"/></marker></defs>' +
-        '<g class="ln az" style="stroke-width:3">' +
-        '<path class="dr" pathLength="1" style="--d:.3s" marker-end="url(#ar-g)" d="M170 70 V88"/><path class="dr" pathLength="1" style="--d:.6s" marker-end="url(#ar-g)" d="M170 160 V178"/>' +
-        '<path class="dr" pathLength="1" style="--d:.9s" marker-end="url(#ar-g)" d="M170 250 V268"/><path class="dr" pathLength="1" style="--d:1.2s" marker-end="url(#ar-g)" d="M320 305 H418"/>' +
-        '<path class="dr" pathLength="1" style="--d:1.8s" marker-end="url(#ar-g)" d="M170 340 V378"/><path class="dr" pathLength="1" style="--d:2.1s" marker-end="url(#ar-g)" d="M170 450 V468"/>' +
-        '<path class="dr" pathLength="1" style="--d:2.4s" marker-end="url(#ar-g)" d="M170 540 V558"/></g>' +
-        '<path class="ln block dr" pathLength="1" style="--d:1.5s" marker-end="url(#ar-gb)" d="M320 330 H370 V425 H418"/>' +
-        '<path class="ln block dr" pathLength="1" style="--d:1.9s" marker-end="url(#ar-gb)" d="M748 425 H870 V125 H322"/>' +
-        nd(20, 0, 300, 70, 'Pedido do servidor', '', '', .1) + nd(20, 90, 300, 70, 'Modelo neural', 'guia macio: skill', '', .3) +
-        nd(20, 180, 300, 70, 'Grava o parecer', 'Write ou Edit', '', .5) + nd(20, 270, 300, 70, 'Hook de verificação', 'regra dura', 'az', .7) +
-        nd(420, 260, 340, 90, 'Ontologia', '18 fontes, pendentes', '', 1.0) +
-        nd(420, 380, 330, 90, 'exit 2: BLOQUEIO', 'volta ao modelo', 'block', 1.6) +
-        nd(20, 380, 300, 70, 'exit 0: OK', 'registro PROV', 'az', 1.9) + nd(20, 470, 300, 70, 'Aguardando humano', 'não liberado', 'luz', 2.2) +
-        nd(20, 560, 300, 70, 'aprovar.py', 'só o especialista libera', '', 2.5) +
-        '<text class="m" x="420" y="540" style="font-size:26px">aprovar.py recusa se o parecer</text><text class="m" x="420" y="574" style="font-size:26px">não for admissível ou se o</text><text class="m" x="420" y="608" style="font-size:26px">arquivo tiver mudado.</text>',
-        'Fluxo: pedido, modelo, hook, ontologia, bloqueio ou registro, aprovação humana') +
-      '<div style="display:grid;gap:18px;align-content:start">' +
-      '<h3>Ontologia da demonstração: 18 fontes</h3>' +
-      svg(468, 150, sq, 'Dezoito quadrados: 3 normas, 12 dispositivos, 1 súmula e 2 precedentes') +
-      '<p style="font-size:27px">3 normas · 12 dispositivos · 1 súmula · 2 precedentes ' + sel('pendente de validação') + '</p>' +
-      '<h3>Limites</h3><ul class="pt-list" style="gap:8px">' +
-      '<li style="font-size:26px"><b>Confere citações, não raciocínio.</b></li>' +
-      '<li style="font-size:26px"><b>Bloqueado não é falso:</b> a Resolução 7/2005 existe, mas está fora da ontologia.</li>' +
-      '<li style="font-size:26px">Referência vaga (“uma decisão do STJ”) escapa.</li>' +
-      '<li style="font-size:26px"><b>Quem corrigiu:</b> o 3B errou; na cena 2b (induzida), um modelo de fronteira (Sonnet, via Claude Code) corrigiu no mesmo harness. O 3B sozinho: 3, 3 e 1 bloqueadas; não liberado.</li></ul></div></div>' +
-      foot([F('hnv-readme', 'README da demonstração'), F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-laco', 'Laço local')],
-        'Laço local: citações bloqueadas 3, 3 e 1; encerrou como “bloqueado após o limite de rodadas”. Fluxo conforme o README (25/10/2026).')
-    );
+    [['Norma', 3], ['Dispositivo', 12], ['Súmula', 1], ['Precedente', 2]].forEach(function (c, ci) {
+      for (var i = 0; i < c[1]; i++, n++) g += K.box({ x: 1060 + (n % 9) * 68, y: 120 + Math.floor(n / 9) * 68, w: 56, h: 56, t: '', step: 13 + n * 0.1, tone: ci === 1 ? 'gelo' : 'nevoa', fill: ci === 1 });
+    });
+    g += K.text({ x: 1060, y: 80, t: '18 fontes da ontologia', size: 32, weight: 'b' }) + K.text({ x: 1060, y: 290, t: 'todas pendentes de validação', size: 28, tone: 'nevoa' });
+    g += K.box({ x: 1060, y: 360, w: 600, h: 120, t: 'confere citações,', s: 'não raciocínio', size: 32, step: 15, tone: 'nevoa' });
+    panel('s8-portao', 'O portão: do pedido ao humano', K.svg(W, 660, g, 'Fluxo do pedido ao hook, ontologia, bloqueio, registro e aprovação humana'),
+      'Erro: modelo local 3B. Correção (cena 2b, induzida): modelo de fronteira (Sonnet, via Claude Code).',
+      [F('hnv-readme', 'README da demonstração'), F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-laco', 'Laço local')], { selos: [sel('pendente de validação')] });
+    det('s8-portao', 'Portão: detalhes',
+      '<ul class="pt-list"><li><b>Quem corrigiu:</b> o 3B (qwen2.5:3b) errou; na cena 2b, induzida, um modelo de fronteira (Sonnet, via Claude Code) corrigiu no mesmo harness. O 3B sozinho, no laço: 3, 3 e 1 bloqueadas; não liberado.</li><li>Ontologia: 3 normas, 12 dispositivos, 1 súmula e 2 precedentes, todos “pendente de validação”.</li><li>Confere citações, não raciocínio.</li><li>Bloqueado não é falso: a Resolução 7/2005 existe, mas está fora da ontologia.</li><li>Referência vaga (“uma decisão do STJ”) escapa; o verificador usa padrões de texto, não um analisador jurídico.</li><li>aprovar.py recusa se o parecer não for admissível ou se o arquivo mudou.</li></ul>',
+      [F('hnv-readme', 'README da demonstração'), F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-laco', 'Laço local'), F('hnv-cena2b', 'Cena 2b')]);
   })();
 
-  P['s8-prov'] = body(
-    T('O rastro do parecer: registro em W3C PROV', 'Relatório de verificação do parecer da cena 2b (execução real).') +
-    '<div class="cols" style="grid-template-columns:600px 1fr;gap:40px;align-items:start">' +
-    '<div style="display:grid;gap:22px;justify-items:start">' +
-    '<span class="stamp">aguardando<br>aprovação humana</span>' +
-    tbl(['1fr', '150px'], ['Campo do registro', 'Valor'], [
-      ['evidência', '<b>V</b>'], ['norma', '<b>V</b>'], ['rastreabilidade', '<b>V</b>'], ['admissibilidade', '<b>V</b>'],
-      ['aprovação humana', '<span class="block">F</span>'], ['liberação', '<span class="block">F</span>']
-    ]) +
-    '<p class="mut" style="font-size:26px">Verificação em 17 ms. Parecer sha256 59eacca6ff47…; ontologia 0.1.0, sha256 5b1f9baf096c… ' + sel('pendente de validação') + '</p></div>' +
-    '<div style="display:grid;gap:12px"><h3>Citações resolvidas na ontologia: 9, sobre 7 fontes</h3>' +
-    tbl(['1fr', '1fr', '100px'], ['Citação no parecer', 'Fonte da ontologia', 'Status'], [
-      ['CF/88, art. 37, caput', 'CF88_art37_caput', 'ok'], ['CF/88, art. 37, V', 'CF88_art37_V', 'ok'],
-      ['STF, Súmula Vinculante 13 (2 vezes)', 'STF_SV13', 'ok'], ['STF, RE 579.951', 'STF_RE579951', 'ok'],
-      ['Lei 8.429/1992, art. 11, XI (2 vezes)', 'LEI8429_art11_XI', 'ok'], ['CF/88, art. 37, § 4º', 'CF88_art37_par4', 'ok'],
-      ['Decreto 7.203/2010, art. 2º, III', 'DEC7203_art2_III', 'ok']
-    ]) + '</div></div>' +
-    foot([F('hnv-cena2b', 'Log real (cena 2b)'), F('prov-dm', 'W3C PROV-DM'), F('hnv-ontologia', 'Ontologia (18 fontes)')],
-      'Dados de logs/prov-20261025T192704-230.json: rascunho do modelo local 3B, corrigido por um modelo de fronteira (Sonnet, via Claude Code) em cena induzida. A máquina declara “admissível”; só a pessoa libera.')
-  );
+  (function () {
+    var it = [['evidência', 'V'], ['norma', 'V'], ['rastro', 'V'], ['admissível', 'V'], ['humano', 'F'], ['liberação', 'F']];
+    var g = '';
+    it.forEach(function (x, i) {
+      var bad = x[1] === 'F';
+      g += K.box({ x: i * 280, y: 40, w: 240, h: 150, t: x[0], s: x[1] === 'V' ? 'verdadeiro' : 'falso', size: 30, step: i + 1, tone: bad ? 'block' : 'gelo', fill: !bad && i === 3 });
+      if (i < 5) g += K.arrow({ pts: [[i * 280 + 240, 115], [i * 280 + 280, 115]], step: i + 1, tone: i >= 3 ? 'block' : 'gelo' });
+    });
+    g += K.box({ x: 480, y: 280, w: 700, h: 110, t: 'aguardando aprovação humana', size: 38, step: 8, fill: 'solid' });
+    panel('s8-prov', 'O rastro do parecer', K.svg(W, 430, g, 'Seis campos do registro: quatro verdadeiros e dois falsos; carimbo de aprovação humana pendente'),
+      'Admissível, mas não liberado: falta a aprovação humana. Verificação em 17 ms.',
+      [F('hnv-cena2b', 'Log real (cena 2b)'), F('prov-dm', 'W3C PROV-DM'), F('hnv-ontologia', 'Ontologia (18 fontes)')], { selos: [sel('pendente de validação')] });
+    det('s8-prov', 'Registro: detalhes',
+      tbl(['1fr', '1fr', '100px'], ['Citação no parecer', 'Fonte da ontologia', 'Status'], [
+        ['CF/88, art. 37, caput', 'CF88_art37_caput', 'ok'], ['CF/88, art. 37, V', 'CF88_art37_V', 'ok'], ['STF, Súmula Vinculante 13 (2 vezes)', 'STF_SV13', 'ok'], ['STF, RE 579.951', 'STF_RE579951', 'ok'],
+        ['Lei 8.429/1992, art. 11, XI (2 vezes)', 'LEI8429_art11_XI', 'ok'], ['CF/88, art. 37, § 4º', 'CF88_art37_par4', 'ok'], ['Decreto 7.203/2010, art. 2º, III', 'DEC7203_art2_III', 'ok']]) +
+      '<p class="nota">9 citações resolvidas sobre 7 fontes. Parecer sha256 59eacca6ff47…; ontologia 0.1.0, sha256 5b1f9baf096c…, pendente de validação. Rascunho do 3B corrigido por modelo de fronteira (Sonnet, via Claude Code), cena induzida.</p>',
+      [F('hnv-cena2b', 'Log real (cena 2b)'), F('prov-dm', 'W3C PROV-DM')]);
+  })();
 
   /* =========================================================
      SLIDE 9
      ========================================================= */
   (function () {
-    function row(label, v, max, cls, d, pre) {
-      return '<div class="bar-row" style="grid-template-columns:420px 1fr 130px"><span style="font-size:26px">' + label + '</span>' +
-        '<div class="bar-trk" style="height:42px"><i class="bar ' + cls + '" style="left:0;width:' + (v / max * 100).toFixed(1) + '%;--d:' + d + 's"></i></div>' +
-        '<span class="val" style="font-size:34px">' + (pre || '') + cnt(v) + '</span></div>';
-    }
-    P['s9-metodo'] = body(
-      T('Como foi feita a contagem de “harness” no arXiv', 'Contagem do autor em 25/10/2026, pela API pública; não é revisão sistemática.') +
-      '<div class="cols" style="grid-template-columns:560px 1fr;gap:40px;align-items:start">' +
-      '<ol class="pt-list" style="gap:14px;list-style:none">' +
-      '<li><b>1. Busca:</b> título com “harness” e <b>agent</b> no resumo (<i>ti:harness AND abs:agent</i>).</li>' +
-      '<li><b>2. Filtro:</b> “harness” ou “harnesses” no título; “harnessing” fica de fora.</li>' +
-      '<li><b>3. Sentido:</b> 2025 conferido título a título (3 de 4). 2026: o descarte foi <b>estimado</b> por amostra de 25 títulos, todos de agentes; não foi título a título.</li></ol>' +
-      '<div style="display:grid;gap:20px">' +
-      '<div style="display:grid;gap:8px"><h3>2025</h3>' + row('título com harness (inclui harnessing)', 23, 500, 'cz', .3) + row('harness ou harnesses', 4, 500, 'aco', .6) + row('sentido de agente, conferido', 3, 500, '', .9) + '</div>' +
-      '<div style="display:grid;gap:8px"><h3>2026, até 25/10 ' + sel('contagem do autor') + ' ' + sel('≈ estimativa', 'sol') + '</h3>' + row('título com harness (inclui harnessing)', 498, 500, 'cz', 1.2) + row('harness ou harnesses', 446, 500, 'aco', 1.5) + row('sentido de agente, estimado', 446, 500, '', 1.8, '≈') + '</div>' +
-      '<p class="nota" style="font-size:26px">Só a forma singular “harness” dá 362 em 2026 (reprodução do avaliador). Em 2023 e 2024 não há ocorrência. 2026 é parcial.</p></div></div>' +
-      foot([F('arxiv-count', 'Contagem do autor (arXiv)')], 'Consulta ti:harness AND abs:agent em 25/10/2026. O número de 2026 (≈446) supõe que a amostra de 25 títulos represente o conjunto.')
-    );
+    var g = K.text({ x: 0, y: 40, t: '2025', size: 40, weight: 'b' }) +
+      K.bar({ x: 380, y: 70, w: 900, h: 44, v: 23, max: 500, t: 'busca', val: '23', step: 1, tone: 'nevoa' }) +
+      K.bar({ x: 380, y: 140, w: 900, h: 44, v: 4, max: 500, t: 'harness(es)', val: '4', step: 2, tone: 'nevoa' }) +
+      K.bar({ x: 380, y: 210, w: 900, h: 44, v: 3, max: 500, t: 'com agent', val: '3', step: 3 }) +
+      K.text({ x: 0, y: 320, t: '2026', size: 40, weight: 'b' }) + K.text({ x: 140, y: 320, t: 'até 25/10', size: 28, tone: 'nevoa' }) +
+      K.bar({ x: 380, y: 350, w: 900, h: 44, v: 498, max: 500, t: 'busca', val: '498', step: 4, tone: 'nevoa' }) +
+      K.bar({ x: 380, y: 420, w: 900, h: 44, v: 446, max: 500, t: 'harness(es)', val: '446', step: 5, tone: 'nevoa' }) +
+      K.bar({ x: 380, y: 490, w: 900, h: 44, v: 446, max: 500, t: 'com agent', val: '≈446', step: 6 });
+    panel('s9-metodo', 'Como contamos “harness” no arXiv', K.svg(W, 560, g, 'Barras da contagem de 2025 e 2026 em três etapas'),
+      'Busca ti:harness AND abs:agent; em 2026, o descarte foi estimado por amostra de 25 títulos.',
+      [F('arxiv-count', 'Contagem do autor (arXiv)')], { selos: [sel('contagem do autor'), sel('≈ estimativa', 'sol')] });
+    det('s9-metodo', 'Método da contagem: detalhes',
+      '<ul class="pt-list"><li><b>1. Busca:</b> título com “harness” e agent no resumo (ti:harness AND abs:agent), na API pública do arXiv, em 25/10/2026.</li><li><b>2. Filtro:</b> “harness” ou “harnesses” no título; “harnessing” fica de fora.</li><li><b>3. Sentido:</b> 2025 conferido título a título (3 de 4). 2026: descarte estimado por amostra de 25 títulos, todos de agentes; não foi título a título.</li><li>Só a forma singular “harness” dá 362 em 2026 (reprodução do avaliador). Em 2023 e 2024 não há ocorrência. 2026 é parcial.</li><li>Não é revisão sistemática; o ≈446 supõe que a amostra represente o conjunto.</li></ul>',
+      [F('arxiv-count', 'Contagem do autor (arXiv)')]);
   })();
 
-  P['s9-cmu'] = body(
-    T('Modelo pequeno com bom harness', 'Yang, Zhao, Wu e Kästner (2026), arXiv 2607.08938 ' ) +
-    '<div class="cols" style="grid-template-columns:900px 1fr;gap:44px;align-items:center">' +
-    svg(900, 480,
-      '<line class="ln" x1="0" y1="400" x2="900" y2="400"/>' +
-      '<line class="grid" x1="0" y1="40" x2="900" y2="40"/><text class="m" x="900" y="28" text-anchor="end" style="font-size:26px">linha: 100% do modelo grande</text>' +
-      [['Desempenho', 0, 100, 89.7], ['Custo', 450, 100, 4]].map(function (g, gi) {
-        var h1 = 360, h2 = 360 * g[3] / 100;
-        return '<g><rect class="gy fl cz" style="--d:' + (0.3 + gi * .9) + 's" x="' + (g[1] + 40) + '" y="40" width="150" height="' + h1 + '"/>' +
-          '<rect class="gy fl ' + (gi === 0 ? '' : 'luz') + '" style="--d:' + (0.8 + gi * .9) + 's" x="' + (g[1] + 230) + '" y="' + (400 - h2) + '" width="150" height="' + h2 + '"/>' +
-          '<text class="b" x="' + (g[1] + 305) + '" y="' + (400 - h2 - 14) + '" text-anchor="middle" style="font-size:40px">' + String(g[3]).replace('.', ',') + '%</text>' +
-          '<text x="' + (g[1] + 215) + '" y="448" text-anchor="middle" style="font-size:28px">' + g[0] + '</text>' +
-          '<text class="m" x="' + (g[1] + 115) + '" y="80" text-anchor="middle" style="font-size:26px;display:none"></text></g>';
-      }).join(''),
-      'Barras: desempenho de 89,7% e custo de 4% do modelo grande') +
-    '<div style="display:grid;gap:16px">' +
-    '<p><span class="sw" style="background:#6A7690;border-color:#6A7690"></span>modelo grande = 100%</p>' +
-    '<p><span class="sw az"></span>modelo pequeno com harness adaptado: <b>89,7%</b> do desempenho a <b>4%</b> do custo</p>' +
-    '<p class="nota" style="font-size:27px">Título: “Better Harnesses, Smaller Models: Building 90% Cheaper Agents via Automated Harness Adaptation”.</p>' +
-    '<p>' + sel('preprint, arXiv') + '</p></div></div>' +
-    foot([F('cmu', 'Yang et al. (2026)')], 'Frase do resumo: “recovering 89.7% of LLM performance at 4% of the cost”. Resultado do trabalho citado, não replicado aqui.')
-  );
+  panel('s9-cmu', 'Modelo pequeno, bom harness',
+    K.svg(W, 470,
+      K.text({ x: 0, y: 40, t: 'Desempenho', size: 36, weight: 'b' }) +
+      K.bar({ x: 360, y: 70, w: 900, h: 56, v: 100, max: 100, t: 'modelo grande', val: '100%', step: 1, tone: 'nevoa' }) +
+      K.bar({ x: 360, y: 150, w: 900, h: 56, v: 89.7, max: 100, t: 'pequeno + harness', val: '89,7%', step: 2 }) +
+      K.text({ x: 0, y: 270, t: 'Custo', size: 36, weight: 'b' }) +
+      K.bar({ x: 360, y: 300, w: 900, h: 56, v: 100, max: 100, t: 'modelo grande', val: '100%', step: 3, tone: 'nevoa' }) +
+      K.bar({ x: 360, y: 380, w: 900, h: 56, v: 4, max: 100, t: 'pequeno + harness', val: '4%', step: 4 }),
+      'Barras: 89,7% do desempenho a 4% do custo'),
+    'Num conjunto de tarefas do estudo, o modelo pequeno com harness adaptado chega a 89,7%.',
+    [F('cmu', 'Yang et al. (2026)')], { selos: [sel('preprint, arXiv')], cred: 'arXiv 2607.08938. Resultado do trabalho citado, não replicado aqui.' });
+  det('s9-cmu', 'Estudo da CMU: detalhes',
+    '<p class="quote">“Better Harnesses, Smaller Models: Building 90% Cheaper Agents via Automated Harness Adaptation” (Yang, Zhao, Wu, Kästner; arXiv 2607.08938, 09/07/2026).</p><p class="nota">Frase do resumo: “recovering 89.7% of LLM performance at 4% of the cost”.</p>', [F('cmu', 'Yang et al. (2026)')]);
 
-  P['s9-contexto'] = body(
-    T('Contexto de reserva: do investimento ao harness ' + sel('contexto, reserva', 'sol')) +
-    '<div class="cols" style="grid-template-columns:1fr 1fr;gap:56px;align-items:center">' +
-    '<div style="display:grid;gap:14px"><h3>Capex de Microsoft, Alphabet, Amazon e Meta ' + sel('previsão, imprensa') + '</h3>' +
-    '<div style="display:grid;gap:6px"><p>2025 · cerca de US$ 410 bi</p><div class="bar-trk" style="height:48px"><i class="bar" style="left:0;width:' + (410 / 800 * 100).toFixed(1) + '%;--d:.3s"></i></div></div>' +
-    '<div style="display:grid;gap:6px"><p>2026 · cerca de US$ 725 bi (previsão)</p><div class="bar-trk" style="height:48px"><i class="bar aco" style="left:0;width:' + (725 / 800 * 100).toFixed(1) + '%;--d:.9s;background:repeating-linear-gradient(135deg,#6F8FC7 0 14px,#1E3A66 14px 28px)"></i></div></div>' +
-    '<p class="nota" style="font-size:26px">Faixa citada para 2026: US$ 695 a 750 bi; é orientação das empresas, não valor realizado.</p></div>' +
-    '<div style="display:grid;grid-template-columns:230px 1fr;gap:26px;align-items:center"><div style="width:230px">' + svg(420, 420,
-      '<circle cx="210" cy="210" r="170" fill="none" stroke="#132548" stroke-width="44"/>' +
-      '<circle class="ring" pathLength="100" cx="210" cy="210" r="170" fill="none" stroke="#7BA3EE" stroke-width="44" stroke-dasharray="95 100" transform="rotate(-90 210 210)"/>' +
-      '<text class="b" x="210" y="236" text-anchor="middle" style="font-size:100px">95%</text>', 'Anel com 95% preenchido') + '</div>' +
-    '<div style="display:grid;gap:8px"><h3>Sem retorno mensurável ' + sel('preliminar') + '</h3><p style="font-size:28px">das organizações (MIT NANDA, 2025)</p><p class="nota" style="font-size:26px">Mais de 300 iniciativas, 52 entrevistas e 153 líderes.</p></div></div></div>' +
-    '<h3>Da engenharia de contexto (2025) à engenharia de harness (2026)</h3>' +
-    svg(1660, 200,
-      '<line class="ln az dr" pathLength="1" style="--d:.2s" x1="60" y1="96" x2="1620" y2="96"/>' +
-      [['60', 'a', 'Engenharia de contexto', 'Anthropic, 29/09/2025', 'anthropic-context2025'],
-       ['615', 'a', 'Engenharia de harness', 'OpenAI, fev/2026', 'openai2026'],
-       ['618', 'b', 'Galster et al.', '2.853 repositórios, 16/02/2026', 'galster2026'],
-       ['798', 'b', 'Böckeler', 'controles computacionais e inferenciais, 02/04/2026', 'bockeler2026'],
-       ['1620', 'a', '446 artigos com “harness”', 'no título (arXiv, até 25/10/2026)', 'arxiv-count']].map(function (m, i) {
-        var x = +m[0], up = m[1] === 'a', end = x > 1500, endB = x === 618;
-        var anc = end || endB ? 'end' : 'start', tx = end || endB ? x : x - 4 + (x === 60 ? 0 : 0);
-        var ty = up ? 34 : 146;
-        return '<g class="fd" style="--d:' + (0.5 + i * .45) + 's"><line class="ln" x1="' + x + '" y1="' + (up ? 46 : 100) + '" x2="' + x + '" y2="' + (up ? 96 : 128) + '"/>' +
-          '<circle class="fl' + (i === 0 ? '' : ' luz') + '" cx="' + x + '" cy="96" r="11"/>' +
-          '<text class="b" x="' + tx + '" y="' + ty + '" text-anchor="' + anc + '" style="font-size:26px">' + m[2] + '</text>' +
-          '<text class="m" x="' + tx + '" y="' + (ty + 30) + '" text-anchor="' + anc + '" style="font-size:26px">' + m[3] + '</text></g>';
+  panel('s9-contexto', 'Contexto de reserva',
+    K.svg(W, 330,
+      K.arrow({ pts: [[0, 160], [W, 160]], noHead: true, step: 1 }) +
+      [[60, 'a', 'Engenharia de contexto', 'Anthropic, 29/09/2025'], [615, 'a', 'Engenharia de harness', 'OpenAI, fev/2026'], [618, 'b', 'Galster et al.', '2.853 repositórios'], [798, 'b', 'Böckeler', 'abr/2026'], [1600, 'a', '446 artigos', 'com “harness” no título']].map(function (m, i) {
+        var up = m[1] === 'a', end = m[0] > 1500 || m[0] === 618;
+        return K.dot({ cx: m[0], cy: 160, r: 12, step: 2 + i }) + K.arrow({ pts: [[m[0], up ? 120 : 200], [m[0], up ? 160 : 160]], noHead: true, step: 2 + i, tone: 'nevoa' }) +
+          K.text({ x: m[0] + (end ? -4 : 4), y: up ? 56 : 250, t: m[2], size: 28, weight: 'b', anchor: end ? 'end' : 'start' }) +
+          K.text({ x: m[0] + (end ? -4 : 4), y: up ? 92 : 288, t: m[3], size: 26, tone: 'nevoa', anchor: end ? 'end' : 'start' });
       }).join(''),
-      'Linha do tempo de setembro de 2025 a outubro de 2026') +
-    foot([F('anthropic-context2025', 'Engenharia de contexto (2025)'), F('openai2026', 'OpenAI (2026)'), F('galster2026', 'Galster et al. (2026)'), F('bockeler2026', 'Böckeler (2026)'), F('arxiv-count', 'Contagem arXiv'), F('capex', 'Capex (CNBC)'), F('mit', 'MIT NANDA')],
-      'Capex é previsão de imprensa; o MIT é preliminar; a contagem é do autor. A página da OpenAI respondeu 403 na conferência, por isso o selo.')
-  );
-
+      'Linha do tempo de setembro de 2025 a outubro de 2026'),
+    'De engenharia de contexto (2025) a engenharia de harness (2026). Capex e MIT: ver detalhes.',
+    [F('anthropic-context2025', 'Contexto (2025)'), F('openai2026', 'OpenAI (2026)'), F('galster2026', 'Galster et al.'), F('bockeler2026', 'Böckeler (2026)'), F('arxiv-count', 'Contagem arXiv')],
+    { selos: [sel('contexto, reserva', 'sol')] });
+  det('s9-contexto', 'Contexto de mercado: detalhes',
+    '<div class="dois">' +
+    K.svg(780, 260, K.text({ x: 0, y: 36, t: 'Capex das quatro big techs', size: 32, weight: 'b' }) + K.bar({ x: 130, y: 70, w: 560, h: 50, v: 410, max: 800, t: '2025', val: '~410', step: 1 }) + K.bar({ x: 130, y: 150, w: 560, h: 50, v: 725, max: 800, t: '2026', val: '~725', step: 2, tone: 'nevoa' }) + K.text({ x: 0, y: 240, t: 'US$ bi; 2026 é previsão (faixa 695–750)', size: 26, tone: 'nevoa' }), 'Capex') +
+    K.svg(700, 260, K.ring({ cx: 130, cy: 130, r: 100, v: 95, step: 1 }) + K.text({ x: 130, y: 146, t: '95%', size: 50, weight: 'b', anchor: 'middle' }) + K.text({ x: 270, y: 110, t: 'sem retorno mensurável', size: 30 }) + K.text({ x: 270, y: 150, t: 'MIT NANDA, 2025', size: 26, tone: 'nevoa' }) + K.text({ x: 270, y: 186, t: 'relatório preliminar', size: 26, tone: 'nevoa' }), 'MIT') +
+    '</div><p>' + sel('previsão, imprensa') + ' ' + sel('preliminar') + '</p><p class="nota">Capex: Microsoft, Alphabet, Amazon e Meta, cerca de US$ 410 bi (2025) e US$ 725 bi (2026, previsão); é orientação das empresas, não valor realizado. MIT: mais de 300 iniciativas, 52 entrevistas e 153 líderes. A página da OpenAI respondeu 403 na conferência.</p>',
+    [F('capex', 'Capex (CNBC)'), F('mit', 'MIT NANDA'), F('openai2026', 'OpenAI (2026)')]);
 
   /* =========================================================
      SLIDE 10
      ========================================================= */
-  P['s10-aneis'] = body(
-    T('Harness, grafo de conhecimento e laço: o HNV na interseção') +
-    '<div class="cols" style="grid-template-columns:640px 1fr;gap:36px;align-items:start">' +
-    '<div>' + svg(640, 620,
-      '<g class="fd" style="--d:.2s"><circle cx="210" cy="210" r="200" fill="#1E3A66" fill-opacity=".42" stroke="#6F8FC7" stroke-width="3" stroke-dasharray="10 8"/></g>' +
-      '<g class="fd" style="--d:.6s"><circle cx="430" cy="210" r="200" fill="#7BA3EE" fill-opacity=".2" stroke="#7BA3EE" stroke-width="3"/></g>' +
-      '<g class="fd" style="--d:1s"><circle cx="320" cy="400" r="200" fill="#E6EEFB" fill-opacity=".1" stroke="#E6EEFB" stroke-width="3"/></g>' +
-      '<g class="fd" style="--d:1.2s"><text class="b" x="115" y="130" text-anchor="middle" style="font-size:28px">Harness</text>' +
-      '<text x="115" y="165" text-anchor="middle">hooks</text><text x="115" y="195" text-anchor="middle">skills</text><text x="115" y="225" text-anchor="middle">permissões</text><text x="115" y="255" text-anchor="middle">memória</text></g>' +
-      '<g class="fd" style="--d:1.5s"><text class="b" x="525" y="130" text-anchor="middle" style="font-size:28px">Grafo de</text><text class="b" x="525" y="160" text-anchor="middle" style="font-size:28px">conhecimento</text>' +
-      '<text x="525" y="195" text-anchor="middle">ontologia</text><text x="525" y="225" text-anchor="middle">triplas</text><text x="525" y="255" text-anchor="middle">GraphRAG</text></g>' +
-      '<g class="fd" style="--d:1.8s"><text class="b" x="320" y="462" text-anchor="middle" style="font-size:28px">Laço</text>' +
-      '<text x="320" y="494" text-anchor="middle">gerar → verificar</text><text x="320" y="524" text-anchor="middle">→ corrigir</text><text class="m" x="320" y="556" text-anchor="middle">3 → 3 → 1 na demo</text></g>' +
-      '<g class="pp" style="--d:2.4s"><circle class="fl luz" cx="320" cy="285" r="52"/><text class="b luz" x="320" y="297" text-anchor="middle" style="font-size:34px;fill:#0A1428">HNV</text></g>',
-      'Diagrama de Venn: harness, grafo de conhecimento e laço, com o HNV na interseção') +
-    '<p class="nota" style="font-size:26px"><b>Laço = ciclo agêntico.</b> Não é uma disciplina consagrada: é o mecanismo da demonstração. ' + sel('hipótese: o HNV não foi testado') + '</p></div>' +
-    '<div>' + tbl(['1fr', '1fr', '1.2fr'], ['Peça do harness', 'Camada', 'Papel'], [
+  panel('s10-aneis', 'Harness, grafo e laço',
+    K.svg(W, 620,
+      K.ring({ cx: 640, cy: 230, r: 210, dash: true, tone: 'nevoa', step: 1 }) + K.ring({ cx: 860, cy: 230, r: 210, step: 2 }) + K.ring({ cx: 750, cy: 410, r: 210, step: 3, tone: 'nevoa' }) +
+      K.text({ x: 40, y: 150, t: 'Harness', size: 38, weight: 'b' }) + K.text({ x: 40, y: 192, t: 'hooks, skills,', size: 28, tone: 'nevoa' }) + K.text({ x: 40, y: 226, t: 'permissões, memória', size: 28, tone: 'nevoa' }) +
+      K.text({ x: 1230, y: 150, t: 'Grafo de conhecimento', size: 38, weight: 'b' }) + K.text({ x: 1230, y: 192, t: 'ontologia, triplas,', size: 28, tone: 'nevoa' }) + K.text({ x: 1230, y: 226, t: 'GraphRAG', size: 28, tone: 'nevoa' }) +
+      K.text({ x: 1070, y: 560, t: 'Laço', size: 38, weight: 'b' }) + K.text({ x: 1070, y: 600, t: 'gerar → verificar → corrigir', size: 28, tone: 'nevoa' }) +
+      K.box({ x: 640, y: 290, w: 220, h: 90, t: 'HNV', size: 38, step: 4, fill: 'solid' }),
+      'Diagrama de Venn: harness, grafo de conhecimento e laço, com o HNV na interseção'),
+    'HNV = harness neurossimbólico vertical. Laço = ciclo agêntico, o mecanismo da demonstração.',
+    [F('hnv-readme', 'README da demonstração'), F('bockeler2026', 'Böckeler (2026)'), F('edge2024', 'Edge et al. (2024)'), F('hnv-laco', 'Laço local')], { selos: [sel('hipótese: não testada', 'sol')] });
+  det('s10-aneis', 'Peças do harness: detalhes',
+    tbl(['1fr', '1fr', '1.2fr'], ['Peça do harness', 'Camada', 'Papel'], [
       ['Skill e instruções do projeto', 'guia <b>macio</b> (inferencial)', 'orienta o modelo: formato do parecer, citar só a ontologia'],
       ['Hook e verificador de citações', 'regra <b>dura</b> (computacional)', 'bloqueia citação fora da ontologia (exit 2)'],
-      ['Ontologia de fontes', 'conhecimento <b>simbólico</b> do especialista', 'fontes reais conferidas nas páginas oficiais'],
+      ['Ontologia de fontes', 'conhecimento <b>simbólico</b>', 'fontes reais conferidas nas páginas oficiais'],
       ['Registros PROV', '<b>rastreabilidade</b>', 'quem gerou, o que foi usado, de que fontes deriva'],
-      ['Aprovação (aprovar.py)', '<b>liberação</b>', 'só o especialista libera; a máquina declara, no máximo, “admissível”']
-    ]) + '<p class="nota" style="margin-top:14px;font-size:26px">Böckeler (2026) separa controles <b>computacionais</b> (rápidos, como testes e linters) e <b>inferenciais</b> (revisão por modelo), e cada um pode ser guia (antes) ou sensor (depois). Aqui, a skill é guia inferencial e o hook é sensor computacional.</p></div></div>' +
-    foot([F('hnv-readme', 'README da demonstração'), F('bockeler2026', 'Böckeler (2026)'), F('galster2026', 'Galster et al. (2026)'), F('edge2024', 'Edge et al. (2024)'), F('hnv-laco', 'Laço local')],
-      'Mapa do README (25/10/2026). GraphRAG: um modelo extrai um grafo de entidades dos documentos (Edge et al., 2024). Laço local: citações bloqueadas 3, 3 e 1.')
-  );
+      ['Aprovação (aprovar.py)', '<b>liberação</b>', 'só o especialista libera; a máquina declara “admissível”']]) +
+    '<p class="nota">Böckeler (2026): controles computacionais (rápidos, como testes) e inferenciais (revisão por modelo), cada um como guia (antes) ou sensor (depois). Aqui, a skill é guia inferencial e o hook, sensor computacional. GraphRAG: um modelo extrai um grafo de entidades dos documentos (Edge et al., 2024).</p>',
+    [F('hnv-readme', 'README da demonstração'), F('bockeler2026', 'Böckeler (2026)'), F('edge2024', 'Edge et al. (2024)')]);
 
-
-  P['s10-nucleo'] = body(
-    T('O núcleo: uma camada simbólica sobre o modelo', 'O especialista escreve as regras e a ontologia do domínio.') +
-    '<div class="cols" style="grid-template-columns:420px 90px 1fr;gap:22px;align-items:center">' +
-    '<div class="card" style="text-align:center;border-style:dashed;padding:34px 20px"><h3 style="font-size:38px">Modelo neural</h3><p class="mut">interpreta linguagem natural e escreve o rascunho</p></div>' +
-    svg(90, 40, '<path class="ln az dr" pathLength="1" d="M0 20 H70"/><path class="fl" d="M64 8 l22 12 l-22 12z"/>', '') +
-    '<div class="card" style="border-color:var(--az);display:grid;gap:12px"><h3 style="font-size:38px">Camada simbólica vertical</h3>' +
-    '<div style="display:flex;gap:12px;flex-wrap:wrap"><span class="chip ok">ontologia do domínio</span><span class="chip ok">regras (hooks)</span><span class="chip ok">rastro PROV</span><span class="chip luz">portão humano</span></div>' +
-    '<p class="mut" style="font-size:27px">“Vertical” significa específica de um domínio, como o Direito Administrativo na demonstração.</p></div></div>' +
+  panel('s10-nucleo', 'Camada simbólica sobre o modelo',
+    K.svg(W, 400,
+      K.box({ x: 0, y: 90, w: 380, h: 220, t: ['Modelo', 'neural'], s: 'linguagem natural', size: 36, step: 1, tone: 'nevoa' }) + K.arrow({ pts: [[380, 200], [480, 200]], step: 2 }) +
+      K.box({ x: 480, y: 0, w: 1180, h: 400, t: '', step: 3 }) + K.text({ x: 510, y: 56, t: 'Camada simbólica vertical', size: 38, weight: 'b' }) +
+      ['ontologia do domínio', 'regras (hooks)', 'rastro PROV', 'portão humano'].map(function (c, i) { return K.box({ x: 510 + i * 285, y: 150, w: 265, h: 150, t: c.split(' '), size: 28, step: 4 + i, fill: i === 3 ? 'solid' : true }); }).join('') +
+      K.text({ x: 510, y: 360, t: 'o especialista escreve as regras e a ontologia', size: 28, tone: 'nevoa' }),
+      'Modelo neural e camada simbólica do domínio'),
+    '“Vertical” = específica de um domínio, como o Direito Administrativo na demonstração.',
+    [F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-readme', 'README: limitações')], { selos: [sel('hipótese')] });
+  det('s10-nucleo', 'Núcleo: detalhes',
     tbl(['300px', '1fr', '1fr'], ['Componente', 'Na demonstração', 'O que ainda falta'], [
-      ['Guia macio', 'skill e instruções do projeto', '—'],
-      ['Regra dura', 'hook e verificador por padrões de texto', 'referências vagas escapam; não é um analisador jurídico completo'],
-      ['Ontologia do domínio', '18 fontes conferidas nas páginas oficiais', 'validação pelo especialista (hoje, “pendente”)'],
-      ['Rastro e portão', 'registro PROV e aprovar.py', '—']
-    ]) +
-    '<p>' + sel('hipótese') + '</p>' +
-    foot([F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-readme', 'README: limitações')], 'Limitações conforme o README da demonstração. O HNV é uma hipótese ainda não testada.')
-  );
+      ['Guia macio', 'skill e instruções do projeto', '—'], ['Regra dura', 'hook e verificador por padrões de texto', 'referências vagas escapam; não é um analisador jurídico completo'],
+      ['Ontologia do domínio', '18 fontes conferidas nas páginas oficiais', 'validação pelo especialista (hoje, “pendente”)'], ['Rastro e portão', 'registro PROV e aprovar.py', '—']]),
+    [F('hnv-ontologia', 'Ontologia (18 fontes)'), F('hnv-readme', 'README: limitações')]);
 
-  P['s10-portao'] = body(
-    T('Domínios candidatos', 'Propostas: onde um especialista poderia escrever a ontologia e a regra, com a pessoa certa no portão final.') +
-    '<div class="cols c2" style="gap:24px">' +
-    [
-      ['Pareceres administrativos', 'executado', 'Demonstração de 25/10/2026; ontologia de 18 fontes, pendente de validação.', 'quem libera: o especialista que aprova'],
-      ['Escrita científica', 'sistema existente', 'Citāre: ontologia operacional descrita na Atividade v05; o artigo teve as citações conferidas nele, com revisão humana.', 'quem libera: o autor, que assume a responsabilidade'],
-      ['Boletins de ocorrência de bombeiros', 'proposta', 'Ideia surgida na aula de ontologias; não implementada.', 'quem libera: a definir'],
-      ['Finanças reguladas (antifraude)', 'hipótese do artigo', 'Registrar sinais, fontes, regras, exceções e revisão humana antes das decisões; exige adaptação regulatória e validação empírica.', 'quem libera: revisão humana']
-    ].map(function (d, i) {
-      return '<div class="card ri" style="--d:' + (0.2 + i * .2) + 's;display:grid;gap:8px;align-content:start"><div style="display:flex;justify-content:space-between;gap:12px;align-items:start"><h3>' + d[0] + '</h3>' + sel(d[1], d[1] === 'executado' || d[1] === 'sistema existente' ? '' : 'sol') + '</div>' +
-        '<p style="font-size:27px">' + d[2] + '</p><p class="mut" style="font-size:26px">' + d[3] + '</p></div>';
-    }).join('') + '</div>' +
-    '<p>' + sel('todos os domínios são propostas', 'sol') + '</p>' +
-    foot([F('hnv-ontologia', 'Ontologia (18 fontes)'), F('art-citare', 'Artigo: uso do Citāre'), F('art-escopo', 'Artigo: transferência (Seção 4.2)')], 'Boletins de ocorrência: proposta da aula de ontologias, sem fonte publicada. Finanças: hipótese citada no artigo.')
-  );
+  panel('s10-portao', 'Domínios candidatos (propostas)',
+    K.svg(W, 470,
+      [['Pareceres', 'administrativos', 'executado', 'especialista'], ['Escrita', 'científica', 'sistema existente', 'autor'], ['Boletins de', 'bombeiros', 'proposta', 'a definir'], ['Finanças', 'reguladas', 'hipótese do artigo', 'revisão humana']].map(function (d, i) {
+        return K.box({ x: i * 420, y: 0, w: 380, h: 190, t: [d[0], d[1]], s: d[2], size: 32, step: i + 1, fill: i < 2, tone: i < 2 ? 'gelo' : 'nevoa' }) +
+          K.arrow({ pts: [[i * 420 + 190, 190], [i * 420 + 190, 270]], step: i + 1, tone: 'nevoa' }) +
+          K.box({ x: i * 420, y: 270, w: 380, h: 100, t: 'humano', s: d[3], size: 30, step: i + 1, fill: 'solid' });
+      }).join('') + K.text({ x: 0, y: 440, t: 'cada domínio precisa de ontologia escrita pelo especialista e de um humano no portão', size: 28, tone: 'nevoa' }),
+      'Quatro domínios candidatos e quem libera em cada um'),
+    'Todos os domínios são propostas; só o primeiro tem demonstração executada.',
+    [F('hnv-ontologia', 'Ontologia (18 fontes)'), F('art-citare', 'Artigo: uso do Citāre'), F('art-escopo', 'Artigo: transferência')], { selos: [sel('propostas', 'sol')] });
+  det('s10-portao', 'Domínios: detalhes',
+    '<ul class="pt-list"><li><b>Pareceres administrativos:</b> demonstração de 25/10/2026; ontologia de 18 fontes, pendente de validação.</li><li><b>Escrita científica:</b> Citāre; ontologia operacional descrita na Atividade v05; o artigo teve as citações conferidas nele, com revisão humana.</li><li><b>Boletins de ocorrência de bombeiros:</b> ideia surgida na aula de ontologias; não implementada.</li><li><b>Finanças reguladas (antifraude):</b> hipótese do artigo; exige adaptação regulatória e validação empírica.</li></ul>',
+    [F('hnv-ontologia', 'Ontologia (18 fontes)'), F('art-citare', 'Artigo: uso do Citāre'), F('art-escopo', 'Artigo: transferência')]);
 
   /* =========================================================
      SLIDE 11
      ========================================================= */
   (function () {
     var cond = ['Manual', 'LLM puro', 'RAG', 'Arquitetura completa'];
-    var met = ['Fidelidade de citação', 'Conformidade', 'Qualidade da decisão', 'Tempo', 'Custo', 'Retrabalho', 'Intervenções humanas'];
-    var rows = cond.map(function (c, ci) {
-      var r = ['<b>' + c + '</b>'];
-      met.forEach(function (m, mi) { r.push('<span class="pl az" style="display:inline-block;animation-delay:' + ((ci * 7 + mi) * .08).toFixed(2) + 's">○</span>'); });
-      return ci === 3 ? { cls: 'dest', c: r } : r;
+    var met = ['Fidelidade', 'Conformidade', 'Qualidade', 'Tempo', 'Custo', 'Retrabalho', 'Intervenções'];
+    var g = '';
+    met.forEach(function (m, i) { g += K.text({ x: 420 + i * 175 + 70, y: 30, t: m, size: 26, tone: 'nevoa', anchor: 'middle' }); });
+    cond.forEach(function (c, i) {
+      g += K.lane({ x: 0, y: 60 + i * 110, w: W, h: 96, t: '', step: 1 + i }) + K.text({ x: 20, y: 60 + i * 110 + 56, t: c, size: 30, weight: 'b', tone: i === 3 ? null : null });
+      met.forEach(function (m, j) { g += K.dot({ cx: 420 + j * 175 + 70, cy: 60 + i * 110 + 48, r: 14, hollow: true, tone: i === 3 ? 'gelo' : 'nevoa', step: 2 + i + j * 0.1 }); });
     });
-    P['s11-desenho'] = body(
-      T('O estudo pareado: quatro condições, sete medidas', 'Desenho previsto nos trabalhos futuros do artigo. Nada disso foi medido ainda.') +
-      tbl(['260px', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['Condição'].concat(met), rows, 'mt') +
-      '<div class="cols c2" style="gap:36px"><ul class="pt-list" style="gap:8px"><li style="font-size:28px">tarefas equivalentes nas quatro condições</li><li style="font-size:28px">critérios definidos antes da coleta</li></ul>' +
-      '<ul class="pt-list" style="gap:8px"><li style="font-size:28px">participantes com códigos distintos</li><li style="font-size:28px">comparação entre condição manual e assistida</li></ul></div>' +
-      '<p>' + sel('planejado, não medido') + '</p>' +
-      foot([F('art-escopo', 'Artigo: Seções 3.2, 4.2 e 5')], 'Condições e medidas conforme os trabalhos futuros do artigo (Seção 5). ○ = medida planejada.')
-    );
+    panel('s11-desenho', 'Estudo pareado: 4 condições', K.svg(W, 520, g, 'Quatro condições e sete medidas planejadas'),
+      'Nada foi medido ainda: ○ marca a medida planejada em cada condição.', [F('art-escopo', 'Artigo: Seções 3.2, 4.2 e 5')], { selos: [sel('planejado, não medido')] });
+    det('s11-desenho', 'Estudo pareado: detalhes',
+      '<ul class="pt-list"><li>Condições: manual, LLM puro, RAG e arquitetura completa, em tarefas equivalentes.</li><li>Medidas: fidelidade de citação, conformidade, qualidade da decisão, tempo, custo, retrabalho e intervenções humanas.</li><li>Critérios definidos antes da coleta; participantes com códigos distintos; comparação entre condição manual e assistida.</li></ul>',
+      [F('art-escopo', 'Artigo: Seções 3.2, 4.2 e 5')]);
   })();
 
-  P['s11-limites'] = body(
-    T('Cinco limites, ditos antes de a pergunta chegar') +
-    '<div style="display:grid;gap:14px">' +
-    [
-      ['Situado em Santa Catarina', 'A validade externa se limita aos processos observados; a evidência é exploratória e descritiva.', 'art-escopo'],
-      ['Seis registros são tarefas, não pessoas', 'Cinco vêm da mesma conta; não há comparação manual. Os dados do CBMSC e da ESAG não avaliam o Citāre.', 'art-nasa'],
-      ['Confere citações, não raciocínio', 'Bloqueado não é falso: a Resolução 7/2005 existe, mas está fora da ontologia.', 'hnv-laco'],
-      ['Ontologia da demonstração pendente', 'As 18 fontes ainda aguardam a validação do especialista (selo: pendente de validação).', 'hnv-ontologia'],
-      ['O HNV é uma hipótese', 'O harness neurossimbólico vertical ainda não foi testado; o próximo passo é o estudo pareado.', 'art-escopo']
-    ].map(function (l, i) {
-      return '<div class="card ri" style="--d:' + (0.2 + i * .35) + 's;display:grid;grid-template-columns:70px 1fr auto;gap:22px;align-items:center;padding:14px 24px">' +
-        svg(70, 70, '<rect x="10" y="32" width="50" height="34" fill="#1A2236" stroke="#6A7690" stroke-width="3"/><path class="gy" style="--d:' + (0.4 + i * .35) + 's;animation-name:pb-shackle" d="M20 32 V22 a15 15 0 0 1 30 0 V32" fill="none" stroke="#C2CBDD" stroke-width="5"/>', 'cadeado fechado') +
-        '<div><h3>' + l[0] + '</h3><p class="mut" style="font-size:27px">' + l[1] + '</p></div>' + F(l[2], 'fonte') + '</div>';
-    }).join('') + '</div>' +
-    '<p>' + sel('pendente de validação') + ' ' + sel('hipótese', 'sol') + '</p>' +
-    foot([F('art-escopo', 'Artigo: escopo'), F('hnv-ontologia', 'Ontologia (18 fontes)')], 'Limites conforme o artigo (Seções 3.2, 4.2 e 5) e o README da demonstração.')
-  );
-
+  panel('s11-limites', 'Cinco limites',
+    K.svg(W, 500,
+      [['Situado em Santa Catarina', 'art-escopo'], ['Tarefas, não pessoas', 'art-nasa'], ['Confere citações, não raciocínio', 'hnv-laco'], ['Ontologia pendente de validação', 'hnv-ontologia'], ['O HNV é uma hipótese', 'art-escopo']].map(function (l, i) {
+        return K.box({ x: 120, y: i * 100, w: 1100, h: 84, t: l[0], size: 32, step: i + 1, tone: 'nevoa' }) + K.icon('lock', { x: 30, y: i * 100 + 18, s: 48, step: i + 1, tone: 'nevoa' });
+      }).join(''),
+      'Cinco limites, cada um com cadeado'),
+    'O próximo passo é o estudo pareado em quatro condições.', [F('art-escopo', 'Artigo: escopo'), F('art-nasa', 'Artigo: Tabela 5'), F('hnv-laco', 'Laço local'), F('hnv-ontologia', 'Ontologia (18 fontes)')], { selos: [sel('exploratório')] });
+  det('s11-limites', 'Limites: detalhes',
+    '<ul class="pt-list"><li>Situado em Santa Catarina: validade externa limitada; evidência exploratória e descritiva.</li><li>Seis registros são tarefas, não pessoas; cinco vêm da mesma conta; sem comparação manual. Os dados do CBMSC e da ESAG não avaliam o Citāre.</li><li>Confere citações, não raciocínio; bloqueado não é falso (Resolução 7/2005).</li><li>As 18 fontes da ontologia aguardam a validação do especialista.</li><li>O harness neurossimbólico vertical ainda não foi testado.</li></ul>',
+    [F('art-escopo', 'Artigo: escopo'), F('art-nasa', 'Artigo: Tabela 5'), F('hnv-laco', 'Laço local'), F('hnv-ontologia', 'Ontologia (18 fontes)')]);
 
   /* =========================================================
-     RESERVA R1: perguntas prováveis e respostas prontas
+     RESERVAS
      ========================================================= */
-  P['r1-respostas'] = body(
-    T('Perguntas prováveis e respostas prontas ' + sel('reserva', 'sol')) +
-    '<div style="column-count:2;column-gap:22px">' +
+  P['r1-respostas'] = '<div class="panel-body"><h2 class="pt">' + TITULOS['r1-respostas'] + '</h2><div class="qa">' +
     [
-      ['Quem corrigiu o parecer foi o modelo pequeno?', 'Não. O 3B errou; um modelo de fronteira (Sonnet, via Claude Code), no mesmo harness, corrigiu (cena induzida). O 3B sozinho: 3, 3 e 1 bloqueadas; não liberado. A garantia vem da arquitetura.', [['hnv-cena2b', 'Cena 2b'], ['hnv-laco', 'Laço local']]],
-      ['Seu artigo não fala em harness. O que você apresenta?', 'O artigo propõe o CALAIS: evidência, norma, rastro e humano antes da liberação. Em 2026, a engenharia de agentes chama esse conjunto de harness. O HNV é hipótese, não testada.', [['art-arq', 'Artigo: arquitetura'], ['bockeler2026', 'Böckeler (2026)']]],
-      ['Isso não é só RAG?', 'RAG recupera, mas não confere. Aqui um hook confere cada citação na ontologia e devolve o parecer. Em preprints, RAG jurídico erra 17–33%. ' + sel('preprint'), [['magesh', 'Magesh et al. (2025)'], ['hnv-cena2b', 'Cena 2b']]],
-      ['Bloquear o que está fora da ontologia não engessa?', 'Gera falso positivo, e isso é declarado: bloqueado não é falso (a Resolução 7/2005 existe, fora da ontologia). O custo é manter a ontologia com o especialista. ' + sel('pendente de validação'), [['hnv-laco', 'Laço local'], ['hnv-ontologia', 'Ontologia (18 fontes)']]],
-      ['Seis registros NASA-TLX provam alguma coisa?', 'Não provam ganho: são tarefas, não pessoas, e cinco vêm da mesma conta. Mostram os componentes juntos; para medir ganho, o estudo pareado.', [['art-nasa', 'Artigo: Tabela 5'], ['art-escopo', 'Artigo: escopo']]]
+      ['Quem corrigiu o parecer foi o modelo pequeno?', 'Não. O 3B errou; um modelo de fronteira (Sonnet, via Claude Code), no mesmo harness, corrigiu (cena induzida). O 3B sozinho: 3, 3 e 1 bloqueadas; não liberado.', [['hnv-cena2b', 'Cena 2b'], ['hnv-laco', 'Laço local']]],
+      ['Seu artigo não fala em harness.', 'O artigo propõe o CALAIS; em 2026, a engenharia de agentes chama esse conjunto de harness. O HNV é hipótese, não testada.', [['art-arq', 'Artigo: arquitetura'], ['bockeler2026', 'Böckeler (2026)']]],
+      ['Isso não é só RAG?', 'RAG recupera, mas não confere; aqui um hook confere cada citação na ontologia. Em preprints, RAG jurídico erra 17–33%.', [['magesh', 'Magesh et al.']]],
+      ['Bloquear não engessa?', 'Gera falso positivo, declarado: bloqueado não é falso (Resolução 7/2005). O custo é manter a ontologia.', [['hnv-laco', 'Laço local'], ['hnv-ontologia', 'Ontologia']]],
+      ['Seis registros provam algo?', 'Não provam ganho: são tarefas, não pessoas. Para medir ganho, o estudo pareado.', [['art-nasa', 'Tabela 5'], ['art-escopo', 'Escopo']]]
     ].map(function (q, i) {
-      return '<div class="card ri" style="--d:' + (0.15 + i * .15) + 's;display:grid;gap:8px;break-inside:avoid;margin-bottom:22px"><h3 style="font-size:28px">' + (i + 1) + '. ' + q[0] + '</h3>' +
-        '<p style="font-size:26px;line-height:1.28">' + q[1] + '</p><div class="fontes">' + q[2].map(function (f) { return F(f[0], f[1]); }).join('') + '</div></div>';
-    }).join('') +
-    '</div>' +
-    '<p class="cred" style="font-size:18px;color:var(--mut)">Respostas preparadas a partir da avaliação independente do deck (27/10/2026). Reserva: não abrir na fala principal.</p>'
-  );
+      return '<div class="qa-c"><h3>' + (i + 1) + '. ' + q[0] + '</h3><p>' + q[1] + '</p><div class="fontes">' + q[2].map(function (f) { return F(f[0], f[1]); }).join('') + '</div></div>';
+    }).join('') + '</div>' + foot([sel('preprint'), sel('pendente de validação')], 'Respostas preparadas a partir da avaliação independente do deck (27/10/2026). Reserva: não abrir na fala principal.') + '</div>';
 
-  /* =========================================================
-     Referências (geradas)
-     ========================================================= */
+  function refsHtml() {
+    var fs = window.HNV_FONTES || {};
+    var deck = Object.keys(fs).map(function (k) {
+      var f = fs[k], st = String(f.status || '');
+      var plain = /^confirmado( no artigo| nos logs)?$/.test(st);
+      return '<p><button class="fonte" data-src="' + k + '" style="font-size:22px;padding:6px 14px 7px">' + k + '</button> <span class="mut">' + f.fonte + '.</span>' + (plain ? '' : ' ' + sel(st.split(':')[0].split('(')[0], 'sol')) + '</p>';
+    }).join('');
+    var art = ART_REFS.map(function (r) {
+      return '<p>' + r.replace(/(https?:\/\/\S+)/g, function (u) { var c = u.replace(/[.,;]$/, ''); return '<a href="' + c + '" target="_blank" rel="noopener noreferrer">' + c + '</a>'; }) + '</p>';
+    }).join('');
+    return '<div class="panel-body"><h2 class="pt">Referências</h2><div class="refs"><h3>Fontes das afirmações do deck</h3>' + (deck || '<p>Carregue fontes.js antes de paineis.js.</p>') +
+      '<h3 style="margin-top:22px">Referências do artigo</h3>' + art + '</div></div>';
+  }
   var ART_REFS = [
  "Bollotti, J. J., & Wachowicz, M. (2024). A aplicação da inteligência artificial pela administração pública diante do princípio da eficiência. Revista da AGU, 23(4), 101–126. https://doi.org/10.25109/2525-328X.v.23.n.4.2024.3429",
  "Brasil. (1988). Constituição da República Federativa do Brasil de 1988. https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
@@ -1030,22 +820,40 @@
  "Tabassi, E. (2023). Artificial intelligence risk management framework (AI RMF 1.0) (NIST AI 100-1). National Institute of Standards and Technology. https://doi.org/10.6028/NIST.AI.100-1",
  "Zen, H., Wagh, R., Wanderley, M., Bicalho, G., Park, R., Sun, M., Palacios, R., Carvalho, L., Rinaldo, G., & Gupta, A. (2025). Ensemble-based biometric verification: Defending against multi-strategy deepfake image generation. Computers, 14(6), Article 225. https://doi.org/10.3390/computers14060225"
 ];
-  function refsHtml() {
-    var fs = window.HNV_FONTES || {};
-    var ks = Object.keys(fs);
-    var deck = ks.map(function (k) {
-      var f = fs[k], st = String(f.status || '');
-      var plain = /^confirmado( no artigo| nos logs)?$/.test(st);
-      return '<p><button class="fonte" data-src="' + k + '" style="font-size:22px;padding:6px 14px 7px">' + k + '</button> <span class="mut">' + f.fonte + '.</span>' + (plain ? '' : ' ' + sel(st.split(':')[0], 'sol')) + '</p>';
-    }).join('');
-    var art = ART_REFS.map(function (r) {
-      return '<p>' + r.replace(/(https?:\/\/\S+)/g, function (u) { var c = u.replace(/[.,;]$/, ''); return '<a href="' + c + '" target="_blank" rel="noopener noreferrer">' + c + '</a>'; }) + '</p>';
-    }).join('');
-    return body(T('Referências', 'Fontes das afirmações do deck e referências do artigo #160.') +
-      '<div class="refs"><h3>Fontes das afirmações do deck (clique para abrir a gaveta)</h3>' + (deck || '<p>Carregue fontes.js antes de paineis.js.</p>') +
-      '<h3 style="margin-top:22px">Referências do artigo</h3>' + art + '</div>');
-  }
   Object.defineProperty(P, 'r3-referencias', { enumerable: true, configurable: true, get: refsHtml });
 
+
+  /* =========================================================
+     CAMADA 3: PROVA DOCUMENTAL (imagens reais do artigo #160)
+     ========================================================= */
+  function ShowcaseFigure(id, src, fig, legenda) {
+    var cid = 'lb-' + id;
+    return '<figure class="showcase"><input type="checkbox" id="' + cid + '" class="lb-t" aria-label="ampliar a imagem">' +
+      '<label for="' + cid + '" class="lb-th"><img src="' + src + '" alt="' + fig + ' do artigo #160 (original em inglês)"></label>' +
+      '<label for="' + cid + '" class="lb-ov"><img src="' + src + '" alt="' + fig + ' ampliada"></label>' +
+      '<figcaption>' + fig + ' do artigo #160 (original em inglês). ' + legenda + ' Clique na imagem para ampliar.</figcaption></figure>';
+  }
+  function ProofExplanation(texto) {
+    return '<div class="proof"><h3>Por que esta figura comprova o slide</h3><p>' + texto + '</p></div>';
+  }
+  function addProof(id, src, fig, legenda, texto) {
+    var d = D[id];
+    var i = d.indexOf('</h2>') + 5;
+    D[id] = d.slice(0, i) + ShowcaseFigure(id, src, fig, legenda) + ProofExplanation(texto) + d.slice(i);
+  }
+  addProof('s5-fig1', 'img/artigo/figura1.png', 'Figura 1', 'Arquitetura neurossimbólica com verificação e supervisão humana.',
+    'É o fluxo real do artigo: o sistema neural propõe uma resposta, a verificação simbólica confere regras, evidência e citações, e a pessoa revisa antes da saída aprovada. O slide simplifica esse desenho.');
+  addProof('s3-tab1', 'img/artigo/tabela1.png', 'Tabela 1', 'Capacidades e limitações típicas das abordagens.',
+    'A tabela do artigo compara seis abordagens e mostra que cada uma tem um limite; é uma síntese dos autores, não um resultado experimental.');
+  addProof('s4-pinoN', 'img/artigo/tabela2.png', 'Tabela 2', 'Princípios do art. 37, mecanismos e evidência exigida.',
+    'A tabela liga cada princípio constitucional a um mecanismo e à evidência exigida: é o que transforma a norma em regra que o sistema consegue conferir.');
+  addProof('s5-dsr', 'img/artigo/tabela3.png', 'Tabela 3', 'Rastreabilidade dos ciclos de Design Science Research.',
+    'Mostra os seis ciclos da pesquisa, cada um com a atividade realizada e o produto gerado.');
+  addProof('s7-tab4', 'img/artigo/tabela4.png', 'Tabela 4', 'Evidência delimitada nos casos CBMSC e ESAG/UDESC.',
+    'Delimita o que cada caso permite afirmar: há registros e esforço percebido no CBMSC, e nenhuma medida comparável na ESAG/UDESC.');
+  addProof('s7-nasa', 'img/artigo/tabela5.png', 'Tabela 5', 'Distribuição dos registros exploratórios de esforço percebido.',
+    'Lista as seis tarefas e suas pontuações; confirma que são tarefas, não pessoas, e que o resultado é exploratório.');
+
   window.HNV_PANELS = P;
+  window.HNV_DETALHES = D;
 })();

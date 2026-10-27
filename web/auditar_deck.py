@@ -7,7 +7,7 @@ Verificações (saída diferente de 0 se alguma falhar):
  1. todo data-src de index.html e de paineis.js existe em fontes.json;
  2. todo ID de data-open do index.html existe em HNV_PANELS, e todo painel tem um data-open;
  3. os IDs obrigatórios existem em HNV_PANELS;
- 4. âmbar (#F2A541) só em seletores/classes .err, .block, .late;
+ 4. vermelho de erro (#f87171) só em seletores/classes .err, .block, .late; âmbar, amarelo, laranja, roxo, rosa, ciano e azul-marinho de fundo são proibidos;
  5. verde-matrix só dentro de demo\\ (e no painel s8-replay, que apenas embute demo\\replay.html);
  6. nenhuma ocorrência de "determinístic"; termo coloquial só em demo/ ou em bloco logreal; "Claude Code" tolerado como nome da ferramenta; sem coautoria nos commits;
  7. toda fonte com status diferente de "confirmado" aparece com selo (class="selo") no painel;
@@ -64,7 +64,7 @@ PAINEIS = {}
 if (pasta / "paineis.js").exists():
     prog = (
         "const vm=require('vm'),fs=require('fs');const w={};w.window=w;vm.createContext(w);"
-        "for(const f of ['fontes.js','paineis.js']){try{vm.runInContext(fs.readFileSync(f,'utf8'),w,{filename:f});}catch(e){console.error('ERRO '+f+': '+e.message);process.exit(2);}}"
+        "for(const f of ['kit.js','fontes.js','paineis.js']){try{vm.runInContext(fs.readFileSync(f,'utf8'),w,{filename:f});}catch(e){console.error('ERRO '+f+': '+e.message);process.exit(2);}}"
         "const o={};for(const k of Object.keys(w.HNV_PANELS||{}))o[k]=w.HNV_PANELS[k];"
         "process.stdout.write(JSON.stringify(o));"
     )
@@ -119,7 +119,7 @@ for pid in OBRIGATORIOS:
         erro(f"painel obrigatório ausente: {pid}")
 
 # ---------------------------------------------------------------- 4. âmbar
-AMBAR = re.compile(r"f2a541|242\s*,\s*165\s*,\s*65", re.I)
+AMBAR = re.compile(r"f87171|248\s*,\s*113\s*,\s*113", re.I)  # vermelho de erro/bloqueio
 OK_SEL = re.compile(r"\.(err|block|late)\b")
 
 
@@ -130,16 +130,16 @@ def checar_css(nome, texto):
         if AMBAR.search(corpo):
             partes = [s.strip() for s in sel_.split(",")]
             if not all(OK_SEL.search(s) for s in partes):
-                erro(f"âmbar fora de .err/.block/.late em {nome}: {sel_[:80]}")
+                erro(f"vermelho (#f87171) fora de .err/.block/.late em {nome}: {sel_[:80]}")
 
 
 checar_css("paineis.css", css_paineis)
 checar_css("deck.css", css_deck)
 # hex em atributos/inline (index.html, paineis.js): a tag precisa ter a classe
 for nome, texto in (("index.html", html), ("paineis.js", js_paineis)):
-    for m in re.finditer(r"<[^<>]*(?:f2a541)[^<>]*>", texto, re.I):
+    for m in re.finditer(r"<[^<>]*(?:f87171)[^<>]*>", texto, re.I):
         if not OK_SEL.search(m.group(0).replace('class="', ".").replace(" ", " .")):
-            erro(f"âmbar inline sem classe .err/.block/.late em {nome}: {m.group(0)[:90]}")
+            erro(f"vermelho inline sem classe .err/.block/.late em {nome}: {m.group(0)[:90]}")
     for m in re.finditer(r"<style[^>]*>(.*?)</style>", texto, re.S | re.I):
         checar_css(nome + " <style>", m.group(1))
 
@@ -210,6 +210,164 @@ for pid, conteudo in PAINEIS.items():
         trecho = conteudo[max(0, m.start() - 12):m.start()]
         if m.group(1) == "src" or "<a" not in trecho:
             erro(f"recurso externo em painel {pid}: {m.group(2)[:80]}")
+
+# ---------------------------------------------------------------- 9. design clean v3 (camada 2) e kit
+HTML_TAG = re.compile(r"<[^>]+>")
+RESERVAS = ("r1-respostas", "r3-referencias")
+DETALHES = {}
+if (pasta / "paineis.js").exists():
+    prog2 = (
+        "const vm=require('vm'),fs=require('fs');const w={};w.window=w;vm.createContext(w);"
+        "for(const f of ['kit.js','fontes.js','paineis.js']){try{vm.runInContext(fs.readFileSync(f,'utf8'),w,{filename:f});}catch(e){console.error('ERRO '+f+': '+e.message);process.exit(2);}}"
+        "const o={};for(const k of Object.keys(w.HNV_PANELS||{}))o[k]=w.HNV_PANELS[k];"
+        "process.stdout.write(JSON.stringify({p:o,d:w.HNV_DETALHES||{},pics:Object.keys((w.HNV_KIT||{}).PICS||{})}));"
+    )
+    r2 = subprocess.run(["node", "-e", prog2], cwd=pasta, capture_output=True, encoding="utf-8")
+    if r2.returncode != 0:
+        erro("kit.js/paineis.js não carregam juntos no node: " + (r2.stderr or "").strip()[:300])
+    else:
+        dados = json.loads(r2.stdout)
+        PAINEIS = dados["p"]
+        DETALHES = dados["d"]
+        for nome_pic in ["evidencia", "normas", "rastro", "humano", "recuperar", "gerar", "verificar", "registrar", "aprovar", "bloqueio", "ontologia", "fechadura", "chave", "calendario", "barras"]:
+            if nome_pic not in dados["pics"]:
+                erro(f"kit.js sem o pictograma {nome_pic}")
+for arq in ("kit.js", "kit.css", "KIT_API.md"):
+    if not (pasta / arq).exists():
+        erro(f"{arq} não existe")
+if not (pasta / "fonts" / "notosansmath-400.woff2").exists() or "Noto Sans Math" not in ler("kit.css"):
+    erro("Noto Sans Math (glifos lógicos) não está declarada em kit.css ou o woff2 não existe")
+
+for pid, conteudo in PAINEIS.items():
+    if pid in RESERVAS:
+        continue
+    m = re.search(r'<h2 class="pt">(.*?)</h2>', conteudo, re.S)
+    titulo = HTML_TAG.sub("", m.group(1)).strip() if m else ""
+    if not titulo:
+        erro(f"painel {pid} sem título h2.pt")
+    elif len(titulo.split()) > 6 or len(titulo) > 44:
+        erro(f"painel {pid}: título longo demais ({len(titulo.split())} palavras, {len(titulo)} caracteres): {titulo}")
+    visivel = re.sub(r"<svg.*?</svg>", " ", conteudo, flags=re.S)
+    visivel = re.sub(r"<iframe.*?</iframe>", " ", visivel, flags=re.S)
+    visivel = re.sub(r"<(footer|h2|button)\b.*?</\1>", " ", visivel, flags=re.S)
+    visivel = re.sub(r'<span class="selo[^"]*">.*?</span>', " ", visivel, flags=re.S)
+    palavras = len(HTML_TAG.sub(" ", visivel).split())
+    if palavras > 30:
+        erro(f"painel {pid}: {palavras} palavras fora do diagrama (limite 30)")
+    if re.search(r"<(table|ul|ol|dl|pre)\b", conteudo):
+        erro(f"painel {pid}: tabela/lista/código na camada 2 (vai para HNV_DETALHES)")
+    if pid not in DETALHES:
+        erro(f"painel {pid} sem HNV_DETALHES (camada 3)")
+    if "<svg" not in conteudo and pid != "s8-replay":
+        erro(f"painel {pid} sem diagrama SVG do kit")
+
+# paleta fixa (FUNDO_NEUTRO_v3g): fundo grafite #0b0c10 a #14161c, cartões #15181f, texto #f4f4f5, zinc #a1a1aa / #71717a,
+# teal #14b8a6 / #5eead4 só como acento, vermelho #f87171 só em erro; verde só no slide 8 (matrix8.css) e em demo\.
+PERMITIDAS = {"0b0c10", "14161c", "15181f", "f4f4f5", "a1a1aa", "71717a", "14b8a6", "5eead4", "0d9488", "2dd4bf", "38bdf8", "f87171",
+              "000", "000000", "fff", "ffffff", "0a1b4a"}  # 0a1b4a: tint da camada da foto (mix-blend-mode), nunca fundo
+VERDES = {"00ff41", "008f11"}
+RGBA_OK = {(255, 255, 255), (161, 161, 170), (113, 113, 122), (20, 184, 166), (94, 234, 212), (45, 212, 191), (13, 148, 136), (56, 189, 248),
+           (21, 24, 31), (11, 12, 16), (20, 22, 28), (8, 10, 14), (244, 244, 245), (248, 113, 113), (0, 0, 0), (10, 27, 74)}
+
+
+def azul_marinho(h):
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    r_, g_, b_ = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return b_ >= r_ + 14 and b_ >= g_ and max(r_, g_, b_) <= 0x70 and not (g_ > b_ - 6 and g_ >= 0x80)
+
+
+for nome in ("paineis.css", "kit.css", "paineis.js", "kit.js", "deck.css", "deck.js", "index.html", "matrix8.css"):
+    texto = re.sub(r"/\*.*?\*/", "", ler(nome), flags=re.S)
+    if nome.endswith(".html") or nome.endswith(".js"):
+        texto = re.sub(r"(?m)^\s*//.*$", "", texto)
+    for h in re.findall(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b", texto):
+        hl = h.lower()
+        if h == "160" or hl in PERMITIDAS:
+            continue
+        if hl in VERDES and nome == "matrix8.css":
+            continue
+        if hl in VERDES:
+            erro(f"verde fora do slide 8 e de demo\\ em {nome}: #{h}")
+        elif azul_marinho(hl):
+            erro(f"azul-marinho de fundo proibido em {nome}: #{h}")
+        else:
+            erro(f"cor fora da paleta em {nome}: #{h}")
+    for r_, g_, b_ in re.findall(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)", texto):
+        trio = (int(r_), int(g_), int(b_))
+        if trio in RGBA_OK or (nome == "matrix8.css" and trio[1] > 100 and trio[0] < 60):
+            continue
+        h6 = "%02x%02x%02x" % trio
+        if azul_marinho(h6):
+            erro(f"azul-marinho de fundo (rgba) proibido em {nome}: rgba({r_},{g_},{b_})")
+        else:
+            erro(f"rgba fora da paleta em {nome}: rgba({r_},{g_},{b_})")
+
+# títulos (TITULOS_v3f): sem símbolos, sem siglas isoladas; painel ≤ 6 palavras; slide ≤ 45 caracteres; blocos da lista
+SIMBOLOS_TITULO = re.compile(r"[∧∨¬∀∃→∘≈+=#<>|]|\bvs\b|\be/ou\b")
+SIGLAS_TITULO = re.compile(r"\b(HNV|CBMSC|ESAG|UDESC|RAG|PROV|TLX|DSR|XAI|LIMPE|CALAIS|NASA|W3C|PPGEGC|UFSC|LLM)\b|(?<![\wÀ-ÿ])[NTH](?![\wÀ-ÿ])|\bE\s+N\b")
+BLOCOS = {"INTRODUÇÃO", "PROBLEMA", "SOLUÇÃO", "PROVAS", "FUTURO", "CONCLUSÃO", "RESERVA"}
+
+
+def titulo_ruim(tit):
+    if SIMBOLOS_TITULO.search(tit):
+        return "símbolo"
+    if SIGLAS_TITULO.search(tit):
+        return "sigla isolada"
+    return None
+
+
+for pid, conteudo in PAINEIS.items():
+    m = re.search(r'<h2 class="pt">(.*?)</h2>', conteudo, re.S)
+    tit = HTML_TAG.sub("", m.group(1)).strip() if m else ""
+    why = titulo_ruim(tit)
+    if why:
+        erro(f"painel {pid}: título com {why}: {tit}")
+    if len(tit) > 40:
+        erro(f"painel {pid}: título de {len(tit)} caracteres não cabe numa linha em caixa-alta: {tit}")
+for sm in re.finditer(r'<section class="slide[^"]*"([^>]*)>', html):
+    attrs = sm.group(1)
+    dt = re.search(r'data-title="([^"]*)"', attrs)
+    bl = re.search(r'data-block="([^"]*)"', attrs)
+    if dt:
+        tit = dt.group(1)
+        why = titulo_ruim(tit)
+        if why:
+            erro(f"slide com título com {why}: {tit}")
+        if len(tit) > 45:
+            erro(f"slide com título de {len(tit)} caracteres (limite 45): {tit}")
+    if bl and bl.group(1).strip().upper() not in BLOCOS:
+        erro(f"bloco fora da lista (INTRODUÇÃO, PROBLEMA, SOLUÇÃO, PROVAS, FUTURO, CONCLUSÃO, RESERVA): {bl.group(1)}")
+for hm in re.finditer(r'<h1 class="ttl[^"]*">(.*?)</h1>', html, re.S):
+    tit = HTML_TAG.sub("", hm.group(1)).strip()
+    why = titulo_ruim(tit)
+    if why:
+        erro(f"slide: título h1 com {why}: {tit}")
+    if len(tit) > 45:
+        erro(f"slide: título h1 de {len(tit)} caracteres (limite 45): {tit}")
+
+# prova documental (camada 3): imagens reais do artigo
+for img in ("figura1", "tabela1", "tabela2", "tabela3", "tabela4", "tabela5"):
+    if not (pasta / "img" / "artigo" / f"{img}.png").exists():
+        erro(f"imagem da prova documental ausente: img/artigo/{img}.png")
+for pid in ("s5-fig1", "s3-tab1", "s4-pinoN", "s5-dsr", "s7-tab4", "s7-nasa"):
+    dd = DETALHES.get(pid, "")
+    if 'class="showcase"' not in dd or 'class="proof"' not in dd:
+        erro(f"detalhes de {pid} sem ShowcaseFigure e ProofExplanation")
+    for srcimg in re.findall(r'<img src="([^"]+)"', dd):
+        if not (pasta / srcimg).exists():
+            erro(f"imagem referenciada em {pid} não existe: {srcimg}")
+
+SEM_FONTE_ANTIGA = ("index.html", "deck.css", "deck.js", "paineis.js", "paineis.css", "kit.js", "kit.css", "matrix8.css")
+for nome in SEM_FONTE_ANTIGA:
+    texto = re.sub(r"/\*.*?\*/", "", ler(nome), flags=re.S)
+    texto = re.sub(r"<!--.*?-->", "", texto, flags=re.S)
+    texto = re.sub(r"(?m)^\s*//.*$", "", texto)
+    if re.search(r"Archivo|Source Serif", texto):
+        erro(f"fonte antiga (Archivo ou Source Serif) em {nome}")
+for f in (pasta / "demo").glob("*.html"):
+    if re.search(r"Archivo|Source Serif", f.read_text(encoding="utf-8", errors="replace")):
+        erro(f"fonte antiga em demo/{f.name}")
 
 # ---------------------------------------------------------------- relatório
 print(f"{len(PAINEIS)} painéis · {len(fontes)} fontes · {len(usados)} chaves usadas")

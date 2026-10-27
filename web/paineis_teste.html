@@ -4,33 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Teste dos painéis</title>
-<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="fonts/poppins.css">
+<link rel="stylesheet" href="kit.css">
 <link rel="stylesheet" href="paineis.css">
 <style>
-  html, body { margin: 0; width: 1920px; height: 1080px; background: #000; overflow: hidden; font-family: 'Archivo', system-ui, sans-serif; }
+  html, body { margin: 0; width: 1920px; height: 1080px; background: #000; overflow: hidden; font-family: 'Poppins', system-ui, sans-serif; }
   /* casca de teste: imita a casca <section class="panel"> escura do deck */
-  .panel { position: absolute; inset: 0; background: #050914; display: flex; flex-direction: column; gap: 36px; padding: 90px 130px; overflow-y: auto; overscroll-behavior: contain; }
+  .panel { position: absolute; inset: 0; background: linear-gradient(180deg, #0b0c10, #14161c); display: flex; flex-direction: column; gap: 36px; padding: 64px 130px 64px 200px; overflow-y: auto; overscroll-behavior: contain; }
   .panel::-webkit-scrollbar { width: 0; }
-  .fim { position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: #E6EEFB; opacity: .0; }
-  .medida { position: fixed; right: 12px; top: 8px; font: 18px Archivo, sans-serif; color: #6F8FC7; z-index: 9; }
+  .medida { position: fixed; right: 12px; top: 6px; font: 500 16px 'Poppins', sans-serif; color: #a1a1aa; z-index: 9; }
 </style>
+<script>
+  // ?pf=<url do poppins.css> carrega a fonte de outro lugar (só para teste, enquanto web/fonts/poppins.css não existir)
+  var q = new URLSearchParams(location.search);
+  if (q.get('pf')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = q.get('pf'); document.head.appendChild(l); }
+</script>
 </head>
 <body>
 <section class="panel" id="casca"></section>
 <div class="medida" id="medida"></div>
+<script src="kit.js"></script>
 <script src="fontes.js"></script>
 <script src="paineis.js"></script>
 <script>
-  var id = new URLSearchParams(location.search).get('painel');
+  var id = q.get('painel'), det = q.get('det') === '1';
   var ids = Object.keys(window.HNV_PANELS);
   if (!id) id = ids[0];
-  document.getElementById('casca').innerHTML = window.HNV_PANELS[id] || ('<p style="color:#fff">painel inexistente: ' + id + '</p>');
-  document.querySelectorAll('.fonte').forEach(function (b) { b.addEventListener('click', function () { document.getElementById('medida').textContent = 'fonte: ' + b.dataset.src; }); });
-  // mede o excesso de altura do painel
+  var html = det ? window.HNV_DETALHES[id] : window.HNV_PANELS[id];
+  document.getElementById('casca').innerHTML = html || ('<p style="color:#fff">painel inexistente: ' + id + '</p>');
   window.addEventListener('load', function () {
     var c = document.getElementById('casca');
-    document.getElementById('medida').textContent = id + ' · altura do conteúdo ' + c.scrollHeight + ' / 1080';
-    document.documentElement.setAttribute('data-h', c.scrollHeight);
+    var t = c.querySelector('.pt');
+    document.getElementById('medida').textContent = id + (det ? ' (detalhes)' : '') + ' · altura ' + c.scrollHeight + ' / 1080 · título ' + (t ? Math.round(t.scrollWidth) + ' px' : '');
   });
 </script>
 </body>

@@ -1,5 +1,5 @@
 /* KIT SVG do deck: funções puras que devolvem strings SVG. API em KIT_API.md.
-   Traço 2 px, cantos 8 px, Archivo; cores só pela folha kit.css (gelo, névoa, âmbar em erro/bloqueio). */
+   Traço 2 px, cantos 8 px, Poppins; cores só pela folha kit.css (gelo, névoa, âmbar em erro/bloqueio). */
 (function () {
   'use strict';
   var K = {};
@@ -53,7 +53,7 @@
   /* ---------- caixa, raia, nó ---------- */
   K.box = function (o) {
     var size = o.size || 28;
-    return '<g class="k-el ' + toneCls(o) + '"' + stepAttr(o) + '><rect class="k-b" x="' + o.x + '" y="' + o.y + '" width="' + o.w + '" height="' + o.h + '" rx="8"/>' +
+    return '<g class="k-el k-card ' + toneCls(o) + (o.mono ? ' k-mono' : '') + '"' + stepAttr(o) + '><rect class="k-b" x="' + o.x + '" y="' + o.y + '" width="' + o.w + '" height="' + o.h + '" rx="8"/>' +
       labelLines(o, o.x + o.w / 2, o.y + o.h / 2, size, !!o.s) + '</g>';
   };
 
@@ -107,8 +107,14 @@
     }
     while (i < s.length) {
       var c = s[i];
-      if (c === '_') { i++; out += '<sub>' + m(arg()) + '</sub>'; }
-      else if (c === '^') { i++; out += '<sup>' + m(arg()) + '</sup>'; }
+      if (c === '_') {
+        i++; var sb = m(arg());
+        if (s[i] === '^') { i++; out += '<span class="k-ss"><span>' + m(arg()) + '</span><span>' + sb + '</span></span>'; } else out += '<sub>' + sb + '</sub>';
+      }
+      else if (c === '^') {
+        i++; var sp = m(arg());
+        if (s[i] === '_') { i++; out += '<span class="k-ss"><span>' + sp + '</span><span>' + m(arg()) + '</span></span>'; } else out += '<sup>' + sp + '</sup>';
+      }
       else if (c === '{') {
         var inner = arg(), depth = 0, cut = -1;
         for (var k = 0; k < inner.length; k++) { if (inner[k] === '{') depth++; else if (inner[k] === '}') depth--; else if (inner[k] === '|' && !depth) { cut = k; break; } }
@@ -167,6 +173,40 @@
     o = o || {};
     var s = (o.s || 48) / 48;
     return '<g class="k-el k-ic ' + toneCls(o) + '"' + stepAttr(o) + ' transform="translate(' + (o.x || 0) + ' ' + (o.y || 0) + ') scale(' + n(s) + ')">' + (ICONS[name] || '') + '</g>';
+  };
+
+
+  /* ---------- pictogramas da camada 1 (48×48, traço 2 px, sem letras) ---------- */
+  var PIC = {
+    evidencia: ['Evidência', '<path d="M8 4H26L34 12V30"/><path d="M8 4V40H22"/><path d="M26 4V12H34"/><path d="M14 18H26 M14 25H22"/><circle cx="32" cy="32" r="8"/><path d="M38 38L45 45"/>'],
+    normas: ['Normas', '<path d="M24 6V40"/><path d="M13 42H35"/><path d="M6 13H42"/><path d="M10 13L3 28H17Z"/><path d="M38 13L31 28H45Z"/><circle cx="24" cy="6" r="2.5"/>'],
+    rastro: ['Rastro', '<path d="M8 38L18 25L30 31L40 11"/><circle cx="8" cy="38" r="4"/><circle cx="18" cy="25" r="4"/><circle cx="30" cy="31" r="4"/><circle cx="40" cy="11" r="4"/>'],
+    humano: ['Humano', '<circle cx="18" cy="13" r="7"/><path d="M4 42a14 14 0 0 1 28 0"/><path d="M34 32H44V38H34Z"/><path d="M39 32V24"/><circle cx="39" cy="21" r="3.5"/>'],
+    recuperar: ['Recuperar', '<rect x="5" y="9" width="24" height="8"/><rect x="5" y="19" width="24" height="8"/><rect x="5" y="29" width="24" height="8"/><circle cx="32" cy="28" r="9"/><path d="M38.5 34.5L45 43"/>'],
+    gerar: ['Gerar', '<path d="M8 10L24 10M8 10L24 24M8 24L24 10M8 24L24 24M8 24L24 38M8 38L24 24M8 38L24 38M24 10L40 17M24 24L40 17M24 24L40 31M24 38L40 31"/><circle cx="8" cy="10" r="3.5"/><circle cx="8" cy="24" r="3.5"/><circle cx="8" cy="38" r="3.5"/><circle cx="24" cy="10" r="3.5"/><circle cx="24" cy="24" r="3.5"/><circle cx="24" cy="38" r="3.5"/><circle cx="40" cy="17" r="3.5"/><circle cx="40" cy="31" r="3.5"/>'],
+    verificar: ['Verificar', '<path d="M24 4L40 10V24C40 34 32 41 24 44C16 41 8 34 8 24V10Z"/><path d="M16 24L22 30L33 17"/>'],
+    registrar: ['Registrar', '<rect x="8" y="5" width="32" height="37" rx="3"/><path d="M15 5V42"/><path d="M21 15H34M21 23H34M21 31H29"/>'],
+    aprovar: ['Aprovar', '<path d="M24 4a5 5 0 0 1 5 5v10H19V9a5 5 0 0 1 5-5Z"/><path d="M10 28H38a2 2 0 0 1 2 2V35H8V30a2 2 0 0 1 2-2Z"/><path d="M19 19L14 28M29 19L34 28"/><path d="M6 43H42"/>'],
+    bloqueio: ['Bloqueio', '<path d="M6 6V42M24 6V42M42 6V42"/><path d="M6 14H42M6 34H42"/><path d="M6 24H42"/>'],
+    ontologia: ['Ontologia', '<path d="M24 9L10 26M24 9L38 26M10 26H38M10 26L24 41M38 26L24 41M24 9V41"/><circle cx="24" cy="9" r="5"/><circle cx="10" cy="26" r="5"/><circle cx="38" cy="26" r="5"/><circle cx="24" cy="41" r="4"/>'],
+    fechadura: ['Fechadura', '<rect x="9" y="20" width="30" height="24" rx="4"/><path d="M16 20V14a8 8 0 0 1 16 0V20"/><circle cx="24" cy="30" r="3.5"/><path d="M24 33V39"/>'],
+    chave: ['Chave', '<circle cx="14" cy="24" r="8"/><path d="M22 24H45M36 24V32M42 24V30"/>'],
+    calendario: ['Calendário', '<rect x="5" y="9" width="38" height="33" rx="4"/><path d="M5 19H43M15 4V13M33 4V13"/><path d="M12 27H17M21 27H27M31 27H36M12 34H17M21 34H27"/>'],
+    barras: ['Barras', '<path d="M5 5V42H44"/><rect x="11" y="26" width="7" height="16"/><rect x="22" y="14" width="7" height="28"/><rect x="33" y="21" width="7" height="21"/>']
+  };
+  K.PICS = {};
+  Object.keys(PIC).forEach(function (k) { K.PICS[k] = PIC[k][0]; });
+  K.pic = function (name, o) {
+    o = o || {};
+    var d = PIC[name]; if (!d) return '';
+    var s = o.s || 96, k = s / 48, size = o.size || 32, pos = o.pos || 'below';
+    var x = o.x || 0, y = o.y || 0, t = o.t != null ? o.t : d[0], lab = '';
+    if (pos !== 'none' && t) {
+      lab = pos === 'right'
+        ? '<text class="k-t" x="' + (x + s + 20) + '" y="' + (y + s / 2) + '" dominant-baseline="central" style="font-size:' + size + 'px">' + esc(t) + '</text>'
+        : '<text class="k-t" x="' + (x + s / 2) + '" y="' + (y + s + size * 1.1) + '" text-anchor="middle" style="font-size:' + size + 'px">' + esc(t) + '</text>';
+    }
+    return '<g class="k-el k-pic ' + toneCls(o) + '"' + stepAttr(o) + '><g class="k-ic" transform="translate(' + x + ' ' + y + ') scale(' + n(k) + ')">' + d[1] + '</g>' + lab + '</g>';
   };
 
   /* ---------- controle de passos (slides) ---------- */
