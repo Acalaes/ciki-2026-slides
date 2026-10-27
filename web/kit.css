@@ -1,0 +1,72 @@
+/* KIT SVG do deck (escopo .k). Paleta fixa: fundo #070D1A (transparente), gelo #E6EEFB, névoa #6F8FC7,
+   âmbar #F2A541 só em .err / .block / .late. Traço 2 px, cantos 8 px, Archivo. */
+.k { display: block; width: 100%; height: auto; overflow: visible; }
+.k text, .k .k-eq { font-family: 'Archivo', system-ui, 'Segoe UI', sans-serif; }
+.k .k-t { fill: #E6EEFB; font-weight: 500; stroke: none; }
+.k .k-b7 { font-weight: 700; }
+.k .k-s { fill: #6F8FC7; font-weight: 500; }
+
+/* formas */
+
+.k .k-b { fill: rgba(111, 143, 199, .07); stroke: #E6EEFB; stroke-width: 2; }
+.k .k-ln { fill: rgba(111, 143, 199, .06); stroke: rgba(111, 143, 199, .45); stroke-width: 1; }
+.k .k-trk { fill: none; stroke: #6F8FC7; stroke-width: 2; }
+.k .k-fl { fill: #E6EEFB; stroke: none; }
+.k .k-d { fill: #E6EEFB; stroke: #E6EEFB; stroke-width: 2; }
+.k .k-d.k-hol { fill: none; }
+.k .k-p, .k .k-st { fill: none; stroke: #E6EEFB; stroke-width: 2; stroke-linejoin: round; }
+.k .k-p.k-dash, .k .k-dash { stroke-dasharray: 8 7; }
+.k .k-arc { fill: none; stroke: #E6EEFB; stroke-width: 18; }
+.k .k-ic { fill: none; stroke: #E6EEFB; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.k .k-mk { fill: none; stroke: #E6EEFB; stroke-width: 2; }
+
+/* tons */
+.k .t-nevoa .k-b, .k .t-nevoa .k-p, .k .t-nevoa .k-st, .k .t-nevoa .k-d, .k .t-nevoa .k-ic { stroke: #6F8FC7; }
+.k .t-nevoa .k-t { fill: #6F8FC7; }
+.k .t-nevoa .k-fl, .k .t-nevoa .k-d { fill: #6F8FC7; }
+.k .t-nevoa .k-d.k-hol { fill: none; }
+.k .t-nevoa .k-arc { stroke: #6F8FC7; }
+.k .k-mk.t-nevoa { stroke: #6F8FC7; }
+.k .k-fill .k-b { fill: rgba(230, 238, 251, .14); }
+.k .k-solid .k-b { fill: #E6EEFB; stroke: #E6EEFB; }
+.k .k-solid .k-t { fill: #070D1A; }
+.k .k-solid .k-s { fill: #070D1A; }
+
+/* âmbar: só erro / bloqueio / atraso */
+.k .err .k-b, .k .block .k-b, .k .late .k-b { stroke: #F2A541; stroke-width: 2.5; fill: rgba(242, 165, 65, .1); }
+.k .err .k-p, .k .block .k-p, .k .late .k-p, .k .err .k-st, .k .block .k-st { stroke: #F2A541; }
+.k .err .k-fl, .k .block .k-fl, .k .late .k-fl, .k .err .k-d, .k .block .k-d, .k .late .k-d { fill: #F2A541; stroke: #F2A541; }
+.k .err .k-d.k-hol, .k .block .k-d.k-hol { fill: none; }
+.k .err .k-t, .k .block .k-t, .k .late .k-t, .k .err .k-s, .k .block .k-s, .k .late .k-s { fill: #F2A541; }
+.k .err .k-arc, .k .block .k-arc { stroke: #F2A541; }
+.k .err .k-ic, .k .block .k-ic { stroke: #F2A541; }
+.k .k-mk.err { stroke: #F2A541; }
+.k text.err, .k text.block { fill: #F2A541; }
+
+/* fórmulas em HTML dentro do SVG */
+.k .k-eq { font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif; font-style: italic; color: #E6EEFB; line-height: 1.15; white-space: nowrap; }
+.k .k-eq sub { font-size: .55em; vertical-align: -.28em; line-height: 0; }
+.k .k-eq sup { font-size: .55em; vertical-align: .6em; line-height: 0; }
+.k .k-eq .k-op { font-style: normal; color: #6F8FC7; margin: 0 .1em; }
+.k .k-eq .k-fr { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
+.k .k-eq .k-fr > span:first-child { border-bottom: 3px solid #E6EEFB; padding: 0 .2em .04em; }
+.k .k-eq .k-fr > span:last-child { padding: .04em .2em 0; }
+
+/* animação automática de construção */
+@keyframes k-in { from { opacity: 0; } }
+@keyframes k-draw { from { stroke-dashoffset: 1; } }
+@keyframes k-grow { from { transform: scaleX(0); } }
+.k [data-step] { animation: k-in .55s ease-out backwards; animation-delay: calc(var(--step, 0) * .45s); }
+.k .k-p:not(.k-dash) { stroke-dasharray: 1; stroke-dashoffset: 0; animation: k-draw .8s ease-out backwards; animation-delay: calc(var(--step, 0) * .45s); }
+.k .k-grow { transform-box: fill-box; transform-origin: left center; animation: k-grow 1s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(var(--step, 0) * .45s + .1s); }
+/* a seta com marcador não pode usar dasharray de 1 sobre a ponta: o marcador herda só o traço da linha */
+
+/* modo controlado (slides): K.step(svg, n) */
+.k.k-ctl [data-step] { opacity: 0; animation: none; transition: opacity .35s; }
+.k.k-ctl [data-step].k-on { opacity: 1; }
+.k.k-ctl [data-step].k-on:not(.k-now):not(.err):not(.block):not(.late) .k-b, .k.k-ctl [data-step].k-on:not(.k-now):not(.err):not(.block):not(.late) .k-p { stroke: #6F8FC7; }
+.k.k-ctl [data-step].k-on:not(.k-now):not(.err):not(.block):not(.late) .k-t { fill: #6F8FC7; }
+.k.k-ctl [data-step] .k-p:not(.k-dash) { animation: none; stroke-dasharray: none; }
+
+@media (prefers-reduced-motion: reduce) { .k *, .k [data-step] { animation: none !important; } }
+.static .k *, .static .k [data-step] { animation: none !important; }
