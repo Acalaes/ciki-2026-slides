@@ -1,0 +1,41 @@
+// Autoteste da interação (rodado por qa_v2.py selftest). Escreve o resultado em <pre id="selftest">.
+(async function () {
+  const D = window.HNV_DECK, out = [], ok = (n, c, x) => out.push((c ? 'OK  ' : 'FALHA ') + n + (x ? ' ' + x : ''));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const wheel = (dy, dx, target) => (target || document.body).dispatchEvent(new WheelEvent('wheel', { deltaY: dy, deltaX: dx || 0, bubbles: true, cancelable: true }));
+  const st = () => D.state();
+  D.goto(0); await sleep(1200);
+  wheel(100); await sleep(50); ok('1 entalhe avança 1 slide', st().i === 1, JSON.stringify(st()));
+  await sleep(1200); const a = st().i;
+  for (let k = 0; k < 10; k++) { wheel(100); await sleep(100); }
+  ok('10 entalhes em 1 s avançam no máximo 2', st().i - a <= 2, 'avançou ' + (st().i - a));
+  await sleep(1500); D.goto(7); await sleep(1200);
+  ok('slide 8 começa no passo 1', st().i === 7 && st().step === 1, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('roda consome passo 2 sem trocar de slide', st().i === 7 && st().step === 2, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('roda consome passo 3', st().i === 7 && st().step === 3, JSON.stringify(st()));
+  wheel(100); await sleep(1100); ok('depois do passo 3 troca de slide', st().i === 8, JSON.stringify(st()));
+  wheel(-100); await sleep(1100); ok('voltar entra no último passo do slide 8', st().i === 7 && st().step === 3, JSON.stringify(st()));
+  wheel(100, 400); await sleep(300); ok('deltaX ignorado', st().i === 7 && st().step === 3);
+  D.goto(1); await sleep(1000);
+  document.querySelector('[data-open="s2-casos"]').click(); await sleep(500);
+  const p = document.getElementById('panel-s2-casos'); ok('clique em data-open abre painel', p && p.classList.contains('open'));
+  const before = st().i; wheel(100, 0, p); await sleep(1100); wheel(100, 0, p); await sleep(1100);
+  ok('com painel aberto a roda não muda de slide', st().i === before, JSON.stringify(st()));
+  document.querySelector('[data-src="charlotin"]').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  await sleep(300); const dr = document.getElementById('drawer'); ok('data-src abre a gaveta (camada 3)', dr.classList.contains('open'));
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(300);
+  ok('Esc fecha a camada 3 e mantém a 2', !dr.classList.contains('open') && p.classList.contains('open'));
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sleep(300);
+  ok('Esc fecha a camada 2', !p.classList.contains('open'));
+  document.getElementById('stage').dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true })); await sleep(300);
+  ok('clique direito volta', st().i === before - 1, JSON.stringify(st()));
+  await sleep(400);
+  document.getElementById('stage').dispatchEvent(new MouseEvent('click', { bubbles: true })); await sleep(300);
+  ok('clique esquerdo em área vazia avança', st().i === before, JSON.stringify(st()));
+  const ids = [...new Set([...document.querySelectorAll('[data-open]')].map(e => e.dataset.open))];
+  const faltam = ids.filter(id => !(window.HNV_PANELS && window.HNV_PANELS[id]));
+  ok('todos os data-open têm conteúdo em HNV_PANELS', faltam.length === 0, faltam.join(', '));
+  const pre = document.createElement('pre'); pre.id = 'selftest'; pre.textContent = out.join('\n'); document.body.prepend(pre);
+  pre.style.cssText = 'position:fixed;z-index:999;left:0;top:0;background:#fff;color:#000;font:14px monospace;padding:10px';
+  document.title = 'SELFTEST ' + out.filter(x => x.startsWith('FALHA')).length + ' falhas';
+})();
