@@ -313,3 +313,7 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .s10 .bgimg.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 34% 56% at 52% 42%,rgba(8,10,14,.88) 0,rgba(8,10,14,.72) 55%,rgba(8,10,14,0) 100%)}
 /* slide 9: selo "hipótese" centralizado na parte inferior */
 .s10>.selo{left:0;right:0;width:max-content;margin:0 auto;bottom:66px}
+
+/* v1.15.6: moldura genérica de imagem de fundo (slide 1 e próximos); o slide 9 mantém a regra própria aprovada */
+.bgimg.frame{inset:auto;left:var(--fx,130px);top:var(--fy,300px);width:var(--fw,1660px);height:var(--fh,720px);background-size:100% 100%;filter:brightness(.78) saturate(.95);opacity:.95;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);mask-composite:intersect}
+.bgimg.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse var(--vrx,34%) var(--vry,56%) at var(--vx,52%) var(--vy,42%),rgba(8,10,14,.88) 0,rgba(8,10,14,.72) 55%,rgba(8,10,14,0) 100%)}
