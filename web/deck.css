@@ -291,7 +291,8 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 
 /* prova 2: passo atual em destaque e selo discreto (descrição da fonte) */
 .slide.s8 .wd{transition:opacity .4s,transform .4s}
-.slide.s8[data-step="1"] .w1,.slide.s8[data-step="2"] .w2,.slide.s8[data-step="3"] .w3{opacity:1;transform:scale(1.12)}
-.slide.s8[data-step="2"] .w1,.slide.s8[data-step="3"] .w1,.slide.s8[data-step="3"] .w2{opacity:.4;transform:none}
+.slide.s8[data-step="1"] .w1,.slide.s8[data-step="2"] .w2,.slide.s8[data-step="3"] .w3{opacity:1;filter:none;transform:scale(1.12)}
+.slide.s8[data-step="2"] .w1,.slide.s8[data-step="3"] .w1,.slide.s8[data-step="3"] .w2{opacity:1;filter:brightness(.55);transform:none}
+.slide.s8 .stepw{z-index:9;text-shadow:0 0 14px #0b0c10,0 2px 12px rgba(0,0,0,.9)}
 .slide.s8.matrix>.selo{font:400 20px/1.3 var(--fd);color:#a1a1aa;border:0;background:none;padding:0;bottom:64px}
 .slide.s8.matrix>.selo span{text-decoration:underline;cursor:help}
