@@ -391,7 +391,7 @@ function zoomMundo(s, step) {
 HEROES.s3 = K => {
   const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'Depois', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
     K.arrow({ pts: [[574, 120], [790, 120]], step: 3 }) + K.node({ cx: 880, cy: 120, r: 80, t: 'Dano', size: 36, tone: 'err', fill: true, step: 4 }) +
-    K.arrow({ pts: [[970, 120], [1230, 120]], tone: 'late', dash: true, step: 5 }) + K.ring({ cx: 1320, cy: 120, r: 80, dash: true, tone: 'late', step: 6 }) + K.text({ x: 1320, y: 240, t: 'Explicação', size: 34, anchor: 'middle', tone: 'late' });
+    K.arrow({ pts: [[970, 120], [1230, 120]], tone: 'late', dash: true, step: 5 }) + K.ring({ cx: 1320, cy: 120, r: 80, dash: true, tone: 'late', step: 6 }) + K.text({ x: 1320, y: 240, t: 'IA explicável', size: 34, anchor: 'middle', tone: 'late' });
   const sh = [480, 620, 760].map((x, i) => K.pic('verificar', { x, y: 420, s: 100, pos: 'none', step: 8 + i })).join('');
   const l2 = K.lane({ x: 0, y: 340, w: 1600, h: 270, t: 'Antes', size: 36, step: 7 }) + sh + K.text({ x: 660, y: 575, t: 'Verificações', size: 34, anchor: 'middle', step: 11 }) +
     K.arrow({ pts: [[890, 470], [1230, 470]], step: 12 }) + K.node({ cx: 1320, cy: 470, r: 64, fill: 'solid', step: 13 }) + K.text({ x: 1320, y: 585, t: 'Decisão', size: 34, anchor: 'middle', step: 13 });
