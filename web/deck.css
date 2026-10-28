@@ -208,7 +208,7 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .res .ref a{color:var(--teal-claro)}
 
 /* capa: mesma hierarquia de todos os slides (título 54 px, subtítulo 46 px, pergunta 28 px) */
-.s1 .fxslot{transform-origin:1208px 1040px;transform:translate(-248px,-40px) scale(1.1)}
+.s1 .fxslot{transform-origin:1208px 1040px;transform:translate(-272px,-40px) scale(1.04)}
 .fxslot[data-fx^="cover"]{filter:hue-rotate(28deg) brightness(1.15)}
 .s1 .sub{color:#4db3ea}
 .s1 .guia{top:250px}

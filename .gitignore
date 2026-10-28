@@ -1,3 +1,10 @@
-img/
+# fotos de terceiros ficam só no PC e no Drive; imagens geradas (autoria própria) e o registro de créditos vão ao GitHub
+web/img/*
+!web/img/artigo/
+!web/img/capa_servidores.jpg
+!web/img/hipotese_especialistas.jpg
+!web/img/creditos.json
 dados/legendas/
 *.tmp
+/img/
+web/fontes_pdf/img/

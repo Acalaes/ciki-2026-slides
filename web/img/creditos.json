@@ -1,0 +1,125 @@
+[
+ {
+  "arquivo": "biblioteca.jpg",
+  "titulo": "University Library TUHH interior bookshelf",
+  "autor": "Jonas Muth",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:University_Library_TUHH_interior_bookshelf.jpg"
+ },
+ {
+  "arquivo": "bombeiros.jpg",
+  "titulo": "Capinzal SC Brasil Corpo de Bombeiros Militar de Santa Catarina (2)",
+  "autor": "DAR7",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Capinzal_SC_Brasil_Corpo_de_Bombeiros_Militar_de_Santa_Catarina_(2).jpg"
+ },
+ {
+  "arquivo": "servidores.jpg",
+  "titulo": "NOIRLab HQ Server Racks (6V6A0402-CC)",
+  "autor": "NOIRLab/NSF/AURA/T. Slovinský",
+  "licenca": "CC BY 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:NOIRLab_HQ_Server_Racks_(6V6A0402-CC).jpg"
+ },
+ {
+  "arquivo": "tribunal.jpg",
+  "titulo": "Interior view - Wisconsin Supreme Court - DSC03163",
+  "autor": "Daderot",
+  "licenca": "CC0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Interior_view_-_Wisconsin_Supreme_Court_-_DSC03163.JPG"
+ },
+ {
+  "arquivo": "noite.jpg",
+  "titulo": "Rubin Observatory Under the Milky Way (noirlab2409b)",
+  "autor": "Hernán Stockebrand",
+  "licenca": "CC BY 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Rubin_Observatory_Under_the_Milky_Way_(noirlab2409b).jpg"
+ },
+ {
+  "arquivo": "stf.jpg",
+  "titulo": "Supreme Federal Court Azul (STF, Brasília)",
+  "autor": "Dasfour2022",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Supreme_Federal_Court_Azul.jpg"
+ },
+ {
+  "arquivo": "planalto.jpg",
+  "titulo": "Planalto a noite (Palácio do Planalto)",
+  "autor": "Leandro Neumann Ciuffo",
+  "licenca": "CC BY 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Planalto_a_noite.jpg"
+ },
+ {
+  "arquivo": "capa.jpg",
+  "titulo": "Original Blueprint of United States National Agricultural Library",
+  "autor": "Warner, Burns, Toan, and Lunde  architecture firm",
+  "licenca": "Public domain",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Original_Blueprint_of_United_States_National_Agricultural_Library.jpg"
+ },
+ {
+  "arquivo": "gravador.jpg",
+  "titulo": "SWA 4013 Recorders",
+  "autor": "National Transportation Safety Board",
+  "licenca": "Public domain",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:SWA_4013_Recorders.jpg"
+ },
+ {
+  "arquivo": "fechadura.jpg",
+  "titulo": "Cutaway Padlocks",
+  "autor": "Dennis van Zuijlekom from Ermelo, The Netherlands",
+  "licenca": "CC BY-SA 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Cutaway_Padlocks.jpg"
+ },
+ {
+  "arquivo": "sinalizacao.jpg",
+  "titulo": "The 44 lever frame at St Albans South signalbox",
+  "autor": "kitmasterbloke",
+  "licenca": "CC BY 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:The_44_lever_frame_at_St_Albans_South_signalbox.jpg"
+ },
+ {
+  "arquivo": "catalogo.jpg",
+  "titulo": "Card catalogue drawers",
+  "autor": "Carolina Prysyazhnyuk",
+  "licenca": "CC BY-SA 2.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Card_catalogue_drawers.jpg"
+ },
+ {
+  "arquivo": "via_ferrata.jpg",
+  "titulo": "Klettersteig Speikboden 1",
+  "autor": "Speikboden AG",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Klettersteig_Speikboden_1.jpg"
+ },
+ {
+  "arquivo": "pista.jpg",
+  "titulo": "Athletics track start line numbers 1, 2, 3",
+  "autor": "Santeri Viinamäki",
+  "licenca": "CC BY-SA 4.0",
+  "url_pagina": "https://commons.wikimedia.org/wiki/File:Athletics_track_start_line_numbers_1,_2,_3.jpg"
+ },
+ {
+  "arquivo": "ciki-logo.png",
+  "titulo": "Logotipo do CIKI (site do congresso)",
+  "autor": "CIKI - Congresso Internacional de Conhecimento e Inovação",
+  "licenca": "uso apenas para identificar o evento",
+  "url_pagina": "https://www.knowledgeconference.cl/"
+ },
+ {
+  "arquivo": "hipotese_especialistas.jpg",
+  "tipo": "gerada",
+  "titulo": "Especialistas de várias profissões em sala de controle",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "sala de controle realista, advogado e cientista à esquerda, bombeiro à direita, centro livre, azul com acento laranja, sem texto",
+  "data": "2026-10-28",
+  "slide": 9
+ },
+ {
+  "arquivo": "capa_servidores.jpg",
+  "tipo": "gerada",
+  "titulo": "Engenheiro do conhecimento em salão de servidores",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "salão de servidores realista, engenheiro à direita diante de grafo de conhecimento, centro calmo, azul com acento laranja, sem texto",
+  "data": "2026-10-28",
+  "slide": 1
+ }
+]
