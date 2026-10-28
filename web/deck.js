@@ -459,6 +459,8 @@ function renderHero(i) {
 }
 function buildDynamic() {
   const ticks = $('#ticks'); if (ticks) for (let i = 0; i < 22; i++) { const x = 240 + i * 52; el('line', { x1: x, x2: x, y1: 850, y2: i === 0 || i === 21 ? 930 : 900, class: 'tick' }, ticks); }
+  /* fontes com página do PDF na camada 2 (clique no nome do rodapé abre a página) */
+  const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh' };
   slides.forEach((s, i) => {
     const b = s.dataset.block || ''; const n = ['INTRODUÇÃO', 'PROBLEMA', 'SOLUÇÃO', 'PROVAS', 'FUTURO', 'CONCLUSÃO'].indexOf(b);
     s.dataset.cap = n >= 0 ? n : 6; s.style.setProperty('--cap', CAPCOR[n >= 0 ? n : 6]);
@@ -469,7 +471,7 @@ function buildDynamic() {
     if (keys.length) {
       let r = $('.rodape', s); if (!r) { r = document.createElement('p'); r.className = 'rodape'; s.appendChild(r); }
       const seen = new Set(), parts = [];
-      keys.forEach(k => { const f = FONTES[k]; const ref = f && (f.ref || String(f.fonte || '').split(/[,(]/)[0].slice(0, 48)); if (!ref || seen.has(ref)) return; seen.add(ref); parts.push('<span data-src="' + k + '" tabindex="0" role="button" aria-label="Ver a fonte: ' + esc(ref) + '">' + esc(ref) + '</span>'); });
+      keys.forEach(k => { const f = FONTES[k]; const ref = f && (f.ref || String(f.fonte || '').split(/[,(]/)[0].slice(0, 48)); if (!ref || seen.has(ref)) return; seen.add(ref); const pg = FONTE_PAGINA[k]; parts.push(pg ? '<span data-open="' + pg + '" tabindex="0" role="button" aria-label="Ver a página do PDF: ' + esc(ref) + '">' + esc(ref) + '</span>' : '<span data-src="' + k + '" tabindex="0" role="button" aria-label="Ver a fonte: ' + esc(ref) + '">' + esc(ref) + '</span>'); });
       r.innerHTML = 'Fontes: ' + parts.join('; ');
     }
     const bgi = $('.bgimg', s); if (bgi && !$('.tint', s)) { const tn = document.createElement('div'); tn.className = 'tint'; bgi.after(tn); }

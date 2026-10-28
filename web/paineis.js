@@ -149,6 +149,10 @@
     tbl(['1fr', '200px', '200px'], ['País', 'Casos', 'Parcela'], [['EUA', '1.514', '68,3%'], ['Brasil', '41', '1,8%'], ['Demais países (total − EUA − Brasil)', '662', '29,9%']]) +
     '<p class="nota">Cada faixa vai da menor à maior taxa entre os sistemas testados. Os valores são dos preprints arXiv (Dahl v1: 69–88%; Magesh v1: 17–33%). Versões publicadas podem diferir.</p>',
     [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')]);
+  panel('fonte-dahl', 'Dahl et al. (2024): de onde vem 69–88%', '<img class="pdfp" src="fontes_pdf/img/dahl-resumo-01.png" alt="Primeira página do preprint de Dahl et al. (2024), com o trecho de 69% a 88%">',
+    'Página 1 do preprint arXiv 2401.01301v1: "occurring between 69% of the time with ChatGPT 3.5 and 88% with Llama 2".', [F('dahl', 'Dahl et al. (2024)')], { selos: [sel('preprint')] });
+  panel('fonte-magesh', 'Magesh et al. (2025): de onde vem 17–33%', '<img class="pdfp" src="fontes_pdf/img/magesh-resumo-01.png" alt="Primeira página do preprint de Magesh et al. (2025), com o trecho de 17% a 33%">',
+    'Página 1 do preprint arXiv 2405.20362v1: "each hallucinate between 17% and 33% of the time".', [F('magesh', 'Magesh et al. (2025)')], { selos: [sel('preprint')] });
 
   (function () {
     var z = [['XXXIII', 3.0], ['XXI', 2.2], ['II', 1.6], ['V', 1.1], ['caput', 0.6]];
