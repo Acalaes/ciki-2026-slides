@@ -402,13 +402,13 @@ HEROES.s3 = K => {
 const PINOS = { E: '<g data-open="s4-pinoE" aria-label="Teste de evidência: ver o exemplo">', N: '<g data-open="s4-pinoN" aria-label="Teste de normas: ver o exemplo">', T: '<g data-open="s4-pinoT" aria-label="Teste de rastro: ver o exemplo">', H: '<g data-open="s4-pinoH" aria-label="Teste do humano: ver o exemplo">' };
 HEROES.s4 = K => {
   /* v1.16.0: duas frases atravessam quatro testes em fila (ciclo de 14 s, SMIL): a boa passa e é liberada; a com citação fabricada é barrada no primeiro teste */
-  const Y = 75, cy = Y + 390, D = 14, B = 4, x0 = 260, x1 = 1390, cxs = [400, 680, 960, 1240];
+  const Y = 45, cy = Y + 390, D = 14, B = 4, x0 = 260, x1 = 1390, cxs = [400, 680, 960, 1240];
   const info = [['evidencia', 'Evidência', 'tem fonte real?', 'E'], ['normas', 'Normas', 'segue as regras?', 'N'], ['rastro', 'Rastro', 'ficou registrado?', 'T'], ['humano', 'Humano', 'alguém aprovou?', 'H']];
   const an = (attr, vals, kts) => '<animate attributeName="' + attr + '" values="' + vals + '" keyTimes="' + kts + '" dur="' + D + 's" begin="' + B + 's" repeatCount="indefinite"/>';
   const glow = (x, y, w, h, fill, vals, kts) => '<rect class="ao" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="14" fill="' + fill + '" opacity="0">' + an('opacity', vals, kts) + '</rect>';
   const tf = cx => 0.04 + 0.46 * (cx - x0) / (x1 - x0);
   let g = '';
-  g += K.box({ x: 345, y: Y, w: 380, h: 72, t: 'Alucinação', size: 36, tone: 'block', step: 1 }) + K.box({ x: 785, y: Y, w: 470, h: 72, t: 'Explicação tardia', size: 36, tone: 'block', step: 1 });
+  g += K.box({ x: 345, y: Y + 25, w: 380, h: 72, t: 'Alucinação', size: 36, tone: 'block', step: 1 }) + K.box({ x: 785, y: Y + 25, w: 470, h: 72, t: 'Explicação tardia', size: 36, tone: 'block', step: 1 });
   g += OG('<g data-open="s4-regras" aria-label="Regra de liberação: ver as regras em forma de código">', HIT(x0, cy - 34, x1 - x0, 68) + K.arrow({ pts: [[x0, cy], [x1, cy]], noHead: true, tone: 'nevoa', dash: true, step: 2 }));
   g += K.box({ x: 0, y: cy - 75, w: 250, h: 150, t: ['“Silva (2021)', 'comprova isso.”'], size: 28, tone: 'nevoa', step: 2 });
   info.forEach((n, i) => {

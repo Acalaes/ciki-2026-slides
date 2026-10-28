@@ -322,3 +322,4 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 body.static .ao{display:none}
 .s4 .bgimg.frame{filter:brightness(1.05) saturate(.9)}
 .s4 .bgimg.frame::after{background:radial-gradient(ellipse var(--vrx,40%) var(--vry,46%) at var(--vx,50%) var(--vy,56%),rgba(8,10,14,.6) 0,rgba(8,10,14,.42) 55%,rgba(8,10,14,0) 100%)}
+.s4>.selo{left:0;right:0;width:max-content;margin:0 auto;bottom:66px}
