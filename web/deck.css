@@ -328,3 +328,5 @@ body.static .ao{display:none}
 .slide>.selo:not(.ident){left:0;right:0;width:max-content;max-width:1660px;margin:0 auto;bottom:66px;text-align:center}
 .s11 .bgimg.frame{filter:brightness(1.1) saturate(1)}
 .s11 .bgimg.frame::after{background:radial-gradient(ellipse var(--vrx,46%) var(--vry,50%) at var(--vx,50%) var(--vy,52%),rgba(8,10,14,.5) 0,rgba(8,10,14,.32) 55%,rgba(8,10,14,0) 100%)}
+/* v4: cartão de resposta nos slides 2, 3 e 8 (mesmo formato do selo, centralizado na base) */
+.slide.s8.matrix>.selo.ans{font:600 26px/1.25 var(--fd);color:var(--teal-claro);border:1px solid rgba(43,155,220,.5);background:rgba(21,24,31,.9);padding:6px 18px;border-radius:8px;left:0;right:0;width:max-content;max-width:1660px;margin:0 auto;bottom:88px;text-align:center}
