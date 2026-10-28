@@ -590,7 +590,7 @@ HEROES.s10 = K => {
 };
 
 HEROES.s11 = K => {
-  const nomes = ['Manual', 'Modelo sozinho', 'Busca com modelo', 'Arquitetura completa'], n = [1, 1, 2, 5];
+  const nomes = ['Manual', 'Modelo sozinho', 'Busca com modelo (RAG)', 'Arquitetura completa'], n = [1, 1, 2, 5];
   let g = '';
   nomes.forEach((nm, i) => {
     const y = 20 + i * 165;
