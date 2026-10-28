@@ -34,13 +34,13 @@ body.static .fxslot canvas{display:none}
 .hd .num{font:700 72px/1 var(--fd);opacity:.2}
 .hd .lab{font:600 22px/1 var(--fd);letter-spacing:.15em;text-transform:uppercase;margin-top:-4px}
 .ttl{text-shadow:0 0 12px rgba(255,255,255,.55),0 0 30px rgba(77,179,234,.5),0 2px 4px rgba(0,0,0,.6)}
-.ttl{position:absolute;z-index:8;left:300px;width:1420px;top:21px;height:72px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;
- font:700 48px/1 var(--fd);letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;color:var(--texto)}
+.ttl{position:absolute;z-index:8;left:250px;width:1420px;top:21px;height:72px;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;
+ font:700 54px/1 var(--fd);letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;color:var(--texto)}
 .guia,.sub,.stepw,.hd,.slide>.selo,.rodape,#pag{text-shadow:0 2px 12px rgba(0,0,0,.85)}
 .guia{position:absolute;z-index:8;left:130px;width:auto;top:236px;text-align:left;font:italic 400 28px/1.2 var(--fd);color:var(--texto);white-space:nowrap;padding-bottom:10px;border-bottom:3px solid var(--teal)}
 .stepw{position:absolute;z-index:8;left:130px;right:130px;top:142px;text-align:center;font:700 44px/1.1 var(--fd);white-space:nowrap}
 .ttl .w{display:inline-block;white-space:nowrap}
-.sub{position:absolute;z-index:8;left:300px;right:200px;top:150px;text-align:center;font:500 40px/1.2 var(--fd);color:var(--teal-claro);white-space:nowrap}
+.sub{position:absolute;z-index:8;left:130px;right:130px;top:150px;text-align:center;font:500 46px/1.2 var(--fd);color:var(--teal-claro);white-space:nowrap}
 .hero{position:absolute;z-index:6;left:215px;top:296px;width:1490px;height:670px}
 .hero svg.k{width:1490px;height:670px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.75))}
 .slide>.selo{position:absolute;z-index:8;left:130px;bottom:78px;font:600 26px/1.25 var(--fd);color:var(--teal-claro);border:1px solid rgba(43,155,220,.5);border-radius:8px;padding:6px 18px;background:rgba(21,24,31,.9);
@@ -207,10 +207,7 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .res .ref .panel-body *{font-size:24px}
 .res .ref a{color:var(--teal-claro)}
 
-/* capa: título grande à esquerda */
-/* capa: mesma hierarquia dos demais (título > subtítulo > pergunta), título um pouco maior */
-.s1 .ttl{font-size:54px}
-.s1 .sub{font-size:46px}
+/* capa: mesma hierarquia de todos os slides (título 54 px, subtítulo 46 px, pergunta 28 px) */
 .s1 .fxslot{transform-origin:1208px 1040px;transform:translate(-248px,-40px) scale(1.1)}
 .fxslot[data-fx^="cover"]{filter:hue-rotate(28deg) brightness(1.15)}
 .s1 .sub{color:#4db3ea}
