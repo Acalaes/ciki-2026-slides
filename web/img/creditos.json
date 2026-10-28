@@ -132,5 +132,23 @@
   "prompt": "Ultra-realistic photograph of an airport security checkpoint: a row of baggage X-ray conveyor belts and metal-detector gates lined up in sequence, seen from a low angle in perspective, empty of people, cool neutral lighting, shallow depth of field, clean modern terminal, no text, no logos, no signs, photorealistic, 16:9",
   "data": "2026-10-28",
   "slide": "4"
+ },
+ {
+  "arquivo": "linha_producao.jpg",
+  "tipo": "gerada",
+  "titulo": "Linha de produção com robô, portal de inspeção e carimbo (laço gerar-verificar-corrigir)",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "linha de produção realista: braço robótico gera folhas, portal de inspeção luminoso confere, esteira lateral devolve rejeitadas, estação de carimbo aprova; sem pessoas, sem texto, azul com acento laranja",
+  "data": "2026-10-28",
+  "slide": 5
+ },
+ {
+  "arquivo": "harness.jpg",
+  "tipo": "gerada",
+  "titulo": "Chip luminoso preso por arnês de cintas e fivelas (modelo com harness)",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "Photorealistic close-up of a glowing microchip core wrapped by a harness of metal straps, buckles and clasps; blue light with orange accents; calm dark center; no text, no people",
+  "data": "2026-10-28",
+  "slide": "6"
  }
 ]

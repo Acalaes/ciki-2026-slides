@@ -442,12 +442,44 @@ HEROES.s5 = K => {
 };
 
 HEROES.s9 = K => {
-  const eq = K.pic('gerar', { x: 140, y: 20, s: 200, t: 'Modelo', size: 44, step: 1 }) + K.text({ x: 490, y: 140, t: 'com', size: 40, anchor: 'middle', tone: 'nevoa', step: 2 }) +
-    PIC2('arnes', { x: 640, y: 20, s: 200, t: 'Harness', size: 44, step: 3 }) + K.arrow({ pts: [[880, 120], [1100, 120]], step: 4, t: 'forma', tx: 990, ty: 92, size: 36 }) + PIC2('agente', { x: 1140, y: 20, s: 200, t: 'Agente', size: 44, step: 5 });
+  /* v1.18.1: figuras realistas e animadas (ciclo de 6 s): o modelo pulsa, o arnês aperta e trava, o agente acorda */
+  const D = 6, R = 'repeatCount="indefinite"', S = (n, i) => '<g class="k-el" data-step="' + n + '" style="--step:' + n + '">' + i + '</g>';
+  const defs = '<defs><linearGradient id="s9m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34475a"/><stop offset="1" stop-color="#0b1017"/></linearGradient>' +
+    '<radialGradient id="s9d"><stop offset="0" stop-color="#d4eeff"/><stop offset=".45" stop-color="#2b9bdc"/><stop offset="1" stop-color="#0a3a5a"/></radialGradient>' +
+    '<linearGradient id="s9s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#56667a"/><stop offset=".5" stop-color="#d3dee9"/><stop offset="1" stop-color="#445261"/></linearGradient>' +
+    '<linearGradient id="s9o" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb08a"/><stop offset=".5" stop-color="#f05a28"/><stop offset="1" stop-color="#9c3009"/></linearGradient>' +
+    '<filter id="s9g" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter></defs>';
+  let pins = '';
+  for (let i = 0; i < 8; i++) { const p = -70 + i * 20; pins += '<rect x="' + p + '" y="-100" width="8" height="16" rx="2"/><rect x="' + p + '" y="84" width="8" height="16" rx="2"/><rect x="-100" y="' + p + '" width="16" height="8" rx="2"/><rect x="84" y="' + p + '" width="16" height="8" rx="2"/>'; }
+  const nodes = [[-30, -28], [-30, 0], [-30, 28], [0, -28], [0, 0], [0, 28], [30, -14], [30, 14]];
+  let net = '';
+  [[0, 3], [0, 4], [1, 3], [1, 4], [1, 5], [2, 4], [2, 5], [3, 6], [4, 6], [4, 7], [5, 7], [3, 7], [5, 6]].forEach(l => { net += '<path d="M' + nodes[l[0]] + 'L' + nodes[l[1]] + '"/>'; });
+  const dots = nodes.map((p, i) => '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5"><animate attributeName="r" values="4;7.5;4" dur="2.4s" begin="' + (i * .3).toFixed(1) + 's" ' + R + '/></circle>').join('');
+  const chip = '<g transform="translate(240 130)"><rect x="-60" y="-60" width="120" height="120" fill="#2b9bdc" filter="url(#s9g)" opacity=".5"><animate attributeName="opacity" values=".3;.8;.3" dur="2.4s" ' + R + '/></rect>' +
+    '<g fill="#8fa3b5" opacity=".9">' + pins + '</g><rect x="-85" y="-85" width="170" height="170" rx="16" fill="url(#s9m)" stroke="#6f8aa3" stroke-width="2"/>' +
+    '<rect x="-56" y="-56" width="112" height="112" rx="9" fill="url(#s9d)" stroke="#d4eeff" stroke-width="2"/><g stroke="rgba(255,255,255,.75)" stroke-width="2" fill="none">' + net + '</g><g fill="#fff">' + dots + '</g></g>';
+  const strap = d => '<path d="' + d + '" pathLength="1" stroke-dasharray="1" fill="none" stroke="url(#s9s)" stroke-width="17" stroke-linecap="round"><animate attributeName="stroke-dashoffset" values="1;1;0;0;1" keyTimes="0;.04;.28;.9;1" dur="' + D + 's" ' + R + '/></path>' +
+    '<path d="' + d + '" pathLength="1" stroke-dasharray=".02 .025" fill="none" stroke="#1b232b" stroke-width="1.5" opacity=".7"/>';
+  const arnes = '<g transform="translate(740 130)"><path d="M-56 -92Q0 -66 56 -92L88 -28V92H-88V-28Z" fill="rgba(77,179,234,.08)" stroke="#4db3ea" stroke-width="2"/>' +
+    strap('M-52 -88L52 44') + strap('M52 -88L-52 44') + strap('M-88 52H88') +
+    '<rect x="-25" y="30" width="50" height="44" rx="7" fill="url(#s9o)" stroke="#ffd7c2" stroke-width="2"/><rect x="-11" y="42" width="22" height="20" rx="3" fill="#1b0f08" opacity=".85"/>' +
+    '<rect x="-30" y="26" width="14" height="52" fill="#fff" opacity="0" transform="skewX(-20)"><animate attributeName="opacity" values="0;0;.6;0;0" keyTimes="0;.3;.34;.4;1" dur="' + D + 's" ' + R + '/><animate attributeName="x" values="-30;-30;20;20" keyTimes="0;.3;.4;1" dur="' + D + 's" ' + R + '/></rect>' +
+    '<circle cx="0" cy="52" r="10" fill="none" stroke="#f05a28" stroke-width="3" opacity="0"><animate attributeName="r" values="10;10;60;60" keyTimes="0;.28;.5;1" dur="' + D + 's" ' + R + '/><animate attributeName="opacity" values="0;0;.9;0;0" keyTimes="0;.27;.28;.5;1" dur="' + D + 's" ' + R + '/></circle></g>';
+  const eye = x => '<ellipse cx="' + x + '" cy="-27" rx="9" ry="9" fill="#9bdcff"><animate attributeName="ry" values="9;9;1;9;9" keyTimes="0;.5;.53;.56;1" dur="3s" ' + R + '/></ellipse>';
+  const agente = '<g transform="translate(1240 150)"><path d="M0 -70V-98" stroke="#8fa3b5" stroke-width="4"/><circle cx="0" cy="-103" r="7" fill="url(#s9o)"><animate attributeName="r" values="6;10;6" dur="1.6s" ' + R + '/></circle>' +
+    '<rect x="-75" y="-42" width="9" height="34" rx="3" fill="#6f8aa3"/><rect x="66" y="-42" width="9" height="34" rx="3" fill="#6f8aa3"/>' +
+    '<rect x="-68" y="-70" width="136" height="92" rx="20" fill="url(#s9m)" stroke="#6f8aa3" stroke-width="2"/><rect x="-52" y="-50" width="104" height="44" rx="13" fill="#05080c"/>' +
+    '<g opacity=".3"><animate attributeName="opacity" values=".3;.3;1;1;.3" keyTimes="0;.3;.4;.9;1" dur="' + D + 's" ' + R + '/>' + eye(-24) + eye(24) + '</g>' +
+    '<rect x="-14" y="22" width="28" height="14" fill="#44566a"/><rect x="-82" y="36" width="164" height="66" rx="18" fill="url(#s9m)" stroke="#6f8aa3" stroke-width="2"/>' +
+    '<circle cx="0" cy="69" r="9" fill="#2b9bdc"><animate attributeName="opacity" values=".35;.35;1;.5;1;.35" keyTimes="0;.3;.4;.6;.8;1" dur="' + D + 's" ' + R + '/></circle></g>';
+  const eq = defs + '<g transform="translate(60 0)">' + S(1, chip) + K.text({ x: 240, y: 300, t: 'Modelo', size: 44, anchor: 'middle', step: 1 }) +
+    K.text({ x: 490, y: 142, t: 'com', size: 40, anchor: 'middle', tone: 'nevoa', step: 2 }) + S(3, arnes) + K.text({ x: 740, y: 300, t: 'Harness', size: 44, anchor: 'middle', step: 3 }) +
+    K.arrow({ pts: [[870, 130], [1120, 130]], step: 4, t: 'forma', tx: 995, ty: 96, size: 36 }) +
+    '<circle class="prt" r="8"><animateMotion dur="2.4s" ' + R + ' path="M870 130H1110"/></circle>' + S(5, agente) + K.text({ x: 1240, y: 300, t: 'Agente', size: 44, anchor: 'middle', step: 5 }) + '</g>';
   return K.svg(1600, 720, eq +
     OG('<g data-open="s5-calais" aria-label="CALAIS, a arquitetura do artigo, é um harness: ver os três níveis">', K.box({ x: 200, y: 400, w: 1200, h: 110, t: 'CALAIS, a arquitetura do artigo, é um harness', size: 40, fill: true, step: 6 })) +
-    OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'Quantos artigos usam o termo?', size: 34, step: 7 })) +
-    OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'Modelo pequeno rende quanto?', size: 34, step: 8 })),
+    OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'Como contei os artigos ›', size: 34, step: 7 })) +
+    OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'O que o estudo da CMU mostrou ›', size: 34, step: 8 })),
     'Modelo com harness forma um agente; CALAIS, a arquitetura do artigo, é um harness');
 };
 
