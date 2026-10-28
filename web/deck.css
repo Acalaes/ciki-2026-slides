@@ -304,3 +304,4 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .slide.s8.matrix>.selo span{text-decoration:underline;cursor:help}
 
 .ptag{position:absolute;z-index:8;right:130px;top:232px;margin:0;padding:6px 20px;border:2px solid var(--cap);border-radius:999px;font:600 24px/1.2 var(--fd);color:var(--cap);white-space:nowrap;background:rgba(21,24,31,.85)}
+.s3 .hero{top:364px}
