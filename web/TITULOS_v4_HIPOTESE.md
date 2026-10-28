@@ -18,3 +18,11 @@ Título: PROVA PRIMEIRO · Subtítulo: Quatro Provas Barram Citação Falsa Ante
 
 ## Verificação por slide (a fazer)
 Título repete o bloco? Lido em sequência conta a história? Subtítulo tem item concreto e fio? Pergunta é respondida pela figura?
+
+## Regra de leitura em cadeia (v4b, 28/10/2026)
+Título, subtítulo e pergunta formam um mini-argumento; cada um responde ao anterior.
+1. TÍTULO = AFIRMAÇÃO: sujeito + verbo + objeto, sem preposição (ex.: ASSINATURA EXIGE PROVA). Diz o que o slide AFIRMA.
+2. SUBTÍTULO = A PROVA DA AFIRMAÇÃO: responde "como assim?" com um fato do slide; repete uma palavra do título (âncora: prova → provas). Manchete, sem vírgula.
+3. PERGUNTA = O LIMITE: nasce do subtítulo ("e daí?"); a figura/selo do slide é a resposta.
+4. RELÉ ENTRE SLIDES: o título do slide N+1 responde à pergunta do slide N.
+Teste de leitura: ler só título → subtítulo → pergunta deve soar como diálogo: afirma, prova, questiona.
