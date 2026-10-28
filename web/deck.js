@@ -485,13 +485,41 @@ HEROES.s9 = K => {
 };
 
 HEROES.s6 = K => {
-  const x0 = [80, 480, 880, 1280];
-  const cadeia = OG('<g data-open="s6-ontologia" aria-label="Do trecho do artigo à fonte: ver a ontologia do Citāre">', HIT(0, 20, 1600, 320) +
-    PIC2('documento', { x: x0[0], y: 40, s: 150, t: 'Afirmação', size: 38, step: 1 }) + K.pic('registrar', { x: x0[1], y: 40, s: 150, t: 'Citação', size: 38, step: 3 }) +
-    PIC2('fonte', { x: x0[2], y: 40, s: 150, t: 'Fonte', size: 38, step: 5 }) + K.pic('verificar', { x: x0[3], y: 40, s: 150, t: 'Pronto', size: 38, step: 7, fill: true }) +
-    K.arrow({ pts: [[250, 115], [460, 115]], step: 2 }) + K.arrow({ pts: [[650, 115], [860, 115]], step: 4 }) + K.arrow({ pts: [[1050, 115], [1260, 115]], step: 6 }));
-  const chips = OG('<g data-open="s6-regras" aria-label="Regras de autoria, ano e identificador: ver o que o verificador exige">', HIT(380, 290, 440, 70) + K.text({ x: 600, y: 336, t: 'autoria, ano e identificador', size: 34, anchor: 'middle', tone: 'nevoa', step: 8 }));
-  const onto = OG('<g data-open="s6-triplas" aria-label="Como as peças se ligam: ver exemplos">', K.box({ x: 20, y: 470, w: 760, h: 100, t: 'Como as peças se ligam', size: 38, step: 9 }));
+  /* v1.19.0 (regras 10b): herói realista e animado, ciclo de 6 s: a afirmação vira citação, a citação acha a fonte, a fonte libera o selo "pronto" */
+  const D = 6, R = 'repeatCount="indefinite"', S = (n, i) => '<g class="k-el" data-step="' + n + '" style="--step:' + n + '">' + i + '</g>';
+  const an = (a, v, kt) => '<animate attributeName="' + a + '" values="' + v + '" keyTimes="' + kt + '" dur="' + D + 's" ' + R + '/>';
+  const halo = (r, t0) => '<circle r="' + r + '" fill="#2b9bdc" filter="url(#s6g)" opacity="0">' + an('opacity', '0;0;.75;0;0', '0;' + t0 + ';' + (t0 + .08) + ';' + (t0 + .3) + ';1') + '</circle>';
+  const defs = '<defs><linearGradient id="s6m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34475a"/><stop offset="1" stop-color="#0b1017"/></linearGradient>' +
+    '<linearGradient id="s6p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9f1f8"/><stop offset="1" stop-color="#8ea3b6"/></linearGradient>' +
+    '<linearGradient id="s6c" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1c6f9f"/><stop offset=".45" stop-color="#7fd0f5"/><stop offset="1" stop-color="#16587f"/></linearGradient>' +
+    '<linearGradient id="s6o" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb08a"/><stop offset=".5" stop-color="#f05a28"/><stop offset="1" stop-color="#9c3009"/></linearGradient>' +
+    '<filter id="s6g" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter></defs>';
+  const draw = (d, t0, t1, w) => '<path d="' + d + '" pathLength="1" stroke-dasharray="1" fill="none" stroke="#4db3ea" stroke-width="' + w + '" stroke-linecap="round">' + an('stroke-dashoffset', '1;1;0;0;1', '0;' + t0 + ';' + t1 + ';.92;1') + '</path>';
+  /* 1 afirmação: folha com linhas; a linha da afirmação é destacada em laranja */
+  let lin = '';
+  [-30, -10, 10, 30].forEach((y, i) => { lin += '<rect x="-34" y="' + y + '" width="' + (i === 3 ? 40 : 68) + '" height="6" rx="3" fill="#7d90a3"/>'; });
+  const doc = '<g transform="translate(155 105)">' + halo(70, 0) + '<path d="M-55 -75H20L55 -40V75H-55Z" fill="url(#s6p)" stroke="#d4eeff" stroke-width="2"/><path d="M20 -75V-40H55" fill="#b9c8d6" stroke="#d4eeff" stroke-width="2"/>' + lin +
+    '<rect x="-34" y="-30" width="68" height="8" rx="4" fill="url(#s6o)">' + an('opacity', '.5;1;1;.5;.5', '0;.05;.3;.45;1') + '</rect></g>';
+  /* 2 citação: livro com lombada e marcador laranja */
+  const livro = '<g transform="translate(555 105)">' + halo(72, .24) + '<rect x="-52" y="-72" width="104" height="146" rx="10" fill="url(#s6m)" stroke="#6f8aa3" stroke-width="2"/><rect x="-52" y="-72" width="22" height="146" rx="10" fill="url(#s6c)"/>' +
+    '<g stroke="#9fb2c4" stroke-width="4" stroke-linecap="round"><path d="M-14 -40H34"/><path d="M-14 -22H34"/><path d="M-14 -4H20"/></g><path d="M20 -72V-26L30 -35L40 -26V-72Z" fill="url(#s6o)"/>' +
+    '<circle cx="8" cy="34" r="11" fill="none" stroke="#f05a28" stroke-width="3" opacity="0">' + an('r', '11;11;40;40', '0;.24;.45;1') + an('opacity', '0;.9;0;0', '0;.24;.45;1') + '</circle></g>';
+  /* 3 fonte: base de dados (cilindro) com varredura de leitura */
+  const fonte = '<g transform="translate(955 105)">' + halo(74, .5) + '<path d="M-60 -50V50Q0 90 60 50V-50Z" fill="url(#s6c)" stroke="#d4eeff" stroke-width="2"/>' +
+    '<ellipse cx="0" cy="-50" rx="60" ry="22" fill="#cfeeff" stroke="#d4eeff" stroke-width="2"/><path d="M-60 -10Q0 30 60 -10M-60 20Q0 60 60 20" fill="none" stroke="#0a6aa1" stroke-width="3" opacity=".7"/>' +
+    '<ellipse cx="0" cy="-50" rx="60" ry="22" fill="none" stroke="#f05a28" stroke-width="3" opacity="0">' + an('cy', '-50;-50;50;50', '0;.5;.68;1') + an('opacity', '0;.9;0;0', '0;.5;.68;1') + '</ellipse></g>';
+  /* 4 pronto: escudo metálico com visto que se desenha */
+  const escudo = '<g transform="translate(1355 105)">' + halo(78, .78) + '<path d="M0 -80L58 -56V6Q58 52 0 82Q-58 52 -58 6V-56Z" fill="url(#s6m)" stroke="#7fd0f5" stroke-width="3"/><path d="M0 -62L44 -44V4Q44 40 0 64Q-44 40 -44 4V-44Z" fill="rgba(43,155,220,.18)" stroke="#d4eeff" stroke-width="1.5"/>' +
+    '<path d="M-24 4L-6 24L28 -16" pathLength="1" stroke-dasharray="1" fill="none" stroke="#9bdcff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">' + an('stroke-dashoffset', '1;1;0;0;1', '0;.78;.9;.92;1') + '</path></g>';
+  const trilha = (d, n, t0) => '<circle class="prt" r="8" fill="#f05a28" opacity="0"><animateMotion dur="' + D + 's" ' + R + ' path="' + d + '" keyPoints="0;0;1;1" keyTimes="0;' + t0 + ';' + (t0 + .15) + ';1" calcMode="linear"/>' + an('opacity', '0;1;1;0;0', '0;' + t0 + ';' + (t0 + .14) + ';' + (t0 + .15) + ';1') + '</circle>';
+  const cadeia = OG('<g data-open="s6-ontologia" aria-label="Do trecho do artigo à fonte: ver a ontologia do Citāre">', HIT(0, 20, 1600, 320) + defs + '<g transform="translate(45 0)">' +
+    S(1, doc) + S(3, livro) + S(5, fonte) + S(7, escudo) +
+    S(2, draw('M250 105H460', .08, .22, 6)) + S(4, draw('M650 105H860', .36, .5, 6)) + S(6, draw('M1050 105H1260', .64, .78, 6)) +
+    trilha('M250 105H460', 1, .08) + trilha('M650 105H860', 1, .36) + trilha('M1050 105H1260', 1, .64) +
+    K.text({ x: 155, y: 250, t: 'Afirmação', size: 38, anchor: 'middle', step: 1 }) + K.text({ x: 555, y: 250, t: 'Citação', size: 38, anchor: 'middle', step: 3 }) +
+    K.text({ x: 955, y: 250, t: 'Fonte', size: 38, anchor: 'middle', step: 5 }) + K.text({ x: 1355, y: 250, t: 'Pronto', size: 38, anchor: 'middle', step: 7 }) + '</g>');
+  const chips = OG('<g data-open="s6-regras" aria-label="Regras de autoria, ano e identificador: ver o que o verificador exige">', HIT(580, 290, 440, 70) + K.text({ x: 800, y: 336, t: 'autoria, ano e identificador', size: 34, anchor: 'middle', tone: 'nevoa', step: 8 }));
+  const onto = OG('<g data-open="s6-triplas" aria-label="Como as peças se ligam: ver exemplos">', K.box({ x: 420, y: 470, w: 760, h: 100, t: 'Como as peças se ligam', size: 38, step: 9 }));
   return K.svg(1600, 720, cadeia + chips + onto, 'Afirmação, citação, fonte e estado pronto como evidência');
 };
 

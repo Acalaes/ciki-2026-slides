@@ -278,6 +278,9 @@ for pid, conteudo in PAINEIS.items():
 # paleta da instituição (logo do CIKI, v1.4.0): azul #2b9bdc/#4db3ea/#0a6aa1 e laranja #f05a28; o verde-azulado antigo deixou de valer.
 PERMITIDAS = {"0b0c10", "14161c", "15181f", "f4f4f5", "a1a1aa", "71717a", "2b9bdc", "4db3ea", "0a6aa1", "38bdf8", "f87171", "f05a28",
               "000", "000000", "fff", "ffffff", "0a1b4a"}  # 0a1b4a: tint da camada da foto (mix-blend-mode), nunca fundo
+PERMITIDAS |= {"d4eeff", "9bdcff", "7fd0f5", "cfeeff", "ffb08a", "9c3009", "ffd7c2", "0a3a5a", "1b0f08", "1b232b", "05080c", "0b1017",
+               "34475a", "6f8aa3", "8fa3b5", "44566a", "56667a", "445261", "d3dee9", "e9f1f8", "8ea3b6", "b9c8d6", "9fb2c4", "7d90a3",
+               "1c6f9f", "16587f"}  # metálicos e brilhos das figuras realistas (regras 10b): tons de aço, azul e laranja da paleta
 VERDES = {"00ff41", "008f11"}
 RGBA_OK = {(255, 255, 255), (161, 161, 170), (113, 113, 122), (43, 155, 220), (77, 179, 234), (10, 106, 161), (56, 189, 248),
            (21, 24, 31), (11, 12, 16), (20, 22, 28), (8, 10, 14), (244, 244, 245), (248, 113, 113), (0, 0, 0), (10, 27, 74), (240, 90, 40)}
