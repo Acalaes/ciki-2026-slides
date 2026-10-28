@@ -121,5 +121,16 @@
   "prompt": "salão de servidores realista, engenheiro à direita diante de grafo de conhecimento, centro calmo, azul com acento laranja, sem texto",
   "data": "2026-10-28",
   "slide": 1
+ },
+ {
+  "arquivo": "triagem.jpg",
+  "titulo": "Esteiras e portais de triagem de aeroporto (imagem gerada)",
+  "autor": "Gerada por IA (Canva generate-image)",
+  "licenca": "gerada",
+  "url_pagina": "",
+  "tipo": "gerada",
+  "prompt": "Ultra-realistic photograph of an airport security checkpoint: a row of baggage X-ray conveyor belts and metal-detector gates lined up in sequence, seen from a low angle in perspective, empty of people, cool neutral lighting, shallow depth of field, clean modern terminal, no text, no logos, no signs, photorealistic, 16:9",
+  "data": "2026-10-28",
+  "slide": "4"
  }
 ]

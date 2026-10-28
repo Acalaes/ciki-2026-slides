@@ -399,20 +399,34 @@ HEROES.s3 = K => {
     OG('<g data-open=\"s3-rudin\" aria-label=\"Verificar antes: portões antes da decisão. Ver Rudin 2019\">', HIT(0, 330, 1600, 290) + l2), 'Duas linhas do tempo: explicar depois do dano ou verificar antes da decisão');
 };
 
-const PINOS = { E: '<g data-open="s4-pinoE" aria-label="Evidência: ver a explicação">', N: '<g data-open="s4-pinoN" aria-label="Normas: ver a explicação">', T: '<g data-open="s4-pinoT" aria-label="Rastro: ver a explicação">', H: '<g data-open="s4-pinoH" aria-label="Humano: ver a explicação">' };
+const PINOS = { E: '<g data-open="s4-pinoE" aria-label="Teste de evidência: ver o exemplo">', N: '<g data-open="s4-pinoN" aria-label="Teste de normas: ver o exemplo">', T: '<g data-open="s4-pinoT" aria-label="Teste de rastro: ver o exemplo">', H: '<g data-open="s4-pinoH" aria-label="Teste do humano: ver o exemplo">' };
 HEROES.s4 = K => {
-  const xs = [175, 515, 855, 1195], nomes = [['evidencia', 'Evidência', 'E'], ['normas', 'Normas', 'N'], ['rastro', 'Rastro', 'T'], ['humano', 'Humano', 'H']];
+  /* v1.16.0: duas frases atravessam quatro testes em fila (ciclo de 14 s, SMIL): a boa passa e é liberada; a com citação fabricada é barrada no primeiro teste */
+  const Y = 75, cy = Y + 390, D = 14, B = 4, x0 = 260, x1 = 1390, cxs = [400, 680, 960, 1240];
+  const info = [['evidencia', 'Evidência', 'tem fonte real?', 'E'], ['normas', 'Normas', 'segue as regras?', 'N'], ['rastro', 'Rastro', 'ficou registrado?', 'T'], ['humano', 'Humano', 'alguém aprovou?', 'H']];
+  const an = (attr, vals, kts) => '<animate attributeName="' + attr + '" values="' + vals + '" keyTimes="' + kts + '" dur="' + D + 's" begin="' + B + 's" repeatCount="indefinite"/>';
+  const glow = (x, y, w, h, fill, vals, kts) => '<rect class="ao" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="14" fill="' + fill + '" opacity="0">' + an('opacity', vals, kts) + '</rect>';
+  const tf = cx => 0.04 + 0.46 * (cx - x0) / (x1 - x0);
   let g = '';
-  nomes.forEach((n, i) => {
-    const falta = i === 2, cx = xs[i];
-    g += OG(PINOS[n[2]], HIT(cx - 110, 20, 220, 340) + K.pic(n[0], { x: cx - 75, y: 40, s: 150, size: 38, tone: falta ? 'block' : 'gelo', step: 1 + i }) +
-      (falta ? K.text({ x: cx, y: 270, t: 'não registrado', size: 30, anchor: 'middle', tone: 'block', step: 4 }) : '') +
-      K.arrow({ pts: [[cx, falta ? 292 : 270], [cx, 360]], tone: falta ? 'block' : 'gelo', dash: falta, step: 5 }));
+  g += K.box({ x: 345, y: Y, w: 380, h: 72, t: 'Alucinação', size: 36, tone: 'block', step: 1 }) + K.box({ x: 785, y: Y, w: 470, h: 72, t: 'Explicação tardia', size: 36, tone: 'block', step: 1 });
+  g += OG('<g data-open="s4-regras" aria-label="Regra de liberação: ver as regras em forma de código">', HIT(x0, cy - 34, x1 - x0, 68) + K.arrow({ pts: [[x0, cy], [x1, cy]], noHead: true, tone: 'nevoa', dash: true, step: 2 }));
+  g += K.box({ x: 0, y: cy - 75, w: 250, h: 150, t: ['“Silva (2021)', 'comprova isso.”'], size: 28, tone: 'nevoa', step: 2 });
+  info.forEach((n, i) => {
+    const cx = cxs[i], a = tf(cx), st = 3 + i;
+    g += OG(PINOS[n[3]], HIT(cx - 135, Y + 240, 270, 390) +
+      K.group('<rect class="k-b" x="' + (cx - 95) + '" y="' + (Y + 250) + '" width="190" height="230" rx="14"/>', { step: st }) +
+      glow(cx - 95, Y + 250, 190, 230, '#4db3ea', '0;0;.3;0;0', '0;' + (a - .02).toFixed(3) + ';' + (a + .005).toFixed(3) + ';' + (a + .05).toFixed(3) + ';1') +
+      K.pic(n[0], { x: cx - 42, y: Y + 275, s: 84, pos: 'none', step: st }) +
+      '<rect x="' + (cx - 135) + '" y="' + (Y + 505) + '" width="270" height="118" rx="12" fill="rgba(8,10,14,.74)"/>' +
+      K.text({ x: cx, y: Y + 550, t: n[1], size: 38, weight: 'b', anchor: 'middle', step: st }) + K.text({ x: cx, y: Y + 596, t: n[2], size: 28, tone: 'nevoa', anchor: 'middle', step: st }));
   });
-  g += K.arrow({ pts: [[175, 360], [1195, 360]], noHead: true, step: 5 }) + K.arrow({ pts: [[685, 360], [685, 430]], step: 6 });
-  const lock = OG('<g data-open="s4-formula" aria-label="Portão fechado quando falta uma condição: ver a regra que decide">', HIT(540, 420, 290, 230) + K.pic('fechadura', { x: 620, y: 440, s: 130, size: 38, t: 'Portão fechado', tone: 'block', step: 6 }));
-  const msg = OG('<g data-open="s4-regras" aria-label="Regra de liberação: ver as regras em forma de código">', HIT(440, 635, 490, 60) + K.text({ x: 685, y: 668, t: 'quando falta uma condição', size: 32, anchor: 'middle', tone: 'nevoa', step: 7 }));
-  return K.svg(1600, 720, g + lock + msg, 'Quatro condições levam a um portão; sem o rastro, o portão fica fechado');
+  g += glow(cxs[0] - 95, Y + 250, 190, 230, '#f87171', '0;0;.35;.35;0;0', '0;.64;.66;.76;.80;1');
+  g += '<g class="ao" opacity="0">' + K.text({ x: cxs[0], y: Y + 232, t: 'citação fabricada', size: 30, tone: 'block', anchor: 'middle' }) + an('opacity', '0;0;1;1;0;0', '0;.64;.66;.8;.82;1') + '</g>';
+  g += OG('<g data-open="s4-formula" aria-label="Liberada só com os quatro testes: ver a regra que decide">', HIT(1385, cy - 85, 215, 170) + K.box({ x: 1400, y: cy - 65, w: 200, h: 130, t: 'Liberada', size: 38, fill: 'solid', step: 7 }) +
+    glow(1400, cy - 65, 200, 130, '#4db3ea', '0;0;.45;.45;0;0', '0;.46;.5;.6;.66;1'));
+  g += '<circle class="prt" r="13" cx="0" cy="0" opacity="0"><animateMotion dur="' + D + 's" begin="' + B + 's" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;.04;.5;1" path="M' + x0 + ' ' + cy + ' H' + x1 + '"/>' + an('opacity', '0;1;1;0;0', '0;.045;.5;.52;1') + '</circle>';
+  g += '<circle class="prt err" r="13" cx="0" cy="0" opacity="0"><animateMotion dur="' + D + 's" begin="' + B + 's" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1;0;0" keyTimes="0;.55;.65;.72;.82;1" path="M' + x0 + ' ' + cy + ' H' + (cxs[0] - 108) + '"/>' + an('opacity', '0;0;1;1;0;0', '0;.55;.552;.82;.84;1') + '</circle>';
+  return K.svg(1600, 720, g, 'Uma frase com fonte real atravessa quatro testes e é liberada; outra, com citação fabricada, é barrada no primeiro teste');
 };
 
 HEROES.s5 = K => {

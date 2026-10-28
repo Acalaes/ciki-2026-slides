@@ -10,8 +10,8 @@
     's1-ficha': 'Sobre o artigo', 's1-paleta': 'As quatro condições', 's1-harness3d': 'Como ler o arnês da capa',
     's2-casos': 'A IA alucina em tribunais', 's2-softmax': 'Por que o modelo alucina', 's2-citacoes': 'O que o modelo citou errado',
     's3-tab1': 'Cada método tem um limite', 's3-rudin': 'Explicar depois não basta',
-    's4-pinoE': 'Como se recupera a evidência', 's4-pinoN': 'Como as normas viram regras', 's4-pinoT': 'Como o rastro é registrado',
-    's4-pinoH': 'Quem libera é a pessoa', 's4-formula': 'Como o sistema decide', 's4-regras': 'As regras em forma de código',
+    's4-pinoE': 'Teste de evidência', 's4-pinoN': 'Teste de normas', 's4-pinoT': 'Teste de rastro',
+    's4-pinoH': 'Teste do humano', 's4-formula': 'Como o sistema decide', 's4-regras': 'As regras em forma de código',
     's5-fig1': 'A IA propõe, as regras conferem', 's5-calais': 'Três níveis da contribuição', 's5-dsr': 'Os seis ciclos da pesquisa',
     's5-ponte': 'Como o texto vira regra', 's6-ontologia': 'Como o Citāre organiza conceitos', 's6-regras': 'Quando a fonte está pronta',
     's6-triplas': 'Como a ontologia liga os fatos', 's7-logs': 'Quantos envios a automação fez', 's7-nasa': 'Esforço percebido nas tarefas',
@@ -361,6 +361,31 @@
     det('s4-regras', 'Tabela-verdade (16 linhas): detalhes',
       '<div class="dois">' + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(0, 8), 'tv') + tbl(['1fr', '1fr', '1fr', '1fr', '1fr', '1fr'], ['E', 'N', 'T', 'H', 'At', 'L'], rows.slice(8), 'tv') + '</div>' +
       '<p class="nota">Só a linha destacada libera; em vermelho, a admissível mas não liberada. “:-” lê-se “se”.</p>', [F('pseudocodigo', 'Pseudocódigo (ilustrativo)'), F('art-eq', 'Artigo: Equações 2 e 3')]);
+  })();
+
+  /* v1.16.0: camada 2 do slide 4 = exemplo da escrita acadêmica (um teste por painel); a versão técnica anterior passa para a camada 3 */
+  (function () {
+    function inner(h) { return h.replace(/^<div class="panel-body( det)?">/, '').replace(/<\/div>$/, '').replace(/<h2 class="pt">.*?<\/h2>/, ''); }
+    function teste(pic, perg, ok, ko) {
+      return K.svg(W, 430,
+        K.text({ x: 0, y: 60, t: perg, size: 34, weight: 'b', step: 1 }) +
+        K.box({ x: 0, y: 140, w: 440, h: 150, t: ['“Silva (2021) comprova', 'que o método funciona.”'], size: 30, tone: 'nevoa', step: 1 }) +
+        K.arrow({ pts: [[440, 215], [560, 215]], step: 2 }) + K.pic(pic, { x: 570, y: 150, s: 130, size: 36, step: 2 }) +
+        K.arrow({ pts: [[700, 215], [820, 215], [820, 110], [940, 110]], step: 3 }) + K.arrow({ pts: [[700, 215], [820, 215], [820, 320], [940, 320]], step: 4, tone: 'block', dash: true }) +
+        K.box({ x: 940, y: 40, w: 720, h: 140, t: ok[0], s: ok[1], size: 36, fill: true, step: 3 }) + K.box({ x: 940, y: 250, w: 720, h: 140, t: ko[0], s: ko[1], size: 36, tone: 'block', step: 4 }),
+        'Uma frase de artigo passa ou é barrada neste teste');
+    }
+    var ex = [
+      ['s4-pinoE', 'evidencia', 'Tem fonte real que sustenta a frase?', ['Passa', 'o artigo existe e diz isso'], ['Barra', 'citação fabricada (alucinação)'], 'Barra a alucinação antes de a frase valer.', F('art-eq', 'Artigo: Equações 2 e 3')],
+      ['s4-pinoN', 'normas', 'A citação segue as regras da revista?', ['Passa', 'formato exigido e fonte permitida'], ['Barra', 'fonte proibida, como um blog'], 'As regras são explícitas e podem ser conferidas.', F('art-limpe', 'Artigo: Tabela 2')],
+      ['s4-pinoT', 'rastro', 'Dá para ver de onde a frase veio?', ['Passa', 'grava PDF, página e quem conferiu'], ['Barra', 'sem registro, ninguém audita depois'], 'O rastro é gravado durante o processo, não explicado depois.', F('prov-dm', 'W3C PROV-DM')],
+      ['s4-pinoH', 'humano', 'Uma pessoa responsável aprovou?', ['Passa', 'o orientador lê e assina'], ['Barra', 'sem aprovação, a frase não é liberada'], 'A IA propõe; a pessoa decide e responde pelo resultado.', F('art-eq', 'Artigo: Equações 2 e 3')]
+    ];
+    ex.forEach(function (e) {
+      var id = e[0], oldP = P[id] || '', oldD = D[id] || '';
+      panel(id, TITULOS[id], teste(e[1], e[2], e[3], e[4]), e[5], [e[6]], { selos: [sel('exemplo ilustrativo', 'sol')] });
+      D[id] = '<div class="panel-body det"><h2 class="pt">Detalhes: ' + TITULOS[id] + '</h2><p class="nota"><b>Versão técnica, do artigo</b></p>' + inner(oldP) + inner(oldD) + '</div>';
+    });
   })();
 
   /* =========================================================
