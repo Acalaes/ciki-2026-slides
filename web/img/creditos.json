@@ -150,5 +150,14 @@
   "prompt": "Photorealistic close-up of a glowing microchip core wrapped by a harness of metal straps, buckles and clasps; blue light with orange accents; calm dark center; no text, no people",
   "data": "2026-10-28",
   "slide": "6"
+ },
+ {
+  "arquivo": "raias_metodos.jpg",
+  "tipo": "gerada",
+  "titulo": "Próximo passo: quatro métodos",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "Ultra-realistic photograph of four parallel laboratory test lanes, growing from empty bench to five linked stations, no people, dark calm center, cool blue with orange accents, no text",
+  "data": "2026-10-28",
+  "slide": "10"
  }
 ]

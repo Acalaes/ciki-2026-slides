@@ -580,11 +580,23 @@ HEROES.s11 = K => {
       g += K.box({ x, y: y + 40, w: 70, h: 65, t: '', fill: j === n[i] - 1, step: 2 + i }) + (j < n[i] - 1 ? K.arrow({ pts: [[x + 72, y + 72], [x + 108, y + 72]], step: 2 + i }) : '');
     }
   });
+  /* v1.19.0: ciclo de 6 s; uma partícula percorre cada raia na mesma velocidade, cada etapa acende ao ser tocada e, no fim, todas as raias chegam à mesma medida (anel laranja) */
+  const R = 'repeatCount="indefinite"', f = v => v.toFixed(3);
+  let anim = '';
+  nomes.forEach((nm, i) => {
+    const y = 20 + i * 165, cy = y + 72, L = (n[i] - 1) * 110, te = 0.05 + L / 440 * 0.55, last = 470 + (n[i] - 1) * 110 + 35;
+    for (let j = 0; j < n[i]; j++) {
+      const tj = 0.05 + (j * 110) / 440 * 0.55;
+      anim += '<rect x="' + (470 + j * 110) + '" y="' + (y + 40) + '" width="70" height="65" rx="9" fill="#4db3ea" opacity="0"><animate attributeName="opacity" values="0;0;.85;.4;.4;0" keyTimes="0;' + f(tj) + ';' + f(tj + .03) + ';' + f(tj + .12) + ';.88;1" dur="6s" ' + R + '/></rect>';
+    }
+    if (L) anim += '<circle r="9" fill="#9bdcff" opacity="0"><animateMotion dur="6s" ' + R + ' path="M505 ' + cy + ' L' + (last - 35) + ' ' + cy + '" keyPoints="0;1;1" keyTimes="0;' + f(te) + ';1" calcMode="linear"/><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.05;' + f(te) + ';' + f(te + .04) + ';1" dur="6s" ' + R + '/></circle>';
+    anim += '<circle cx="' + last + '" cy="' + cy + '" r="30" fill="none" stroke="#f05a28" stroke-width="4" opacity="0"><animate attributeName="r" values="30;30;58;58" keyTimes="0;.7;.86;1" dur="6s" ' + R + '/><animate attributeName="opacity" values="0;0;.95;0;0" keyTimes="0;.7;.73;.86;1" dur="6s" ' + R + '/></circle>';
+  });
   const lim = ['Só em Santa Catarina', 'Só citações', 'Ontologia a validar', 'Hipótese'];
   const locks = OG('<g data-open="s11-limites" aria-label="Quatro limites declarados do estudo: ver cada um">', HIT(1090, 0, 510, 700) +
     K.arrow({ pts: [[1085, 0], [1085, 700]], noHead: true, tone: 'nevoa', step: 6 }) + K.text({ x: 1130, y: 60, t: 'Limites declarados', size: 40, weight: 'b', step: 6 }) +
     lim.map((l, i) => K.pic('fechadura', { x: 1130, y: 120 + i * 140, s: 90, t: l, size: 32, pos: 'right', step: 7 + i })).join(''));
-  return K.svg(1600, 720, OG('<g data-open="s11-desenho" aria-label="Quatro métodos comparados: ver o desenho do estudo">', HIT(0, 0, 1060, 700) + g) + locks, 'Quatro métodos em raias e quatro limites declarados do estudo');
+  return K.svg(1600, 720, OG('<g data-open="s11-desenho" aria-label="Quatro métodos comparados: ver o desenho do estudo">', HIT(0, 0, 1060, 700) + g + '<g class="prt" pointer-events="none">' + anim + '</g>') + locks, 'Quatro métodos em raias e quatro limites declarados do estudo');
 };
 
 function renderHero(i) {

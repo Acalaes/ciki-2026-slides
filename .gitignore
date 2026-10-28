@@ -6,6 +6,7 @@ web/img/*
 !web/img/triagem.jpg
 !web/img/linha_producao.jpg
 !web/img/harness.jpg
+!web/img/raias_metodos.jpg
 !web/img/creditos.json
 dados/legendas/
 *.tmp
