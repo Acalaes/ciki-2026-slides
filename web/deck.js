@@ -524,7 +524,7 @@ const CAPCOR = ['#f05a28', '#f05a28', '#f05a28', '#f05a28', '#f05a28', '#f05a28'
 function countUp(root) {
   $$('[data-count]', root).forEach(e => {
     const to = +e.dataset.count, dec = +(e.dataset.dec || 0), pre = e.dataset.prefix || '';
-    if (STATIC) { e.textContent = pre + fmtBR(to, dec); return; }
+    if (STATIC || JUMP) { e.textContent = pre + fmtBR(to, dec); return; }
     const a = performance.now(), d = 1700;
     (function f(t) { const p = clamp((t - a) / d, 0, 1); e.textContent = pre + fmtBR(to * eo(p), dec); if (p < 1 && e.isConnected && e.closest('.slide.active')) requestAnimationFrame(f); else if (p >= 1) e.textContent = pre + fmtBR(to, dec); })(a);
   });
@@ -611,8 +611,8 @@ function updateChrome() {
 function show(st, opts) {
   opts = opts || {}; const prev = state.i, changed = st.i !== prev; const old = state; state = st;
   const apply = () => {
-    if (changed) { leaveSlide(prev); if (prev >= 0) slides[prev].classList.remove('active'); slides[st.i].classList.add('active'); enterSlide(st.i); }
     if (opts.jump) { JUMP = true; slides[st.i].classList.add('nofx'); }
+    if (changed) { leaveSlide(prev); if (prev >= 0) slides[prev].classList.remove('active'); slides[st.i].classList.add('active'); enterSlide(st.i); }
     setStep(st.i, st.step); updateChrome();
     if (opts.jump) requestAnimationFrame(() => requestAnimationFrame(() => { JUMP = false; slides[st.i].classList.remove('nofx'); }));
   };
