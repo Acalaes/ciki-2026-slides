@@ -168,5 +168,14 @@
   "prompt": "Ultra-realistic photograph of a dark industrial logistics hall with two parallel conveyor belts, upper ends at cracked parcel, lower passes three scanner arches to sealed package; LANDSCAPE_2_1",
   "data": "2026-10-28",
   "slide": "3"
+ },
+ {
+  "arquivo": "mesa_assinatura.jpg",
+  "tipo": "gerada",
+  "titulo": "Conclusão: auditar antes de assinar",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "Ultra-realistic photograph of a dark wooden signing desk, verified documents with magnifying glass, brass stamp and fountain pen, calm dark center, cool blue lighting with orange accents, no people, no text (Canva generate-image, 2026-10-28)",
+  "data": "2026-10-28",
+  "slide": "11"
  }
 ]

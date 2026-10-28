@@ -8,6 +8,7 @@ web/img/*
 !web/img/harness.jpg
 !web/img/raias_metodos.jpg
 !web/img/duas_esteiras.jpg
+!web/img/mesa_assinatura.jpg
 !web/img/creditos.json
 dados/legendas/
 *.tmp
