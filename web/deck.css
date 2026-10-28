@@ -308,3 +308,6 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 
 /* v1.15.0: imagem só na moldura de conteúdo (slide 9, hipótese), abaixo da pergunta-guia; estrutura em fundo liso */
 .s10 .bgimg.frame{inset:auto;left:363px;top:300px;width:1427px;height:720px;background-size:100% 100%;filter:none;opacity:.95;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);mask-composite:intersect}
+/* slide 9: sombreado da imagem atrás do diagrama e leve escurecimento geral, para o texto ficar legível */
+.s10 .bgimg.frame{filter:brightness(.78) saturate(.95)}
+.s10 .bgimg.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 34% 56% at 59% 50%,rgba(8,10,14,.88) 0,rgba(8,10,14,.72) 55%,rgba(8,10,14,0) 100%)}
