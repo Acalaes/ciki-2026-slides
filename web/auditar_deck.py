@@ -175,8 +175,12 @@ for f in (pasta / "demo").glob("*"):
 for nome, texto in alvos.items():
     em_demo = nome.startswith("demo/")
     sem_log = LOG_REAL.sub("", texto)
-    if re.search("determin" + "ístic", texto, re.I) and nome != "auditar_deck.py":
-        erro(f"termo proibido (determinístico) em {nome}")
+    # "determinístico" só é proibido para o modelo neural; é permitido ao falar de funções, regras ou da parte simbólica
+    if nome != "auditar_deck.py":
+        for ln in texto.splitlines():
+            if re.search("determin" + "ístic", ln, re.I) and not re.search(r"função|funções|regra|regras|simbólic|código", ln, re.I):
+                erro(f"termo proibido (determinístico) em {nome}")
+                break
     if not em_demo and re.search(TERMO_PROIBIDO, sem_log, re.I):
         erro(f"termo coloquial proibido ('{TERMO_PROIBIDO}...') em {nome}, fora de bloco de log literal")
     if nome == "auditar_deck.py":
