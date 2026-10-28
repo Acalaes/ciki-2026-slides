@@ -130,7 +130,8 @@ body.static .s8 .st2b{opacity:.7!important}
 .res .rb.cp p{font-size:28px;line-height:1.3}
 
 /* ---------- notas ---------- */
-#notesbar{position:absolute;z-index:60;left:0;right:0;bottom:0;padding:26px 60px;background:rgba(11,12,16,.97);font:400 32px/1.4 var(--fd);display:none;border-top:2px solid var(--teal)}
+#notesbar{position:absolute;z-index:60;left:0;right:0;bottom:0;padding:22px 60px;background:rgba(11,12,16,.97);font:400 26px/1.35 var(--fd);white-space:pre-line;max-height:46%;overflow:auto;display:none;border-top:2px solid var(--teal)}
+#pf{white-space:pre-line}
 #notesbar.on{display:block}
 aside.notes{display:none}
 
@@ -230,7 +231,6 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .s8 .fxslot{clip-path:inset(295px 130px 120px 130px)}
 .laptop{position:absolute;inset:0;width:1920px;height:1080px;z-index:5;pointer-events:none}
 /* resposta à pergunta-guia, à direita da imagem (formato da capa) */
-.s2 .hero{top:352px}
 .s2 .resp{position:absolute;z-index:8;left:130px;top:306px;margin:0;padding-left:20px;border-left:3px solid var(--teal);white-space:nowrap;font:400 24px/1.1 var(--fd);color:var(--texto)}
 .rodape span[data-src]{text-decoration:underline;text-underline-offset:3px}
 .pdfp{display:block;max-width:100%;max-height:640px;margin:0 auto 14px;border:1px solid rgba(255,255,255,.2);border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.6)}
@@ -273,3 +273,25 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .figl{left:1320px;width:470px;text-align:right;border-left:0;padding-left:0;border-right:4px solid var(--teal);padding-right:18px}
 /* slide 12: o arnês é o destaque do fecho, centralizado e ampliado (mesmo enquadramento da capa) */
 .s12 .fxslot{transform-origin:1208px 1040px;transform:translate(-248px,-40px) scale(1.1)}
+
+/* slide 2: mapa-múndi com zoom (mundo, EUA, Brasil) */
+.s2 .hero{left:130px;top:345px;width:1660px;height:600px}
+.mundo{width:100%;height:100%;display:block;overflow:hidden}
+.mundo .terra{fill:rgba(161,161,170,.22);stroke:rgba(255,255,255,.12);stroke-width:.6}
+.mundo .p-usa,.mundo .p-bra{fill:transparent;stroke:#4db3ea;stroke-width:1.2;transition:fill .8s}
+.s2[data-step="2"] .p-usa{fill:rgba(43,155,220,.38)}
+.s2[data-step="3"] .p-bra{fill:rgba(43,155,220,.5)}
+.mundo .bol{fill:rgba(43,155,220,.45);stroke:#4db3ea;stroke-width:1.5;transition:opacity .6s}
+.mundo .rot{font:700 30px var(--fd);fill:#f4f4f5;paint-order:stroke;stroke:#0b0c10;stroke-width:5px;transition:opacity .6s}
+.s2[data-step="2"] .bol,.s2[data-step="3"] .bol,.s2[data-step="2"] .rot,.s2[data-step="3"] .rot{opacity:0}
+.mc{position:absolute;z-index:8;left:130px;bottom:130px;padding:14px 28px;background:rgba(11,12,16,.78);border-left:3px solid var(--teal);opacity:0;pointer-events:none;transition:opacity .5s;cursor:pointer}
+.mc b{display:block;font:800 96px/1 var(--fd);color:#f4f4f5}
+.mc span{font:500 32px/1.3 var(--fd);color:#f4f4f5}
+.s2:not([data-step="2"]):not([data-step="3"]) .mc0,.s2[data-step="2"] .mc1,.s2[data-step="3"] .mc2{opacity:1;pointer-events:auto}
+
+/* prova 2: passo atual em destaque e selo discreto (descrição da fonte) */
+.slide.s8 .wd{transition:opacity .4s,transform .4s}
+.slide.s8[data-step="1"] .w1,.slide.s8[data-step="2"] .w2,.slide.s8[data-step="3"] .w3{opacity:1;transform:scale(1.12)}
+.slide.s8[data-step="2"] .w1,.slide.s8[data-step="3"] .w1,.slide.s8[data-step="3"] .w2{opacity:.4;transform:none}
+.slide.s8.matrix>.selo{font:400 20px/1.3 var(--fd);color:#a1a1aa;border:0;background:none;padding:0;bottom:64px}
+.slide.s8.matrix>.selo span{text-decoration:underline;cursor:help}

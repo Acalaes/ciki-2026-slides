@@ -253,7 +253,7 @@ function coverFor(done) {
 /* Prova 2: botões Pausar/Continuar e Reiniciar. Reiniciar volta ao começo e toca os 3 passos sozinhos (5 s cada); os passos manuais por teclado continuam valendo. */
 const MX = { paused: false, timers: [] };
 function mxClear() { MX.timers.forEach(clearTimeout); MX.timers = []; }
-function mxPlay(from) { mxClear(); for (let k = from; k <= 3; k++) MX.timers.push(setTimeout(() => { if (!MX.paused) show({ i: state.i, step: k }); }, (k - from) * 5000 + 300)); }
+function mxPlay(from) { mxClear(); for (let k = from; k <= 3; k++) MX.timers.push(setTimeout(() => { if (!MX.paused && (+slides[state.i].dataset.step || 0) < k) show({ i: state.i, step: k }); }, (k - from) * 5000 + 300)); }
 function mxLabel() { const b = document.querySelector('.s8 [data-mx="pause"]'); if (b) b.textContent = MX.paused ? 'Continuar' : 'Pausar'; }
 function mxAct(a) {
   if (!isDemo(state.i)) return;
@@ -300,6 +300,7 @@ function buildCoverUI(slot, c) { // capa: clicar nas etiquetas destaca a peça; 
 }
 function enterFx(slide) {
   leaveFx();
+  if (slide.classList.contains('matrix') && !STATIC && !LITE) mxPlay(1);
   const slot = $('.fxslot', slide); if (!slot) return;
   const name = slot.dataset.fx;
   if (STATIC || LITE) { bakeSlide(slide); if (STATIC) return; }
@@ -355,15 +356,31 @@ const HEROES = {};
 const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh', charlotin: 'fonte-charlotin' };
 
 HEROES.s2 = K => {
-  const cards = [[2225, 'casos em tribunais', 20], [41, 'no Brasil', 560], [1514, 'nos Estados Unidos', 1100]];
-  let g = '';
-  cards.forEach((c, i) => { g += SRC('charlotin', K.box({ x: c[2], y: 40, w: 480, h: 340, t: '', fill: i === 0, step: 1 + i }) + CNT(c[2] + 240, 240, c[0], i === 0 ? 120 : 104) + K.text({ x: c[2] + 240, y: 330, t: c[1], size: 38, anchor: 'middle', step: 1 + i })); });
-  return K.svg(1600, 720,
-    OG('<g data-open="s2-casos" aria-label="Casos de alucinação em tribunais: ver a tabela e as taxas de erro">', HIT(0, 20, 1600, 380) + g) +
-    OG('<g data-open="s2-softmax" aria-label="Por que o modelo alucina: ver a explicação">', K.box({ x: 20, y: 450, w: 760, h: 130, t: 'Por que o modelo alucina', size: 38, step: 4 })) +
-    OG('<g data-open="s2-citacoes" aria-label="Exemplo real de citação inexistente: ver a checagem manual">', K.box({ x: 820, y: 450, w: 760, h: 130, t: ['Exemplo real: cita o inciso 33', 'do artigo 37, que não existe'], size: 34, tone: 'err', step: 5 })),
-    'Três números de casos de alucinação em tribunais e dois exemplos para explorar');
+  const M = window.MUNDO || { all: '', usa: '', bra: '' };
+  const paises = [['EUA', -98, 39, 1514], ['Canadá', -106, 57, 238], ['Austrália', 134, -25, 112], ['Reino Unido', -2, 54, 76], ['Israel', 35, 31, 58], ['Brasil', -52, -10, 41], ['Índia', 79, 22, 16], ['Itália', 12, 42, 15], ['França', 2, 46, 14], ['Alemanha', 10, 51, 11]];
+  const rotulo = { 'EUA': '1.514', 'Canadá': '238', 'Austrália': '112', 'Reino Unido': '76', 'Brasil': '41' };
+  let b = '', r = '';
+  paises.forEach(p => {
+    const x = (p[1] + 180) / 360 * 1600, y = (90 - p[2]) / 180 * 800, rad = 2.3 * Math.sqrt(p[3]);
+    b += '<circle class="bol" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + rad.toFixed(1) + '"/>';
+    if (rotulo[p[0]]) r += '<text class="rot" x="' + x.toFixed(1) + '" y="' + (p[0] === 'EUA' ? y + 10 : y - rad - 8).toFixed(1) + '" text-anchor="middle">' + rotulo[p[0]] + '</text>';
+  });
+  return '<svg class="mundo" viewBox="0 70 1600 700" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa-múndi com os casos de alucinação em tribunais por país">' +
+    '<g data-src="charlotin" aria-label="Casos por país: ver a captura da base de Charlotin"><rect width="1600" height="800" fill="rgba(0,0,0,.01)"/>' +
+    '<path class="terra" d="' + M.all + '"/><path class="p-usa" d="' + M.usa + '"/><path class="p-bra" d="' + M.bra + '"/>' + b + r + '</g></svg>';
 };
+/* slide 2: zoom do mapa por passo (0 mundo, 1 EUA, 2 Brasil) */
+const MUNDO_CAIXAS = [[0, 70, 1600, 700], [0, 70, 1600, 700], [190, 153, 400, 160], [310, 366, 500, 200]];
+let mundoRaf = 0;
+function zoomMundo(s, step) {
+  const svg = $('svg.mundo', s); if (!svg) return;
+  const to = MUNDO_CAIXAS[Math.max(0, Math.min(3, step))];
+  const from = (svg.getAttribute('viewBox') || '0 70 1600 700').split(/\s+/).map(Number);
+  cancelAnimationFrame(mundoRaf);
+  if (STATIC || LITE) { svg.setAttribute('viewBox', to.join(' ')); return; }
+  const t0 = performance.now(), d = 1300, ease = q => q < .5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
+  (function f(now) { const q = Math.min(1, (now - t0) / d), e = ease(q); svg.setAttribute('viewBox', from.map((v, i) => (v + (to[i] - v) * e).toFixed(2)).join(' ')); if (q < 1) mundoRaf = requestAnimationFrame(f); })(t0);
+}
 
 HEROES.s3 = K => {
   const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'Depois', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
@@ -570,6 +587,7 @@ function leaveSlide(i) { if (i < 0) return; clearTimers(); leaveFx(); }
 function setStep(i, step) {
   const s = slides[i]; if (!meta.steps[i]) { delete s.dataset.step; return; }
   const prev = +s.dataset.step || 0; s.dataset.step = STATIC ? meta.steps[i] : step;
+  if (s.classList.contains('s2')) zoomMundo(s, +s.dataset.step || 0);
   if (isDemo(i)) {
     const st = +s.dataset.step; const rt = $('.rt', s); if (rt) rt.classList.toggle('block', st >= 2);
     $$('.wd', s).forEach((w, k) => w.classList.toggle('on', k + 1 === st && step !== prev && !STATIC));

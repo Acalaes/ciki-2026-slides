@@ -26,19 +26,27 @@
 <p class="figl">Auditabilidade por construção</p>
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:700px;top:305px;width:520px;height:700px"></div>
 <p class="selo ident" data-open="s1-ficha" tabindex="0" role="button" aria-label="Ficha do artigo" style="left:200px;top:820px;cursor:zoom-in">Alexandre Pinto Calaes<br><span>PPGEGC/UFSC</span></p>
-<aside class="notes" data-t="30">Boa tarde. Hoje alguém na sua organização vai assinar um parecer escrito com ajuda de inteligência artificial. Pergunta simples: como essa pessoa prova cada afirmação que assinou? Eu defendo que a prova não pode vir depois, em forma de explicação. Ela precisa estar na arquitetura, antes da assinatura. O que vocês veem aqui é um arnês, um harness: ele envolve o modelo neural e prende quatro condições, evidência, norma, rastro e humano.</aside>
+<aside class="notes" data-t="30">• Hoje alguém na sua organização vai assinar um parecer feito com ajuda de IA
+• Pergunta: como essa pessoa prova cada afirmação que assinou?
+• Tese: a prova não vem depois, como explicação; está na arquitetura, antes da assinatura
+• O arnês (harness) envolve o modelo e prende 4 condições: evidência, norma, rastro, humano</aside>
 </section>
 
 <!-- 2 PROBLEMA -->
-<section class="slide s2" data-title="A IA alucina: cita fontes que não existem" data-t="50" data-block="PROBLEMA" data-fontes="charlotin,dahl,magesh,art-cena1" aria-label="A IA alucina">
-<div class="bgimg" style="background-image:url(img/tribunal.jpg)"></div>
-<div class="veil"></div>
+<section class="slide s2" data-title="A IA alucina: cita fontes que não existem" data-t="50" data-steps="3" data-block="PROBLEMA" data-fontes="charlotin,dahl,magesh" aria-label="A IA alucina">
 <h1 class="ttl"><span class="w">A IA ALUCINA</span></h1>
 <p class="sub">Cita Fontes que Não Existem</p>
 <p class="guia">O que acontece quando ninguém confere?</p>
 <div class="hero" data-hero="s2"></div>
-<p class="resp">Ninguém confere, e a citação falsa passa sem aviso.</p>
-<aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Os três números mostram a escala do problema. A base de Damien Charlotin, em 27 de outubro, registra 2.225 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
+<p class="resp">Tribunais já registram 2.225 decisões com conteúdo alucinado por IA.</p>
+<div class="mc mc0" data-open="s2-casos" tabindex="0" role="button" aria-label="Casos no mundo: ver a tabela e as taxas de erro"><b>2.225</b><span>decisões em tribunais, no mundo (pelo menos)</span></div>
+<div class="mc mc1" data-open="s2-casos" tabindex="0" role="button" aria-label="Casos nos Estados Unidos: ver a tabela e as taxas de erro"><b>1.514</b><span>só nos Estados Unidos</span></div>
+<div class="mc mc2" data-open="s2-casos" tabindex="0" role="button" aria-label="Casos no Brasil: ver a tabela e as taxas de erro"><b>41</b><span>já no Brasil</span></div>
+<aside class="notes" data-t="50">• Modelos de linguagem alucinam: escolhem a palavra mais provável, e provável não é verdadeiro
+• Mundo: 2.225 decisões em tribunais com conteúdo alucinado (Charlotin, 27/10): pelo menos, a base só conta o que achou
+• 1º clique: zoom nos EUA, 1.514 (cerca de 2 a cada 3)
+• 2º clique: zoom no Brasil, 41: já chegou aqui
+• Se perguntarem as taxas de erro: clicar no número (Dahl 69–88% e Magesh 17–33%, ambos preprints)</aside>
 </section>
 
 <!-- 3 -->
@@ -49,7 +57,11 @@
 <p class="sub">Explicar Depois Não Evita o Erro</p>
 <p class="guia">Por que explicar o modelo não basta?</p>
 <div class="hero" data-hero="s3"></div>
-<aside class="notes" data-t="40">A falsa saída é explicar depois. Explicar um modelo, por exemplo com mapas de saliência, é contar o que aconteceu depois que a decisão foi tomada. Em decisão pública, o dano já ocorreu quando a explicação chega. Cynthia Rudin, em 2019, defende que, em decisões de alto impacto, é melhor usar modelos interpretáveis desde o início do que tentar explicar caixas-pretas depois. É isso que a linha de baixo mostra: portões de verificação antes da decisão. A prova precisa vir antes da assinatura, não depois do acidente: por isso a linha de baixo coloca as verificações antes da decisão.</aside>
+<aside class="notes" data-t="40">• Falsa saída: explicar depois (IA explicável, XAI)
+• Explicação conta o que aconteceu depois da decisão; em decisão pública o dano já ocorreu
+• Rudin (2019): em alto impacto, modelo interpretável desde o início, não caixa-preta explicada depois
+• Linha de baixo do slide: verificações antes da decisão
+• Frase-chave: a prova vem antes da assinatura, não depois do acidente</aside>
 </section>
 
 <!-- 4 -->
@@ -61,7 +73,11 @@
 <p class="guia">O que a IA precisa ter antes de decidir?</p>
 <div class="hero" data-hero="s4"></div>
 <p class="selo">especificação formal</p>
-<aside class="notes" data-t="50">A ferramenta são quatro condições. Evidência: a afirmação tem fonte recuperada. Norma: a fonte está numa base normativa reconhecida. Rastro: o caminho até a conclusão fica registrado, em padrão W3C PROV. E humano: uma pessoa aprova. Pensem num portão com fechadura: se falta uma das quatro, ele não abre. Aqui, quando falta o rastro, o portão fecha e fica bloqueado. A admissibilidade é evidência e norma e rastro; a liberação exige ainda o humano. Atenção: isso é uma especificação formal do artigo, não uma garantia comprovada em experimento. O sistema só declara o parecer admissível. Quem libera é a pessoa.</aside>
+<aside class="notes" data-t="50">• Ferramenta: 4 condições. Evidência (fonte recuperada), norma (base normativa), rastro (registro W3C PROV), humano (aprova)
+• Imagem do portão: falta uma, não abre; falta o rastro, fica bloqueado
+• Admissível = evidência + norma + rastro; liberar exige ainda o humano
+• Cuidado: é especificação formal do artigo, não garantia comprovada em experimento
+• O sistema só declara admissível; quem libera é a pessoa</aside>
 </section>
 
 <!-- 5 -->
@@ -73,7 +89,12 @@
 <p class="guia">Como o sistema funciona, passo a passo?</p>
 <div class="hero" data-hero="s5"></div>
 <p class="selo">laço gerar, verificar, corrigir</p>
-<aside class="notes" data-t="45">Como isso funciona na prática? O neural propõe, o simbólico verifica. O modelo recupera fontes e gera o texto. Depois, uma etapa simbólica, feita de regras, confere cada citação. Se não passa, bloqueia e devolve ao gerador: é o laço gerar, verificar, corrigir, a bolinha vermelha que ricocheteia. Cada passagem fica registrada, e só então a pessoa aprova. No artigo, essa arquitetura se chama CALAIS, com três níveis: modelo, arquitetura e Citāre, construída pelo método design science research. Ainda é uma arquitetura proposta. Esse arranjo, hoje, tem um nome.</aside>
+<aside class="notes" data-t="45">• Neural propõe, simbólico verifica
+• Modelo recupera fontes e gera o texto; regras conferem cada citação
+• Se não passa: bloqueia e devolve ao gerador (laço gerar, verificar, corrigir: a bolinha que ricocheteia)
+• Cada passagem fica registrada; só então a pessoa aprova
+• No artigo: CALAIS, 3 níveis (modelo, arquitetura, Citāre), método design science research
+• Ainda é arquitetura proposta</aside>
 </section>
 
 <!-- 6 NOME DO QUE ACABAMOS DE VER -->
@@ -85,7 +106,10 @@
 <p class="guia">Como esse arranjo é chamado hoje?</p>
 <div class="hero" data-hero="s9"></div>
 <p class="selo" data-src="bockeler2026">Engenharia de harness</p>
-<aside class="notes" data-t="40">Esse arranjo tem hoje um nome. O artigo não usa a palavra harness, mas a arquitetura CALAIS é, na prática, um harness vertical. Em 2026, a engenharia de agentes passou a tratar agente como modelo mais harness. Pela minha contagem, os artigos com harness no título e agent no resumo passaram de 3, em 2025, para cerca de 446, em 2026; é contagem do autor, com amostra para descartar falsos sentidos. E um preprint de Carnegie Mellon relata que um modelo pequeno com bom harness chega a cerca de 90 por cento do desempenho a 4 por cento do custo, num conjunto de tarefas do estudo.</aside>
+<aside class="notes" data-t="40">• Esse arranjo hoje tem nome: harness (o artigo não usa a palavra; CALAIS é, na prática, um harness vertical)
+• 2026: agente = modelo + harness
+• Contagem minha: artigos com "harness" no título e "agent" no resumo: 3 (2025) para cerca de 446 (2026), com amostra para descartar falsos sentidos
+• Preprint da Carnegie Mellon: modelo pequeno com bom harness chega a cerca de 90% do desempenho a 4% do custo, nas tarefas do estudo</aside>
 </section>
 
 <!-- 7 -->
@@ -97,7 +121,12 @@
 <p class="guia">Funciona na escrita acadêmica?</p>
 <div class="hero" data-hero="s6"></div>
 <p class="selo">prova qualitativa</p>
-<aside class="notes" data-t="45">Primeira prova: o Citāre. Ele trabalha sobre uma ontologia, uma especificação formal do que é artigo, seção, parágrafo, afirmação, citação, fonte e trecho. Cada citação precisa de autoria, ano e DOI para o trecho ficar pronto como evidência. O artigo que apresento foi redigido com apoio do Citāre e teve as citações conferidas com ele, sempre com revisão e aprovação do autor. Atenção: isso é uma prova qualitativa. Os dados do Corpo de Bombeiros e da Escola Superior de Administração e Gerência da UDESC não avaliam o Citāre. A próxima prova é outra: a operação real no Corpo de Bombeiros.</aside>
+<aside class="notes" data-t="45">• Prova 1: o Citāre
+• Trabalha sobre uma ontologia: artigo, seção, parágrafo, afirmação, citação, fonte, trecho
+• Cada citação precisa de autoria, ano e DOI para virar evidência
+• Este artigo foi redigido com apoio do Citāre e teve as citações conferidas, com revisão e aprovação do autor
+• Cuidado: prova qualitativa; dados do CBMSC e da ESAG/UDESC não avaliam o Citāre
+• Próximo: a execução real da demonstração (Prova 2)</aside>
 </section>
 
 <!-- 8 -->
@@ -131,11 +160,11 @@
 <rect x="880" y="842" width="160" height="5" rx="2.5" fill="#0b0c10"/>
 </svg>
 <div class="mxctl"><button type="button" data-mx="pause" aria-label="Pausar ou continuar a animação">Pausar</button><button type="button" data-mx="restart" aria-label="Reiniciar a demonstração do começo">Reiniciar</button></div>
-<div class="lscreen" role="img" aria-label="Tela do laptop com a execução real: o modelo cita o inciso 33 do artigo 37, o hook bloqueia porque o inciso não existe, a correção chega à Súmula Vinculante 13 do STF e o parecer fica pronto para aprovação humana">
+<div class="lscreen" data-open="s8-replay" tabindex="0" role="button" aria-label="Tela do laptop com a execução real: o modelo cita o inciso 33 do artigo 37, o hook bloqueia porque o inciso não existe, a correção chega à Súmula Vinculante 13 do STF e o parecer fica pronto para aprovação humana">
 <p class="st st1 cmd">$ modelo local, sem harness</p>
-<p class="st st1 res err">ERRADO: art. 37, inciso 33</p>
+<p class="st st1 res err" data-open="s2-citacoes">ERRADO: art. 37, inciso 33</p>
 <p class="st st2 cmd">$ hook verificar_citacoes</p>
-<p class="st st2 res block">BLOQUEADO: o inciso 33 não existe</p>
+<p class="st st2 res block" data-open="s2-citacoes">BLOQUEADO: o inciso 33 não existe</p>
 <p class="st st3 cmd">$ correção: modelo de fronteira, mesmo harness</p>
 <p class="st st3 res ok">CERTO: Súmula Vinculante 13 (STF)</p>
 <p class="st st3 sub2">veda nomear parentes · 9 citações conferidas</p>
@@ -170,8 +199,16 @@
   <g class="stampg"><rect x="1272" y="470" width="516" height="62" rx="10" fill="rgba(0,0,0,.88)" stroke="#f4f4f5" stroke-width="3"/><text class="mid" x="1530" y="512" style="fill:#f4f4f5;font-size:30px;font-weight:500">aguardando aprovação humana</text></g>
  </g>
 </svg>
-<p class="selo" style="max-width:1560px">execução real de <span data-src="hnv-cena1">25/10/2026</span>, correção induzida (modelo de fronteira no mesmo harness)</p>
-<aside class="notes" data-t="90">Agora a demonstração, em três passos. É uma execução real de 25 de outubro, mas ilustrativa. Primeiro, o erro: um modelo local de três bilhões de parâmetros, sem harness, escreveu um parecer citando o artigo 37, inciso 33. A régua mostra os 22 incisos que existem; o 33 não está lá. Ele alucinou. Segundo, com harness, ontologia e hook: o hook confere a citação, não a encontra na ontologia e sai com o código 2, bloqueio. Evidência, norma e rastro ficam falsos, porque nenhuma citação passou. Atenção: bloqueado não quer dizer falso. A Resolução 7 de 2005 existe, mas está fora da ontologia, e por isso também é bloqueada. Terceiro, a correção. E aqui o cuidado: quem corrigiu não foi o modelo pequeno. Um modelo maior, de fronteira, dentro do mesmo harness, corrigiu numa cena induzida. O parecer usa só fontes da ontologia e para em aguardando aprovação humana. Quando o próprio modelo de três bilhões tentou corrigir, em três rodadas, bloqueou três, três e uma, e o harness não liberou.</aside>
+<p class="selo">Execução real de <span data-src="hnv-cena1">25/10/2026</span>; correção induzida (modelo de fronteira no mesmo harness)</p>
+<aside class="notes" data-t="90">• Roda sozinha (3 passos, 5 s cada); Pausar para comentar; Reiniciar para repetir
+• Passo 1, Alucina: modelo local de 3 bilhões de parâmetros, sem harness, cita o art. 37, inciso 33
+• O art. 37 vai só até o inciso 22: o 33 não existe
+• Passo 2, Bloqueia: com harness, ontologia e hook; o hook não acha a citação e sai com código 2
+• Cuidado: bloqueado não é falso (Resolução 7/2005 existe, mas está fora da ontologia)
+• Passo 3, Corrige: quem corrigiu foi um modelo de fronteira no mesmo harness (cena induzida), não o modelo pequeno
+• Parecer só com fontes da ontologia (9 citações conferidas, entre elas a Súmula Vinculante 13); para em "aguardando aprovação humana"
+• O modelo pequeno sozinho tentou corrigir: 3, 3 e 1 bloqueadas em 3 rodadas, não liberou
+• Execução real de 25/10/2026, correção induzida. Clicar na tela abre o replay</aside>
 </section>
 
 <!-- 10 -->
@@ -183,7 +220,13 @@
 <p class="guia">Isso vale para qualquer área?</p>
 <div class="hero" data-hero="s10"></div>
 <p class="selo stampsel">hipótese</p>
-<aside class="notes" data-t="55">Chegamos à hipótese, e quero ser claro: ainda não foi testada. Chamo de harness neurossimbólico vertical, o HNV. Vertical porque é feito para um domínio. O harness já tem um guia macio, as skills, que orientam o modelo, e uma regra dura, os hooks, que bloqueiam. Falta a peça central: a ontologia do domínio, escrita pelo especialista, que liga as regras ao conhecimento do campo. Esse é o trabalho da engenharia de grafos de conhecimento. Domínios candidatos, e são propostas, não resultados: pareceres administrativos, escrita científica e boletins de ocorrência de bombeiros. É aqui que a engenharia do conhecimento volta ao centro da inteligência artificial. Hipótese, não resultado.</aside>
+<aside class="notes" data-t="55">• Hipótese, ainda não testada: HNV (harness neurossimbólico vertical)
+• Vertical = feito para um domínio
+• Já existe: guia macio (skills) e regra dura (hooks)
+• Falta: ontologia do domínio, escrita pelo especialista (engenharia de grafos de conhecimento)
+• Domínios candidatos, são propostas: pareceres administrativos, escrita científica, boletins de ocorrência de bombeiros
+• A engenharia do conhecimento volta ao centro da IA
+• Dizer: hipótese, não resultado</aside>
 </section>
 
 <!-- 11 -->
@@ -195,7 +238,10 @@
 <p class="guia">Como vamos medir o ganho?</p>
 <div class="hero" data-hero="s11"></div>
 <p class="selo">estudo planejado</p>
-<aside class="notes" data-t="35">Próximo passo: um estudo pareado, com quatro condições: trabalho manual, modelo sozinho, RAG e a arquitetura completa. Mediríamos fidelidade de citação, conformidade, qualidade da decisão, tempo, custo, retrabalho e intervenções humanas, sempre como a diferença entre a arquitetura e a base. Os cadeados são os limites que declaro: evidência exploratória e situada em Santa Catarina; o harness confere citações, não raciocínio; a ontologia ainda aguarda validação; e o HNV é hipótese. Sem esses limites, a conclusão seria maior do que a evidência permite.</aside>
+<aside class="notes" data-t="35">• Próximo passo: estudo pareado com 4 condições: manual, modelo sozinho, RAG, arquitetura completa
+• Medir: fidelidade de citação, conformidade, qualidade da decisão, tempo, custo, retrabalho, intervenções humanas
+• Cadeados = limites: evidência exploratória e situada em SC; o harness confere citações, não raciocínio; ontologia aguarda validação; HNV é hipótese
+• Sem os limites, a conclusão seria maior que a evidência</aside>
 </section>
 
 <!-- 12 FECHO -->
@@ -208,7 +254,10 @@
 <div class="hitbox" data-open="s1-paleta" aria-label="As quatro condições: ver a legenda do arnês" style="left:760px;top:260px;width:560px;height:740px"></div>
 <div class="hitbox" data-open="s1-harness3d" aria-label="Arnês em 3D: ver o que cada parte representa" style="left:1320px;top:260px;width:560px;height:740px"></div>
 <p class="selo ident" style="left:200px;top:760px">Alexandre Pinto Calaes<br><span>alexandre.calaes@posgrad.ufsc.br</span></p>
-<aside class="notes" data-t="25">Quem assina não precisa de uma explicação depois. Precisa de evidência, norma, rastro e humano, construídos antes, na arquitetura. Auditável por construção. Obrigado. Tenho reservas preparadas sobre RAG, raciocínio, LGPD, método e referências, se quiserem perguntar.</aside>
+<aside class="notes" data-t="25">• Quem assina não precisa de explicação depois
+• Precisa de evidência, norma, rastro e humano, construídos antes, na arquitetura
+• Auditável por construção. Obrigado.
+• Reservas prontas: RAG, raciocínio, LGPD, método, referências, CBMSC</aside>
 </section>
 
 <!-- RESERVAS -->
@@ -223,9 +272,16 @@
  <div><b>Bloquear não gera falso positivo?</b><p>Gera, e é declarado: bloqueado não é falso (Resolução 7/2005). <span data-src="hnv-ontologia">18 instâncias</span> aguardam validação do especialista.</p></div>
  <div><b>Seis medições provam algo?</b><p>Não provam ganho. São tarefas, não pessoas, e cinco da mesma conta. É evidência exploratória; o próximo passo é o estudo pareado.</p></div>
  <div><b>E o raciocínio e os dados pessoais?</b><p>O harness confere citações, não raciocínio; a decisão final é humana. Dados pessoais e a lei de proteção de dados não foram avaliados: limite declarado.</p></div>
- <div style="grid-column:1/3"><a class="link" data-open="s9-contexto" tabindex="0" role="button" aria-label="Abrir o contexto de mercado: investimento em infraestrutura e adoção">Contexto de mercado (investimento e adoção)</a></div>
+ <div style="grid-column:1/3"><a class="link" data-open="s2-softmax" tabindex="0" role="button" aria-label="Abrir a explicação: por que o modelo alucina">Por que o modelo alucina (explicação)</a></div>
+<div style="grid-column:1/3"><a class="link" data-open="s9-contexto" tabindex="0" role="button" aria-label="Abrir o contexto de mercado: investimento em infraestrutura e adoção">Contexto de mercado (investimento e adoção)</a></div>
 </div>
-<aside class="notes" data-t="0">Quem corrigiu? O modelo local de três bilhões errou; um modelo de fronteira, dentro do mesmo harness, corrigiu, numa cena induzida. Quando o próprio modelo pequeno tentou corrigir, em três rodadas, não convergiu e o harness não liberou: a garantia vem da arquitetura, não do modelo. O artigo não fala em harness? Propõe a arquitetura CALAIS, que a engenharia de agentes de 2026 passou a chamar de harness; o HNV é hipótese de agenda, ainda não testada. Isso não é só buscar documentos? RAG recupera, mas não confere; aqui um hook confere cada citação e devolve o parecer quando não passa. Em preprints, ferramentas jurídicas com busca de documentos ainda erram de 17 a 33 por cento. Falso positivo? Gera, e isso é declarado: bloqueado não quer dizer falso. A Resolução 7 de 2005 existe, mas está fora da ontologia. O custo é manter a ontologia com o especialista, e as 18 instâncias ainda aguardam validação. Seis medições provam algo? Não provam ganho: são tarefas, não pessoas, cinco da mesma conta. Mostram os componentes funcionando juntos. Para ganho, estudo pareado em quatro condições. Raciocínio e LGPD: o harness confere citações, não raciocínio, e a decisão final é humana. Dados pessoais não foram avaliados; é limite declarado e parte do estudo futuro.</aside>
+<aside class="notes" data-t="0">• Quem corrigiu? Modelo local de 3 bilhões errou; modelo de fronteira no mesmo harness corrigiu (cena induzida); o pequeno sozinho: 3, 3 e 1 bloqueadas. A garantia vem da arquitetura
+• O artigo não fala em harness? CALAIS é o que a engenharia de agentes de 2026 chama de harness; HNV é hipótese
+• Isso não é só buscar documentos? RAG recupera, não confere; o hook confere cada citação; RAG jurídico erra 17–33% (preprints)
+• Falso positivo? Sim, declarado: bloqueado não é falso (Res. 7/2005); 18 instâncias aguardam validação
+• Seis medições provam algo? Não provam ganho: tarefas, não pessoas, cinco da mesma conta; mostram os componentes juntos; ganho exige estudo pareado
+• Raciocínio e LGPD? O harness confere citações, não raciocínio; decisão final humana; dados pessoais não foram avaliados (limite)
+• Por que o modelo alucina? Escolhe a palavra mais provável, não a verdadeira (abrir a explicação)</aside>
 </section>
 <section class="slide res r2" data-reserve="2" data-title="Como a pesquisa foi conduzida" data-t="0" data-block="Reserva" aria-label="Reserva 2: método DSR">
 <h1 class="ttl"><span class="w">MÉTODO</span></h1>
@@ -237,14 +293,15 @@
  <div><b>Avaliação</b><p>Exploratória, em Santa Catarina. Estudo pareado ainda por fazer.</p></div>
  <div><a class="link" data-open="s5-dsr" tabindex="0" role="button" aria-label="Abrir a Tabela 3 do método DSR">Tabela 3 do artigo</a></div>
 </div>
-<aside class="notes" data-t="0">Método de pesquisa: design science research. Detalhe na Tabela 3.</aside>
+<aside class="notes" data-t="0">• Método: design science research
+• Detalhe: Tabela 3 do artigo</aside>
 </section>
 <section class="slide res r3" data-reserve="3" data-title="Referências e fontes" data-t="0" data-block="Reserva" aria-label="Reserva 3: referências">
 <h1 class="ttl"><span class="w">REFERÊNCIAS</span></h1>
 <p class="sub">Fontes que Embasam os Números</p>
 <p class="guia">De onde vêm os fatos?</p>
 <div class="rb"><div class="ref" data-fill="r3-referencias"></div></div>
-<aside class="notes" data-t="0">Referências geradas do cadastro de fontes.</aside>
+<aside class="notes" data-t="0">• Referências geradas do cadastro de fontes</aside>
 </section>
 <section class="slide res r4" data-reserve="4" data-title="O que faremos a seguir" data-t="0" data-block="Reserva" aria-label="Reserva 4: agenda de pesquisa">
 <h1 class="ttl"><span class="w">PRÓXIMOS ESTUDOS</span></h1>
@@ -255,7 +312,8 @@
  <div><b>Ontologia validada</b><p>Hoje são <span data-src="hnv-ontologia">18 instâncias</span> pendentes de validação por especialistas.</p></div>
  <div><b>Outros domínios</b><p>Propostas, não resultados: pareceres administrativos, escrita científica, boletins de ocorrência de bombeiros.</p></div>
 </div>
-<aside class="notes" data-t="0">Agenda de pesquisa, sem título de tese. Tudo o que está aqui é proposta.</aside>
+<aside class="notes" data-t="0">• Agenda de pesquisa, sem título de tese
+• Tudo o que está aqui é proposta</aside>
 </section>
 
 <section class="slide res r5 s7" data-reserve="5" data-title="Reserva: automação real nos bombeiros" data-t="0" data-block="Reserva" data-fontes="art-logs,art-nasa,hart1988,art-tab4" aria-label="Operação real no Corpo de Bombeiros">
@@ -266,7 +324,11 @@
 <p class="guia">E numa operação pública de verdade?</p>
 <div class="hero" data-hero="s7"></div>
 <p class="selo" data-src="art-logs">exploratório; só o total do período</p>
-<aside class="notes" data-t="0">Reserva, se perguntarem sobre o CBMSC: a operação real no Corpo de Bombeiros de Santa Catarina. Em cerca de 191 dias, foram 9.054 envios; 2.813 terminaram sem sucesso, e isso não são bloqueios. A régua mostra seis medições de carga de trabalho, NASA-TLX: são tarefas, não pessoas, e cinco vieram da mesma conta. A mediana é 4,17 em 100. O calendário é ilustrativo: o artigo informa só o total do período. É evidência exploratória: mostra os componentes funcionando juntos, não ganho. Para ganho, estudo pareado.</aside>
+<aside class="notes" data-t="0">• Se perguntarem do CBMSC: aplicação anterior que informou o desenho (requisitos e evidências); não avalia o Citāre
+• Cerca de 191 dias: 9.054 envios; 2.813 sem sucesso (não são bloqueios)
+• 6 medições de carga de trabalho (NASA-TLX): tarefas, não pessoas; 5 da mesma conta; mediana 4,17 em 100
+• Calendário ilustrativo: o artigo informa só o total do período
+• Evidência exploratória: componentes funcionando juntos, não ganho; ganho = estudo pareado</aside>
 </section>
 <!-- camadas comuns -->
 <div id="band" aria-hidden="true"></div>
@@ -284,7 +346,8 @@
 <script src="pict.js"></script>
 <script src="paineis.js"></script>
 <script src="lib/three.min.js"></script>
+<script src="img/mundo.js"></script>
 <script src="matrix8.js"></script>
-<script src="deck.js?v=6"></script>
+<script src="deck.js?v=7"></script>
 </body>
 </html>
