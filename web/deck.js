@@ -473,13 +473,14 @@ HEROES.s9 = K => {
     '<rect x="-14" y="22" width="28" height="14" fill="#44566a"/><rect x="-82" y="36" width="164" height="66" rx="18" fill="url(#s9m)" stroke="#6f8aa3" stroke-width="2"/>' +
     '<circle cx="0" cy="69" r="9" fill="#2b9bdc"><animate attributeName="opacity" values=".35;.35;1;.5;1;.35" keyTimes="0;.3;.4;.6;.8;1" dur="' + D + 's" ' + R + '/></circle></g>';
   const eq = defs + '<g transform="translate(60 0)">' + S(1, chip) + K.text({ x: 240, y: 300, t: 'Modelo', size: 44, anchor: 'middle', step: 1 }) +
-    K.text({ x: 490, y: 142, t: 'com', size: 40, anchor: 'middle', tone: 'nevoa', step: 2 }) + S(3, arnes) + K.text({ x: 740, y: 300, t: 'Harness', size: 44, anchor: 'middle', step: 3 }) +
-    K.arrow({ pts: [[870, 130], [1120, 130]], step: 4, t: 'forma', tx: 995, ty: 96, size: 36 }) +
-    '<circle class="prt" r="8"><animateMotion dur="2.4s" ' + R + ' path="M870 130H1110"/></circle>' + S(5, agente) + K.text({ x: 1240, y: 300, t: 'Agente', size: 44, anchor: 'middle', step: 5 }) + '</g>';
+    S(2, '<text x="490" y="166" text-anchor="middle" style="font-size:100px;font-weight:700;fill:#f05a28">+<animate attributeName="font-size" values="100;100;132;100;100" keyTimes="0;.24;.3;.45;1" dur="' + D + 's" ' + R + '/></text>') + K.text({ x: 490, y: 215, t: 'com', size: 30, anchor: 'middle', tone: 'nevoa', step: 2 }) +
+    S(3, arnes) + K.text({ x: 740, y: 300, t: 'Harness', size: 44, anchor: 'middle', step: 3 }) +
+    S(4, '<g stroke="#4db3ea" stroke-width="13" stroke-linecap="round" fill="none"><path d="M935 112H1055"/><path d="M935 150H1055"/><animate attributeName="opacity" values=".35;.35;1;1;.35" keyTimes="0;.3;.4;.9;1" dur="' + D + 's" ' + R + '/></g>') + K.text({ x: 995, y: 215, t: 'forma', size: 30, anchor: 'middle', tone: 'nevoa', step: 4 }) + S(5, agente) + K.text({ x: 1240, y: 300, t: 'Agente', size: 44, anchor: 'middle', step: 5 }) + '</g>';
   return K.svg(1600, 720, eq +
     OG('<g data-open="s5-calais" aria-label="CALAIS, a arquitetura do artigo, é um harness: ver os três níveis">', K.box({ x: 200, y: 400, w: 1200, h: 110, t: 'CALAIS, a arquitetura do artigo, é um harness', size: 40, fill: true, step: 6 })) +
-    OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'Como contei os artigos ›', size: 34, step: 7 })) +
-    OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'O que o estudo da CMU mostrou ›', size: 34, step: 8 })),
+    K.text({ x: 800, y: 556, t: 'Por que vale a pena', size: 30, anchor: 'middle', tone: 'nevoa', step: 7 }) +
+    OG('<g data-open="s9-metodo" aria-label="Quantos artigos usam o termo harness: ver o método da contagem">', K.box({ x: 20, y: 570, w: 760, h: 90, t: 'A área já adota ›', size: 34, step: 7 })) +
+    OG('<g data-open="s9-cmu" aria-label="Quanto rende um modelo pequeno com bom harness: ver o estudo da Carnegie Mellon">', K.box({ x: 820, y: 570, w: 760, h: 90, t: 'O custo compensa ›', size: 34, step: 8 })),
     'Modelo com harness forma um agente; CALAIS, a arquitetura do artigo, é um harness');
 };
 
