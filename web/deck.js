@@ -40,6 +40,12 @@ Core.nav = function (st, dir, meta) {
   if (n >= 0 && meta.group[n] === meta.group[i]) return { i: n, step: meta.steps[n] || 0 };
   return { i, step };
 };
+// Roda do mouse: pula um slide inteiro e mostra o slide já pronto (todos os passos), sem parar nos passos.
+Core.navSlide = function (st, dir, meta) {
+  const i = st.i, n = i + dir;
+  if (n < 0 || n >= meta.steps.length || meta.group[n] !== meta.group[i]) return { i, step: st.step };
+  return { i: n, step: meta.steps[n] || 0 };
+};
 Core.parseHash = function (h, nMain, nTotal) {
   h = (h || '').replace('#', '');
   if (/^r\d$/i.test(h)) { const k = nMain + (+h.slice(1)) - 1; return k < nTotal ? k : 0; }
@@ -616,7 +622,7 @@ function show(st, opts) {
   } else apply();
   started = true; broadcast(); onChange(old);
 }
-function move(dir) { if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; const n = Core.nav(state, dir, meta); if (n.i !== state.i || n.step !== state.step) show(n); }
+function move(dir, bySlide) { if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; const n = bySlide ? Core.navSlide(state, dir, meta) : Core.nav(state, dir, meta); if (n.i !== state.i || n.step !== state.step) show(n); }
 function goto(i) { if (i < 0 || i >= slides.length) return; show({ i, step: meta.steps[i] ? 1 : 0 }); }
 let returnTo = 0;
 function toggleReserve() {
@@ -660,14 +666,14 @@ if (bc) bc.onmessage = m => {
 };
 
 /* ======================= ENTRADAS: RODA, CLIQUE, TECLADO, MOUSE ======================= */
-const wheel = Core.makeWheel({ thresh: 50, lock: 900 });
+const wheel = Core.makeWheel({ thresh: 50, lock: 350 });
 function inPres() { return body.classList.contains('presenter') || body.classList.contains('thumb'); }
 document.addEventListener('wheel', e => {
   if (inPres()) return;
   const rl = e.target.closest && e.target.closest('.ref'); if (rl && ((e.deltaY > 0 && rl.scrollTop + rl.clientHeight < rl.scrollHeight - 2) || (e.deltaY < 0 && rl.scrollTop > 0))) return;
   if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; // a roda rola o painel (overscroll contido); nunca troca de slide
   e.preventDefault();
-  const d = wheel.feed(e.deltaY, e.deltaX, performance.now()); if (d) move(d);
+  const d = wheel.feed(e.deltaY, e.deltaX, performance.now()); if (d) move(d, true);
 }, { passive: false });
 stage.addEventListener('click', e => {
   if (inPres()) return;
