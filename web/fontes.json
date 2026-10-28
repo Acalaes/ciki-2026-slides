@@ -49,10 +49,10 @@
   "ref": "Artigo #160, Tabela 5"
  },
  "arxiv-count": {
-  "afirmacao": "≈446 trabalhos em 2026 (até 25/10) com harness ou harnesses no título e agent no resumo (consulta ti:harness AND abs:agent); 3 em 2025, conferidos título a título. O descarte de 2026 foi estimado por amostra de 25 títulos, não título a título; só a forma singular dá 362",
-  "fonte": "Contagem do autor na API do arXiv; 2025 conferido título a título, 2026 amostra de 25 títulos",
+  "afirmacao": "≈446 trabalhos em 2026 (até 25/10) com harness ou harnesses no título e agent no resumo (consulta ti:harness AND abs:agent); 3 em 2025, conferidos título a título. Checagem de precisão em 28/10/2026: amostra aleatória de 50 (semente 42), 47 sobre agentes de IA = 94% (Wilson 95%: 83,8% a 97,9%); só a forma singular dá 362",
+  "fonte": "Contagem do autor na API do arXiv; 2025 conferido título a título; 2026 com amostra de 50 títulos (checagem-preprint)",
   "url": "http://export.arxiv.org/api/query?search_query=ti:harness",
-  "status": "contagem própria (2026 estimado por amostra)",
+  "status": "contagem própria (preprints, sem revisão por pares; precisão 94% em amostra de 50)",
   "ref": "Contagem do autor no arXiv (2026)"
  },
  "cmu": {
@@ -285,5 +285,12 @@
   "url": "C:\\Users\\acala\\projetos\\ciki-2026-artigo-160\\artigo-final.md",
   "status": "confirmado no artigo",
   "ref": "Artigo #160, trabalhos futuros"
+ },
+ "checagem-preprint": {
+  "afirmacao": "Na OpenAlex, 467 preprints do arXiv de 2026 (até 25/10) com harness no título; amostra de 50: 47 relevantes (94%); só 4 de 467 com versão publicada, 2 em conferências (EuroMLSys, ASE); crescimento mensal: jan 2, fev 3, mar 8, abr 17, mai 41, jun 47, jul 54, ago 68, set 114, out 113 (até 25/10)",
+  "fonte": "Checagem do autor, 28/10/2026, base OpenAlex (dados/checagem_preprint/RESULTADO.md); classificação por um avaliador",
+  "url": "https://api.openalex.org/works?filter=title.search:harness,from_publication_date:2026-01-01",
+  "status": "contagem própria (preprint; um avaliador)",
+  "ref": "Checagem do autor na OpenAlex (2026)"
  }
 }

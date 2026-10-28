@@ -677,6 +677,11 @@
   /* =========================================================
      SLIDE 9
      ========================================================= */
+  var MESES = (function () {
+    var v = [2, 3, 8, 17, 41, 47, 54, 68, 114, 113], n = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out'], o = '<svg viewBox="0 0 1000 250" role="img" aria-label="Preprints de harness por mês em 2026: de 2 em janeiro a 114 em setembro" style="width:100%;max-width:1000px;margin-top:14px">';
+    v.forEach(function (x, i) { var h = Math.round(x / 114 * 170); o += '<rect x="' + (20 + i * 98) + '" y="' + (200 - h) + '" width="70" height="' + h + '" rx="5" fill="#4db3ea"/><text x="' + (55 + i * 98) + '" y="' + (192 - h) + '" text-anchor="middle" fill="#f4f4f5" font-size="26" font-weight="700">' + x + '</text><text x="' + (55 + i * 98) + '" y="236" text-anchor="middle" fill="#a1a1aa" font-size="24">' + n[i] + '</text>'; });
+    return o + '</svg><p class="nota">Preprints por mês de postagem, 2026 (OpenAlex; outubro até o dia 25).</p>';
+  })();
   (function () {
     var g = K.text({ x: 0, y: 40, t: '2025', size: 40, weight: 'b' }) +
       K.bar({ x: 380, y: 70, w: 900, h: 44, v: 23, max: 500, t: 'busca', val: '23', step: 1, tone: 'nevoa' }) +
@@ -687,11 +692,11 @@
       K.bar({ x: 380, y: 420, w: 900, h: 44, v: 446, max: 500, t: 'harness(es)', val: '446', step: 5, tone: 'nevoa' }) +
       K.bar({ x: 380, y: 490, w: 900, h: 44, v: 446, max: 500, t: 'com agent', val: '≈446', step: 6 });
     panel('s9-metodo', 'Como contamos “harness” no arXiv', K.svg(W, 560, g, 'Barras da contagem de 2025 e 2026 em três etapas'),
-      'Busca ti:harness AND abs:agent; em 2026, o descarte foi estimado por amostra de 25 títulos.',
-      [F('arxiv-count', 'Contagem do autor (arXiv)')], { selos: [sel('contagem do autor'), sel('≈ estimativa', 'sol')] });
+      'Busca ti:harness AND abs:agent. São preprints (sem revisão por pares): sinal de adoção. Em 50 títulos conferidos, 94% são de agentes de IA.',
+      [F('arxiv-count', 'Contagem do autor (arXiv)'), F('checagem-preprint', 'Checagem de precisão (OpenAlex)')], { selos: [sel('preprint, sem revisão por pares'), sel('contagem do autor')] });
     det('s9-metodo', 'Método da contagem: detalhes',
-      '<ul class="pt-list"><li><b>1. Busca:</b> título com “harness” e agent no resumo (ti:harness AND abs:agent), na API pública do arXiv, em 25/10/2026.</li><li><b>2. Filtro:</b> “harness” ou “harnesses” no título; “harnessing” fica de fora.</li><li><b>3. Sentido:</b> 2025 conferido título a título (3 de 4). 2026: descarte estimado por amostra de 25 títulos, todos de agentes; não foi título a título.</li><li>Só a forma singular “harness” dá 362 em 2026 (reprodução do avaliador). Em 2023 e 2024 não há ocorrência. 2026 é parcial.</li><li>Não é revisão sistemática; o ≈446 supõe que a amostra represente o conjunto.</li></ul>',
-      [F('arxiv-count', 'Contagem do autor (arXiv)')]);
+      '<ul class="pt-list"><li><b>1. Busca:</b> título com “harness” e agent no resumo (ti:harness AND abs:agent), na API pública do arXiv, em 25/10/2026.</li><li><b>2. Filtro:</b> “harness” ou “harnesses” no título; “harnessing” fica de fora.</li><li><b>3. Sentido:</b> 2025 conferido título a título (3 de 4). 2026: amostra aleatória de 50 títulos (semente 42): 47 tratam de agentes de IA, ou seja, <b>94%</b> (intervalo de 95%: 83,8% a 97,9%). Os 3 restantes usam “harness” em outro sentido (verbo, teste, robótica). Classificação feita pelo autor, sem segundo avaliador.</li><li><b>4. Revisão por pares:</b> são preprints. Na base aberta OpenAlex, só 4 de 467 já têm versão publicada, 2 delas em conferências (EuroMLSys e ASE); o campo é novo. O número mede <b>adoção</b>, não qualidade.</li><li><b>5. Crescimento:</b> jan 2, fev 3, mar 8, abr 17, mai 41, jun 47, jul 54, ago 68, set 114, out 113 (até 25/10).</li><li>Só a forma singular “harness” dá 362 em 2026 (reprodução do avaliador). Em 2023 e 2024 não há ocorrência. 2026 é parcial.</li><li>Não é revisão sistemática; o ≈446 supõe que a amostra represente o conjunto. A contagem direta no arXiv (446) e a da OpenAlex (467) diferem por indexação.</li></ul>' + MESES,
+      [F('arxiv-count', 'Contagem do autor (arXiv)'), F('checagem-preprint', 'Checagem de precisão (OpenAlex)')]);
   })();
 
   panel('s9-cmu', 'Modelo pequeno, bom harness',
