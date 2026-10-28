@@ -1,0 +1,51 @@
+﻿n;openalex;titulo;relevante;motivo
+1;https://openalex.org/W7154504019;C law VM: Harness-Managed Virtual Memory for Stateful Tool-Using LLM Agents;1;
+2;https://openalex.org/W7211876625;Multi-Harness Reinforcement Learning for Coding Agents: Training Gains and Harness Dependence;1;
+3;https://openalex.org/W7172023774;Harness-G: A Graph-Structured Harness for Search Agents;1;
+4;https://openalex.org/W7220707912;What Does a Harness Buy? Tokens, Mostly;1;
+5;https://openalex.org/W7171987421;DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness;1;
+6;https://openalex.org/W7165656363;Building Agent Harnesses for Scientific Curation from Multimodal Sources;1;
+7;https://openalex.org/W7214944626;Distilling Agentic Systems: A Roadmap across Models, Artifacts, and Harnesses;1;
+8;https://openalex.org/W7214775683;Recursive Harness Distillation across Agents for Robot Manipulation;1;
+9;https://openalex.org/W7220689204;WAMJET: A Harness for World Action Model Acceleration;0;'harness' = framework de aceleração de modelo de robótica, sem agente de IA
+10;https://openalex.org/W7155047438;Architectural Design Decisions in AI Agent Harnesses;1;
+11;https://openalex.org/W7214129319;Predictors and Orchestrators: Parsimonious Machine Learning within an Agentic AI Harness for Multi-Horizon Karst Aquifer Forecasting;1;
+12;https://openalex.org/W7221781541;Verifier-Harness Co-Evolution for Training-Free Self-Improvement on Open-Ended Tasks;1;
+13;https://openalex.org/W7223200999;From VLM Planners to Robotic Agents: Self-Evolving Harnesses for History-Dependent Manipulation;1;
+14;https://openalex.org/W7155418920;Synthesizing Multi-Agent Harnesses for Vulnerability Discovery;1;
+15;https://openalex.org/W7162781514;Train the Agent, Not the Expert: Learning to Harness Heterogeneous Experts for Multi-Turn Visual Reasoning;0;verbo 'to harness' (aproveitar), não é o arcabouço
+16;https://openalex.org/W7220995985;Goldsmith: Gold-Loss-Guided Definition Optimization with an Agentic Annotation Harness;1;
+17;https://openalex.org/W7221832120;Harmony Harness: Multi-Objective Self-Evolution of Agent Harnesses;1;
+18;https://openalex.org/W7214014336;CHART: A Harness-Rotation Curriculum for Harness-Robust Search Agents;1;
+19;https://openalex.org/W7223156279;Object-Oriented Harness: Evolving Agent Harnesses through Object-Oriented Design;1;
+20;https://openalex.org/W7219155395;ActiveSaddler: Automated Curriculum Learning for Agent Harness Optimization;1;
+21;https://openalex.org/W7172276332;Model or Harness? An Interaction-Centric Taxonomy for Localizing Agent Failures;1;
+22;https://openalex.org/W7215044792;RankEvolve: A Reliable Multi-Agent Auto-Research Harness for Evolving Ranking Models;1;
+23;https://openalex.org/W7164437655;Claw-SWE-Bench: A Benchmark for Evaluating OpenClaw-style Agent Harnesses on Coding Tasks;1;
+24;https://openalex.org/W7172015797;Agent Harness Distillation: Inference-Time Harness Extraction and Exploitation in Autonomous Multi-Agent Systems;1;
+25;https://openalex.org/W7172337529;HarnessBank: Semantic Gene-Bank Search with Gated Verification for Agent-Harness Self-Evolution;1;
+26;https://openalex.org/W7212123334;RobustSGPO: Search-Space Control for Agent Harness Evolution;1;
+27;https://openalex.org/W7161064178;Harness Engineering as Categorical Architecture;1;
+28;https://openalex.org/W7168384152;Agent-Safety Evaluations as Load-Bearing Evidence: A Vendor-Neutral, Cross-Harness Reconstructability Metric;1;
+29;https://openalex.org/W7154865575;forge-harness: Engineering Methods for Robust AI Collaboration Harnesses;1;
+30;https://openalex.org/W7220445398;MOF-VERIFY: A Failure-Aware Agentic Harness for MOF Hypothesis Verification;1;
+31;https://openalex.org/W7171537577;The Scaffold Effect in Coding Agents: Harness Choice as a Hidden Variable in Coding-Agent Evaluation;1;
+32;https://openalex.org/W7170179132;FORCE-Bench: A Benchmark, Dataset, and Evaluation Harness for Agentic AI in Enterprise Finance;0;'evaluation harness' = ferramenta de teste/avaliação, sentido clássico de test harness
+33;https://openalex.org/W7215938741;GUI-HARVEST: Self-Improving GUI Agents through Evidence-Driven Harness Evolution;1;
+34;https://openalex.org/W7212406378;Ecdysis: Efficient and Effective Training of Runtime Harnesses for LLM Agents;1;
+35;https://openalex.org/W7171783768;DREvo: Distilling Recalibrated Historical Experience for Harness Self-Evolution;1;
+36;https://openalex.org/W7222350284;A Strong Harness Narrows the Model Gap: A Comparative Evaluation for Legislative Document-to-XML Conversion;1;
+37;https://openalex.org/W7161743251;Code as Agent Harness;1;
+38;https://openalex.org/W7215976962;Harness Annealing: Learning to Act with Less External Control;1;
+39;https://openalex.org/W7214737389;Compositional Safety Failures in Harness Evolution: Identification and Runtime Monitoring;1;
+40;https://openalex.org/W7206163637;Towards Agentic Cloud Engineering: Graph and Loop Engineering with a Zero-Trust Agent Harness;1;
+41;https://openalex.org/W7208774882;Where Does Harness-Optimization Value Live? Localized Gains and the Budget-Splitting Trap in Self-Evolving LLM Agents;1;
+42;https://openalex.org/W7222184183;L3M: A Verifiable Harness and Runtime for Self-Extending and Self-Improving Agents;1;
+43;https://openalex.org/W7220683900;Complex Agents, Shallow Tests: Demystifying and Enhancing Test Adequacy of Agent Harness in the Wild;1;
+44;https://openalex.org/W7161550390;Effective Harness Engineering for Algorithm Discovery with Coding Agents;1;
+45;https://openalex.org/W7169832460;Harness Engineering for LLM-Driven GPU Kernel Generation;1;
+46;https://openalex.org/W7213594593;How Do Agent Harnesses Create Value? Planning Information and Release Control in Stateful LLM Agents;1;
+47;https://openalex.org/W7214780670;Hearsay: Can an Auditor Trust the Record a Deployed Agent Harness Writes?;1;
+48;https://openalex.org/W7206185287;Reining in an Agentic Harness for High Energy Physics;1;
+49;https://openalex.org/W7204254226;Recursive Experiential-Working Memory Evolution for Long-Horizon Agent Harnesses;1;
+50;https://openalex.org/W7214027680;From Capability to Assurance in Autonomous Penetration-Testing Harnesses: A Framework and Reference Implementation;1;
