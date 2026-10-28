@@ -383,7 +383,7 @@ function zoomMundo(s, step) {
   const to = MUNDO_CAIXAS[Math.max(0, Math.min(3, step))];
   const from = (svg.getAttribute('viewBox') || '0 70 1600 700').split(/\s+/).map(Number);
   cancelAnimationFrame(mundoRaf);
-  if (STATIC || LITE) { svg.setAttribute('viewBox', to.join(' ')); return; }
+  if (STATIC || LITE || JUMP) { svg.setAttribute('viewBox', to.join(' ')); return; }
   const t0 = performance.now(), d = 1300, ease = q => q < .5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
   (function f(now) { const q = Math.min(1, (now - t0) / d), e = ease(q); svg.setAttribute('viewBox', from.map((v, i) => (v + (to[i] - v) * e).toFixed(2)).join(' ')); if (q < 1) mundoRaf = requestAnimationFrame(f); })(t0);
 }
@@ -596,7 +596,7 @@ function setStep(i, step) {
   if (s.classList.contains('s2')) zoomMundo(s, +s.dataset.step || 0);
   if (isDemo(i)) {
     const st = +s.dataset.step; const rt = $('.rt', s); if (rt) rt.classList.toggle('block', st >= 2);
-    $$('.wd', s).forEach((w, k) => w.classList.toggle('on', k + 1 === st && step !== prev && !STATIC));
+    $$('.wd', s).forEach((w, k) => w.classList.toggle('on', k + 1 === st && step !== prev && !STATIC && !JUMP));
     HOOK.kick = 1;
   }
 }
@@ -612,9 +612,11 @@ function show(st, opts) {
   opts = opts || {}; const prev = state.i, changed = st.i !== prev; const old = state; state = st;
   const apply = () => {
     if (changed) { leaveSlide(prev); if (prev >= 0) slides[prev].classList.remove('active'); slides[st.i].classList.add('active'); enterSlide(st.i); }
+    if (opts.jump) { JUMP = true; slides[st.i].classList.add('nofx'); }
     setStep(st.i, st.step); updateChrome();
+    if (opts.jump) requestAnimationFrame(() => requestAnimationFrame(() => { JUMP = false; slides[st.i].classList.remove('nofx'); }));
   };
-  if (changed && started && !opts.instant && !STATIC && !LITE && document.startViewTransition) {
+  if (changed && started && !opts.instant && !opts.jump && !STATIC && !LITE && document.startViewTransition) {
     html.dataset.vt = isDemo(st.i) ? 'matrix-in' : isDemo(prev) ? 'matrix-out' : '';
     html.classList.add('vt');
     const vt = document.startViewTransition(apply);
@@ -622,7 +624,8 @@ function show(st, opts) {
   } else apply();
   started = true; broadcast(); onChange(old);
 }
-function move(dir, bySlide) { if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; const n = bySlide ? Core.navSlide(state, dir, meta) : Core.nav(state, dir, meta); if (n.i !== state.i || n.step !== state.step) show(n); }
+let JUMP = false; // pulo de slide pela roda: aplica o estado final sem animação
+function move(dir, bySlide) { if (openPanelEl || drawerOpen || detailOpen || lbOpen) return; const n = bySlide ? Core.navSlide(state, dir, meta) : Core.nav(state, dir, meta); if (n.i !== state.i || n.step !== state.step) show(n, { jump: !!bySlide }); }
 function goto(i) { if (i < 0 || i >= slides.length) return; show({ i, step: meta.steps[i] ? 1 : 0 }); }
 let returnTo = 0;
 function toggleReserve() {

@@ -274,6 +274,8 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 /* slide 12: o arnês é o destaque do fecho, centralizado e ampliado (mesmo enquadramento da capa) */
 .s12 .fxslot{transform-origin:1208px 1040px;transform:translate(-248px,-40px) scale(1.1)}
 
+/* pulo de slide pela roda: estado final imediato, sem animação */
+.nofx,.nofx *{transition:none!important;animation:none!important}
 /* slide 2: mapa-múndi com zoom (mundo, EUA, Brasil) */
 .s2 .hero{left:130px;top:345px;width:1660px;height:600px}
 .mundo{width:100%;height:100%;display:block;overflow:hidden}
