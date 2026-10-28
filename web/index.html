@@ -131,15 +131,15 @@
 <rect x="880" y="842" width="160" height="5" rx="2.5" fill="#0b0c10"/>
 </svg>
 <div class="mxctl"><button type="button" data-mx="pause" aria-label="Pausar ou continuar a animação">Pausar</button><button type="button" data-mx="restart" aria-label="Reiniciar a demonstração do começo">Reiniciar</button></div>
-<div class="lscreen" role="img" aria-label="Tela do laptop com a execução real: o modelo cita o inciso 33 do artigo 37, o hook bloqueia e a correção aguarda aprovação humana">
-<p class="st st1">$ modelo local, sem harness</p>
-<p class="st st1 err">&gt; cita o artigo 37, inciso 33</p>
-<p class="st st2">$ hook verificar_citacoes</p>
-<p class="st st2">artigo 37: incisos de 1 a 22; o 33 não existe</p>
-<p class="st st2 block">BLOQUEADO (código 2)</p>
-<p class="st st3">$ correção: modelo de fronteira, mesmo harness</p>
-<p class="st st3">parecer só com fontes da ontologia</p>
-<p class="st st3 ok">aguardando aprovação humana</p>
+<div class="lscreen" role="img" aria-label="Tela do laptop com a execução real: o modelo cita o inciso 33 do artigo 37, o hook bloqueia porque o inciso não existe, a correção chega à Súmula Vinculante 13 do STF e o parecer fica pronto para aprovação humana">
+<p class="st st1 cmd">$ modelo local, sem harness</p>
+<p class="st st1 res err">ERRADO: art. 37, inciso 33</p>
+<p class="st st2 cmd">$ hook verificar_citacoes</p>
+<p class="st st2 res block">BLOQUEADO: o inciso 33 não existe</p>
+<p class="st st3 cmd">$ correção: modelo de fronteira, mesmo harness</p>
+<p class="st st3 res ok">CERTO: Súmula Vinculante 13 (STF)</p>
+<p class="st st3 sub2">veda nomear parentes · 9 citações conferidas</p>
+<p class="st st3 res fim">FIM: pronto para aprovação humana</p>
 </div>
 <pre class="code st st1" data-open="s8-replay" aria-label="Código do hook que verifica as citações: ver o replay da execução real"><span class="cm"># harness/verificar_citacoes.py</span>
 <span class="kw">bloq</span> = [r <span class="kw">for</span> r <span class="kw">in</span> resultados <span class="kw">if</span> r["status"] != "ok"]
