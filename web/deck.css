@@ -222,13 +222,13 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 .slide.s8.matrix .guia{color:var(--texto)}
 .slide.s8.matrix .stepw{color:var(--texto);text-shadow:0 2px 12px rgba(0,0,0,.85)}
 .slide.s8 .stepw{left:130px;right:130px;top:892px;text-align:center}
+.slide.s8 .err,.slide.s8 .block{--a:#f05a28}
+.mxctl{position:absolute;z-index:9;right:130px;top:896px;display:flex;gap:14px}
+.mxctl button{font:600 26px var(--fd);color:var(--texto);background:rgba(21,24,31,.92);border:1px solid var(--teal);border-radius:8px;padding:8px 24px;cursor:pointer}
+.mxctl button:hover,.mxctl button:focus-visible{background:rgba(43,155,220,.25)}
 .slide.s8.matrix>.selo{color:var(--teal-claro);border:1px solid rgba(43,155,220,.5);background:rgba(21,24,31,.9)}
-.s8 .fxslot{clip-path:inset(330px 420px 290px 420px)}
-.laptop{position:absolute;inset:0;width:1920px;height:1080px;z-index:3;pointer-events:none}
-.laptop .lid{fill:#15181f;stroke:rgba(255,255,255,.22);stroke-width:3}
-.laptop .scr{fill:#000}
-.laptop .base{fill:#15181f;stroke:rgba(255,255,255,.18);stroke-width:3}
-.laptop .notch{fill:#0b0c10}
+.s8 .fxslot{clip-path:inset(295px 130px 120px 130px)}
+.laptop{position:absolute;inset:0;width:1920px;height:1080px;z-index:5;pointer-events:none}
 /* resposta à pergunta-guia, à direita da imagem (formato da capa) */
 .s2 .hero{top:352px}
 .s2 .resp{position:absolute;z-index:8;left:130px;top:306px;margin:0;padding-left:20px;border-left:3px solid var(--teal);white-space:nowrap;font:400 24px/1.1 var(--fd);color:var(--texto)}

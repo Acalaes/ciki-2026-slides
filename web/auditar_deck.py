@@ -290,6 +290,9 @@ for nome in ("paineis.css", "kit.css", "paineis.js", "kit.js", "deck.css", "deck
     texto = re.sub(r"/\*.*?\*/", "", ler(nome), flags=re.S)
     if nome.endswith(".html") or nome.endswith(".js"):
         texto = re.sub(r"(?m)^\s*//.*$", "", texto)
+    if nome == "index.html":
+        # exceção declarada (REGRAS v1.11.0): mockup realista de equipamento (laptop) usa cinzas metálicos fora da paleta
+        texto = re.sub(r'<svg class="laptop".*?</svg>', "", texto, flags=re.S)
     for h in re.findall(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b", texto):
         hl = h.lower()
         if h == "160" or hl in PERMITIDAS:

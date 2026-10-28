@@ -10,7 +10,7 @@
   return {
     T: 9, frame(ctx, t, dt) {
       accT += dt * (1 + 3 * HOOK.kick); HOOK.kick = Math.max(0, HOOK.kick - dt * 1.1);
-      const tt = STATIC ? t : accT + 0; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 1920, 1080);
+      const tt = STATIC ? t : accT + 0; ctx.clearRect(0, 0, 1920, 1080);
       ctx.font = '700 40px Consolas,"Cambria Math","Segoe UI Symbol",monospace'; ctx.textAlign = 'center';
       const slot = Math.floor(tt * 2.2);
       for (let c = 0; c < COLS; c++) {
@@ -19,7 +19,7 @@
           const row = hr - k; if (row < 0 || row >= ROWS) continue;
           const ch = col.ph ? col.ph[(row + c) % col.ph.length] : SET[hash(c, row, k === 0 ? slot : Math.floor(slot / 6)) % SET.length];
           const f = 1 - k / col.len;
-          ctx.globalAlpha = k === 0 ? .18 : .12 * f * f; ctx.fillStyle = k === 0 ? '#CFFFD8' : '#00FF41';
+          ctx.globalAlpha = k === 0 ? .5 : .3 * f * f; ctx.fillStyle = k === 0 ? '#f4f4f5' : (col.ph === 'bloqueia' ? '#f05a28' : '#00FF41');
           if (k < 3) { ctx.shadowColor = '#00FF41'; ctx.shadowBlur = LITE ? 0 : 12; } else ctx.shadowBlur = 0;
           ctx.fillText(ch, c * 40 + 20, row * 40 + 38);
         }

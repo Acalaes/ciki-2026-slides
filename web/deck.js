@@ -250,11 +250,29 @@ function coverFor(done) {
   }
   cover.c.done = !!done; return cover.c;
 }
+/* Prova 2: botões Pausar/Continuar e Reiniciar. Reiniciar volta ao começo e toca os 3 passos sozinhos (5 s cada); os passos manuais por teclado continuam valendo. */
+const MX = { paused: false, timers: [] };
+function mxClear() { MX.timers.forEach(clearTimeout); MX.timers = []; }
+function mxPlay(from) { mxClear(); for (let k = from; k <= 3; k++) MX.timers.push(setTimeout(() => { if (!MX.paused) show({ i: state.i, step: k }); }, (k - from) * 5000 + 300)); }
+function mxLabel() { const b = document.querySelector('.s8 [data-mx="pause"]'); if (b) b.textContent = MX.paused ? 'Continuar' : 'Pausar'; }
+function mxAct(a) {
+  if (!isDemo(state.i)) return;
+  if (a === 'restart') {
+    MX.paused = false; mxLabel();
+    if (active && !rafId) { tLast = performance.now(); loop(tLast); }
+    show({ i: state.i, step: 0 }); mxPlay(1); return;
+  }
+  MX.paused = !MX.paused; mxLabel();
+  if (MX.paused) { mxClear(); cancelAnimationFrame(rafId); rafId = 0; }
+  else { if (active && !rafId) { tLast = performance.now(); loop(tLast); } const st = +slides[state.i].dataset.step || 0; if (st < 3) mxPlay(st + 1); }
+}
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-mx]'); if (!b) return; e.stopPropagation(); e.preventDefault(); mxAct(b.dataset.mx); b.blur(); }, true);
 function sceneFor(name) {
   if (name === 'cover' || name === 'cover12') return null;
   return SCENES[name] ? (SCENES[name].inst || (SCENES[name].inst = SCENES[name]())) : null;
 }
 function leaveFx() {
+  MX.paused = false; mxClear(); mxLabel();
   cancelAnimationFrame(rafId); rafId = 0; active = null;
   if (cv2.parentNode) cv2.parentNode.removeChild(cv2);
   if (cvGL && cvGL.parentNode) cvGL.parentNode.removeChild(cvGL);
