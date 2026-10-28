@@ -32,3 +32,10 @@ html[data-vt="matrix-out"]::view-transition-new(root){animation:mxin2 .8s .35s e
 @keyframes mxin{from{opacity:0}to{opacity:1}}
 @keyframes mxout2{to{opacity:0;filter:brightness(0)}}
 @keyframes mxin2{from{opacity:0;filter:brightness(2)}to{opacity:1}}
+
+/* tela do laptop da Prova 2 (verde só aqui) */
+.matrix .lscreen{position:absolute;z-index:7;left:450px;top:350px;width:1020px;height:420px;overflow:hidden;font:500 28px/1.55 var(--fm);color:#00FF41;text-shadow:0 0 10px rgba(0,255,65,.35)}
+.matrix .lscreen p{margin:0}
+.matrix .lscreen .err{color:var(--a)}
+.matrix .lscreen .block{color:var(--a);font-weight:700}
+.matrix .lscreen .ok{color:var(--gelo)}

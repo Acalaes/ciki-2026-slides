@@ -347,23 +347,6 @@ HEROES.s2 = K => {
     'Três números de casos de alucinação em tribunais e dois exemplos para explorar');
 };
 
-/* Prova 3: fila de citações com portão de regras. SIMULAÇÃO ILUSTRATIVA (não é saída do Citāre): as três citações são exemplos, e a lista de referências é de fontes reais. */
-HEROES.s8 = K => {
-  const cites = [
-    { t: ['Huang et al. (2025)', 'ACM TOIS 43(2)'], ok: true },
-    { t: ['Almeida, J. (2019)', 'Revista Brasileira de Teste 9(2)'], ok: false },
-    { t: ['Dahl et al. (2024)', 'arXiv 2401.01301'], ok: true }
-  ];
-  let g = K.text({ x: 40, y: 40, t: '1. O modelo propõe', size: 36, step: 1 });
-  cites.forEach((c, i) => { g += K.box({ x: 40, y: 80 + i * 150, w: 500, h: 120, t: c.t, size: 28, step: 1 }); });
-  g += K.text({ x: 580, y: 40, t: '2. O portão confere', size: 36, step: 2 });
-  g += K.box({ x: 580, y: 80, w: 480, h: 390, t: ['Portão de regras', 'lista de referências:', 'Huang et al. (2025)', 'Dahl et al. (2024)', 'Magesh et al. (2025)'], size: 28, step: 2 });
-  g += K.text({ x: 1100, y: 40, t: '3. Resultado', size: 36, step: 3 });
-  cites.forEach((c, i) => { g += K.box({ x: 1100, y: 80 + i * 150, w: 460, h: 120, t: c.ok ? ['Passa'] : ['Bloqueada', 'não está na lista'], size: 32, tone: c.ok ? undefined : 'err', step: 3 }); });
-  g += K.text({ x: 800, y: 660, t: 'Simulação ilustrativa: citações de exemplo, não saída do Citāre', size: 28, anchor: 'middle', tone: 'nevoa' });
-  return K.svg(1600, 720, g, 'Simulação: uma citação falsa é bloqueada pelo portão de regras');
-};
-
 HEROES.s3 = K => {
   const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'Depois', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
     K.arrow({ pts: [[574, 120], [790, 120]], step: 3 }) + K.node({ cx: 880, cy: 120, r: 80, t: 'Dano', size: 36, tone: 'err', fill: true, step: 4 }) +

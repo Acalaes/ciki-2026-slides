@@ -101,25 +101,25 @@
 </section>
 
 <!-- 8 -->
-<section class="slide s7" data-title="Prova 2: automação real nos bombeiros" data-t="35" data-block="PROVAS" data-fontes="art-logs,art-nasa,hart1988,art-tab4" aria-label="Operação real no Corpo de Bombeiros">
-<div class="bgimg" style="background-image:url(img/bombeiros.jpg)"></div>
-<div class="veil"></div>
-<h1 class="ttl"><span class="w">PROVA 2</span></h1>
-<p class="sub">Automação Real nos Bombeiros</p>
-<p class="guia">E numa operação pública de verdade?</p>
-<div class="hero" data-hero="s7"></div>
-<p class="selo" data-src="art-logs">exploratório; só o total do período</p>
-<aside class="notes" data-t="35">Segunda prova: a operação real no Corpo de Bombeiros de Santa Catarina. Em cerca de 191 dias, foram 9.054 envios; 2.813 terminaram sem sucesso, e isso não são bloqueios. A régua mostra seis medições de carga de trabalho, NASA-TLX: são tarefas, não pessoas, e cinco vieram da mesma conta. A mediana é 4,17 em 100. O calendário é ilustrativo: o artigo informa só o total do período. É evidência exploratória: mostra os componentes funcionando juntos, não ganho. Para ganho, estudo pareado.</aside>
-</section>
 
 <!-- 9 DEMO (matriz) -->
-<section class="slide s8 matrix" data-title="Prova 3: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" data-fontes="art-citare,ont-citare" aria-label="Demonstração em três passos">
+<section class="slide s8 matrix" data-title="Prova 2: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" data-fontes="hnv-cena1,hnv-cena2b,hnv-laco,cf-art37" aria-label="Demonstração em três passos">
 <div class="fxslot" data-fx="s8"></div>
-<h1 class="ttl"><span class="w">PROVA 3</span></h1>
+<h1 class="ttl"><span class="w">PROVA 2</span></h1>
 <p class="sub">O Sistema Barra a Citação Falsa</p>
 <p class="guia">O que acontece quando a IA erra?</p>
 <p class="stepw"><span class="wd w1 err">Alucina.</span> <span class="wd w2 block">Bloqueia.</span> <span class="wd w3">Corrige.</span></p>
-<div class="hero" data-hero="s8"></div>
+<svg class="laptop" viewBox="0 0 1920 1080" aria-hidden="true"><rect class="lid" x="390" y="300" width="1140" height="520" rx="26"/><rect class="scr" x="420" y="330" width="1080" height="460" rx="8"/><path class="base" d="M300 820H1620L1590 858Q1588 866 1578 866H342Q332 866 330 858Z"/><rect class="notch" x="880" y="820" width="160" height="12" rx="6"/></svg>
+<div class="lscreen" role="img" aria-label="Tela do laptop com a execução real: o modelo cita o inciso 33 do artigo 37, o hook bloqueia e a correção aguarda aprovação humana">
+<p class="st st1">$ modelo local, sem harness</p>
+<p class="st st1 err">&gt; cita o artigo 37, inciso 33</p>
+<p class="st st2">$ hook verificar_citacoes</p>
+<p class="st st2">artigo 37: incisos de 1 a 22; o 33 não existe</p>
+<p class="st st2 block">BLOQUEADO (código 2)</p>
+<p class="st st3">$ correção: modelo de fronteira, mesmo harness</p>
+<p class="st st3">parecer só com fontes da ontologia</p>
+<p class="st st3 ok">aguardando aprovação humana</p>
+</div>
 <pre class="code st st1" data-open="s8-replay" aria-label="Código do hook que verifica as citações: ver o replay da execução real"><span class="cm"># harness/verificar_citacoes.py</span>
 <span class="kw">bloq</span> = [r <span class="kw">for</span> r <span class="kw">in</span> resultados <span class="kw">if</span> r["status"] != "ok"]
 <span class="kw">evidencia</span> = bool(resultados) <span class="kw">and not</span> bloq
@@ -149,7 +149,7 @@
   <g class="stampg"><rect x="1272" y="470" width="516" height="62" rx="10" fill="rgba(0,0,0,.88)" stroke="#f4f4f5" stroke-width="3"/><text class="mid" x="1530" y="512" style="fill:#f4f4f5;font-size:30px;font-weight:500">aguardando aprovação humana</text></g>
  </g>
 </svg>
-<p class="selo" style="max-width:1560px">ilustrativa, execução real de <span data-src="hnv-cena1">25/10/2026</span> · erro: modelo local de 3 bilhões de parâmetros · correção: modelo de fronteira no mesmo harness (cena induzida) · o modelo pequeno sozinho: <span data-src="hnv-laco">3, 3, 1</span> bloqueadas, não liberado</p>
+<p class="selo" style="max-width:1560px">execução real de <span data-src="hnv-cena1">25/10/2026</span>, correção induzida (modelo de fronteira no mesmo harness)</p>
 <aside class="notes" data-t="90">Agora a demonstração, em três passos. É uma execução real de 25 de outubro, mas ilustrativa. Primeiro, o erro: um modelo local de três bilhões de parâmetros, sem harness, escreveu um parecer citando o artigo 37, inciso 33. A régua mostra os 22 incisos que existem; o 33 não está lá. Ele alucinou. Segundo, com harness, ontologia e hook: o hook confere a citação, não a encontra na ontologia e sai com o código 2, bloqueio. Evidência, norma e rastro ficam falsos, porque nenhuma citação passou. Atenção: bloqueado não quer dizer falso. A Resolução 7 de 2005 existe, mas está fora da ontologia, e por isso também é bloqueada. Terceiro, a correção. E aqui o cuidado: quem corrigiu não foi o modelo pequeno. Um modelo maior, de fronteira, dentro do mesmo harness, corrigiu numa cena induzida. O parecer usa só fontes da ontologia e para em aguardando aprovação humana. Quando o próprio modelo de três bilhões tentou corrigir, em três rodadas, bloqueou três, três e uma, e o harness não liberou.</aside>
 </section>
 
@@ -235,6 +235,17 @@
  <div><b>Outros domínios</b><p>Propostas, não resultados: pareceres administrativos, escrita científica, boletins de ocorrência de bombeiros.</p></div>
 </div>
 <aside class="notes" data-t="0">Agenda de pesquisa, sem título de tese. Tudo o que está aqui é proposta.</aside>
+</section>
+
+<section class="slide res r5 s7" data-reserve="5" data-title="Reserva: automação real nos bombeiros" data-t="0" data-block="Reserva" data-fontes="art-logs,art-nasa,hart1988,art-tab4" aria-label="Operação real no Corpo de Bombeiros">
+<div class="bgimg" style="background-image:url(img/bombeiros.jpg)"></div>
+<div class="veil"></div>
+<h1 class="ttl"><span class="w">BOMBEIROS</span></h1>
+<p class="sub">Automação Real nos Bombeiros</p>
+<p class="guia">E numa operação pública de verdade?</p>
+<div class="hero" data-hero="s7"></div>
+<p class="selo" data-src="art-logs">exploratório; só o total do período</p>
+<aside class="notes" data-t="0">Reserva, se perguntarem sobre o CBMSC: a operação real no Corpo de Bombeiros de Santa Catarina. Em cerca de 191 dias, foram 9.054 envios; 2.813 terminaram sem sucesso, e isso não são bloqueios. A régua mostra seis medições de carga de trabalho, NASA-TLX: são tarefas, não pessoas, e cinco vieram da mesma conta. A mediana é 4,17 em 100. O calendário é ilustrativo: o artigo informa só o total do período. É evidência exploratória: mostra os componentes funcionando juntos, não ganho. Para ganho, estudo pareado.</aside>
 </section>
 <!-- camadas comuns -->
 <div id="band" aria-hidden="true"></div>

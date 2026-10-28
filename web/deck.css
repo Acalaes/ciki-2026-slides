@@ -105,7 +105,6 @@ body:not(.static) .trk{animation:flow 1.6s linear infinite}
 body.static .prt{display:none}
 
 /* ---------- demo (matriz) ---------- */
-.slide.s8{background:#000}
 .s8 .stepw .wd{opacity:0;display:inline-block;margin:0 .2em}
 .s8[data-step="1"] .w1,.s8[data-step="2"] .w1,.s8[data-step="3"] .w1,.s8[data-step="2"] .w2,.s8[data-step="3"] .w2,.s8[data-step="3"] .w3{opacity:1}
 body:not(.static) .s8 .wd.on{animation:wipe .6s both}
@@ -216,9 +215,20 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 
 .k .k-rg{fill:none!important}
 
-/* prova 3: simulação da fila de citações no lugar da cena de matriz e do trecho de código */
-.s8 .fxslot,.s8 pre.code,.s8 svg.art,.s8 .selo,.s8 .stepw{display:none}
-.s8 .hero{top:300px}
+/* prova 2: laptop com a matriz na tela; resto do slide no padrão do deck (fundo neutro, textos claros) */
+.s8 pre.code,.s8 svg.art{display:none}
+.slide.s8.matrix .ttl{color:var(--texto);text-shadow:0 0 12px rgba(255,255,255,.55),0 0 30px rgba(77,179,234,.5),0 2px 4px rgba(0,0,0,.6)}
+.slide.s8.matrix .sub{color:var(--teal-claro)}
+.slide.s8.matrix .guia{color:var(--texto)}
+.slide.s8.matrix .stepw{color:var(--texto);text-shadow:0 2px 12px rgba(0,0,0,.85)}
+.slide.s8 .stepw{left:130px;right:130px;top:892px;text-align:center}
+.slide.s8.matrix>.selo{color:var(--teal-claro);border:1px solid rgba(43,155,220,.5);background:rgba(21,24,31,.9)}
+.s8 .fxslot{clip-path:inset(330px 420px 290px 420px)}
+.laptop{position:absolute;inset:0;width:1920px;height:1080px;z-index:3;pointer-events:none}
+.laptop .lid{fill:#15181f;stroke:rgba(255,255,255,.22);stroke-width:3}
+.laptop .scr{fill:#000}
+.laptop .base{fill:#15181f;stroke:rgba(255,255,255,.18);stroke-width:3}
+.laptop .notch{fill:#0b0c10}
 /* resposta à pergunta-guia, à direita da imagem (formato da capa) */
 .s2 .hero{top:352px}
 .s2 .resp{position:absolute;z-index:8;left:130px;top:306px;margin:0;padding-left:20px;border-left:3px solid var(--teal);white-space:nowrap;font:400 24px/1.1 var(--fd);color:var(--texto)}
