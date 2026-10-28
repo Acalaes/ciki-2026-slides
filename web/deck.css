@@ -305,3 +305,6 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 
 .ptag{position:absolute;z-index:8;right:130px;top:232px;margin:0;padding:6px 20px;border:2px solid var(--cap);border-radius:999px;font:600 24px/1.2 var(--fd);color:var(--cap);white-space:nowrap;background:rgba(21,24,31,.85)}
 .s3 .hero{top:364px}
+
+/* v1.15.0: imagem só na moldura de conteúdo (slide 9, hipótese), abaixo da pergunta-guia; estrutura em fundo liso */
+.s10 .bgimg.frame{inset:auto;left:363px;top:300px;width:1427px;height:720px;background-size:100% 100%;filter:none;opacity:.95;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 90%,transparent);mask-composite:intersect}
