@@ -7,8 +7,8 @@
   "ref": "Charlotin (2026)"
  },
  "dahl": {
-  "afirmacao": "LLM geral erra 58–88% em perguntas jurídicas verificáveis",
-  "fonte": "Dahl et al. (2024), Large Legal Fictions, versão preprint arXiv (a página do periódico cita 69–88%)",
+  "afirmacao": "LLM geral erra 69–88% em perguntas jurídicas verificáveis (preprint)",
+  "fonte": "Dahl et al. (2024), Large Legal Fictions, preprint arXiv 2401.01301v1 (PDF em web/fontes_pdf/; confirmado no texto: 69% ChatGPT 3.5 a 88% Llama 2)",
   "url": "https://arxiv.org/abs/2401.01301",
   "status": "parcial: faixa do preprint",
   "ref": "Dahl et al. (2024, preprint)"

@@ -138,7 +138,7 @@
       K.bar({ x: 240, y: 224, w: 520, h: 44, v: br, max: tot, t: 'Brasil', val: '41', step: 2 }) +
       K.bar({ x: 240, y: 298, w: 520, h: 44, v: rest, max: tot, t: 'Demais', val: '662', step: 3, tone: 'nevoa' });
     g += K.text({ x: 1000, y: 100, t: 'erro em perguntas jurídicas', size: 32 }) +
-      K.bar({ x: 1180, y: 150, w: 400, h: 44, v: 88, v0: 58, max: 100, t: 'LLM geral', val: '58–88%', step: 4 }) +
+      K.bar({ x: 1180, y: 150, w: 400, h: 44, v: 88, v0: 69, max: 100, t: 'LLM geral', val: '69–88%', step: 4 }) +
       K.bar({ x: 1180, y: 224, w: 400, h: 44, v: 33, v0: 17, max: 100, t: 'RAG jurídico', val: '17–33%', step: 5 }) +
       K.text({ x: 1180, y: 318, t: '0', size: 26, tone: 'nevoa' }) + K.text({ x: 1380, y: 318, t: '50%', size: 26, tone: 'nevoa', anchor: 'middle' }) + K.text({ x: 1580, y: 318, t: '100%', size: 26, tone: 'nevoa', anchor: 'end' });
     panel('s2-casos', '2.217 casos; erro em testes', K.svg(W, 380, g, 'Casos de alucinação em tribunais e taxas de erro em testes'),
@@ -147,7 +147,7 @@
   })();
   det('s2-casos', 'Casos e taxas: detalhes',
     tbl(['1fr', '200px', '200px'], ['País', 'Casos', 'Parcela'], [['EUA', '1.514', '68,3%'], ['Brasil', '41', '1,8%'], ['Demais países (total − EUA − Brasil)', '662', '29,9%']]) +
-    '<p class="nota">Cada faixa vai da menor à maior taxa entre os sistemas testados. Nas versões publicadas em periódicos, os limites divergem (69–88% e “mais de 17%”).</p>',
+    '<p class="nota">Cada faixa vai da menor à maior taxa entre os sistemas testados. Os valores são dos preprints arXiv (Dahl v1: 69–88%; Magesh v1: 17–33%). Versões publicadas podem diferir.</p>',
     [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')]);
 
   (function () {
