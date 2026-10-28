@@ -389,14 +389,34 @@ function zoomMundo(s, step) {
 }
 
 HEROES.s3 = K => {
-  const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'IA explicável (XAI)', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
-    K.arrow({ pts: [[574, 120], [790, 120]], step: 3 }) + K.node({ cx: 880, cy: 120, r: 80, t: 'Dano', size: 36, tone: 'err', fill: true, step: 4 }) +
-    K.arrow({ pts: [[970, 120], [1230, 120]], tone: 'late', dash: true, step: 5 }) + K.ring({ cx: 1320, cy: 120, r: 80, dash: true, tone: 'late', step: 6 }) + K.text({ x: 1320, y: 240, t: 'Explicação tardia', size: 34, anchor: 'middle', tone: 'late' });
-  const sh = [480, 620, 760].map((x, i) => K.pic('verificar', { x, y: 420, s: 100, pos: 'none', step: 8 + i })).join('');
-  const l2 = K.lane({ x: 0, y: 340, w: 1600, h: 270, t: 'IA neurossimbólica', size: 36, step: 7 }) + sh + K.text({ x: 660, y: 575, t: 'Verificações', size: 34, anchor: 'middle', step: 11 }) +
-    K.arrow({ pts: [[890, 470], [1230, 470]], step: 12 }) + K.node({ cx: 1320, cy: 470, r: 64, fill: 'solid', step: 13 }) + K.text({ x: 1320, y: 585, t: 'Decisão', size: 34, anchor: 'middle', step: 13 });
-  return K.svg(1600, 720, OG('<g data-open=\"s3-tab1\" aria-label=\"Explicar depois: decisão, dano, explicação tardia. Ver a Tabela 1 do artigo\">', HIT(0, 0, 1600, 290) + l1) +
-    OG('<g data-open=\"s3-rudin\" aria-label=\"Verificar antes: portões antes da decisão. Ver Rudin 2019\">', HIT(0, 330, 1600, 290) + l2), 'Duas linhas do tempo: explicar depois do dano ou verificar antes da decisão');
+/* v1.19.0: ciclo de 6 s: explicar depois (decisão, dano, explicação tardia) e verificar antes (3 portões, decisão) */
+  const D = 6, R = 'repeatCount="indefinite"', S = (n, i) => '<g class="k-el" data-step="' + n + '" style="--step:' + n + '">' + i + '</g>';
+  const ST = STATIC || JUMP, an = (a, v, kt) => ST ? '' : '<animate attributeName="' + a + '" values="' + v + '" keyTimes="' + kt + '" dur="' + D + 's" ' + R + '/>';
+  const defs = '<defs><radialGradient id="s3n" cx=".35" cy=".3"><stop offset="0" stop-color="#cfeeff"/><stop offset=".6" stop-color="#6f8aa3"/><stop offset="1" stop-color="#1b232b"/></radialGradient>' +
+    '<radialGradient id="s3d" cx=".4" cy=".35"><stop offset="0" stop-color="#ffd7c2"/><stop offset=".5" stop-color="#f87171"/><stop offset="1" stop-color="#9c3009"/></radialGradient>' +
+    '<radialGradient id="s3w" cx=".4" cy=".35"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#d4eeff"/><stop offset="1" stop-color="#7fd0f5"/></radialGradient>' +
+    '<filter id="s3g" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter></defs>';
+  const draw = (d, a, b, col) => '<path d="' + d + '" pathLength="1" stroke-dasharray="1" fill="none" stroke="' + col + '" stroke-width="6" stroke-linecap="round">' + an('stroke-dashoffset', '1;1;0;0;1', '0;' + a + ';' + b + ';.97;1') + '</path>';
+  const head = (x, y, col, a) => '<path d="M' + (x - 22) + ' ' + (y - 16) + 'L' + x + ' ' + y + 'L' + (x - 22) + ' ' + (y + 16) + '" fill="none" stroke="' + col + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="' + (ST ? 1 : 0) + '">' + an('opacity', '0;0;1;1;0', '0;' + a + ';' + (a + .02) + ';.97;1') + '</path>';
+  /* linha 1: explicar depois */
+  const decisao = '<g transform="translate(520 120)"><circle r="44" fill="#4db3ea" filter="url(#s3g)" opacity="0">' + an('opacity', '0;.7;0;0', '0;.04;.2;1') + '</circle><circle r="44" fill="url(#s3n)" stroke="#8fa3b5" stroke-width="2"/></g>';
+  const dano = '<g transform="translate(880 120)"><circle r="80" fill="#f87171" filter="url(#s3g)" opacity="0">' + an('opacity', '0;0;.85;.3;0;0', '0;.2;.27;.4;.5;1') + '</circle>' +
+    '<circle r="80" fill="url(#s3d)" stroke="#ffd7c2" stroke-width="2"/><text y="12" text-anchor="middle" style="font-size:36px;font-weight:700;fill:#fff;stroke:none">Dano</text>' +
+    '<circle r="80" fill="none" stroke="#f87171" stroke-width="4" opacity="0">' + an('r', '80;80;150;150', '0;.22;.42;1') + an('opacity', '0;0;.9;0;0', '0;.22;.25;.42;1') + '</circle></g>';
+  const fx1 = ST ? '' : '<circle r="9" fill="#fff" opacity="0">' + an('opacity', '0;0;1;1;0;0', '0;.05;.06;.2;.21;1') + '<animateMotion dur="' + D + 's" ' + R + ' keyPoints="0;0;1;1" keyTimes="0;.05;.2;1" calcMode="linear" path="M574 120L790 120"/></circle>';
+  const tardio = '<circle cx="1320" cy="120" r="80" fill="none" stroke="#ffb08a" stroke-width="3" stroke-dasharray="7 9" opacity="' + (ST ? .95 : .25) + '">' + an('opacity', '.25;.25;.95;.95;.25', '0;.46;.58;.97;1') + '</circle>';
+  const tTxt = '<g opacity="' + (ST ? 1 : .3) + '">' + an('opacity', '.3;.3;1;1;.3', '0;.46;.58;.97;1') + K.text({ x: 1320, y: 240, t: 'Explicação tardia', size: 34, anchor: 'middle', tone: 'late' }) + '</g>';
+  const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'IA explicável (XAI)', size: 36, step: 1 }) + S(2, decisao) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
+    S(3, draw('M574 120H780', .04, .2, '#4db3ea') + head(790, 120, '#4db3ea', .2) + fx1) + S(4, dano) +
+    S(5, draw('M980 120H1220', .4, .56, '#ffb08a') + head(1230, 120, '#ffb08a', .56)) + S(6, tardio) + tTxt;
+  /* linha 2: verificar antes */
+  const escudo = (x, a) => '<g transform="translate(' + x + ' 470)"><circle r="62" fill="#4db3ea" filter="url(#s3g)" opacity="0">' + an('opacity', '0;0;.8;.25;.25;0', '0;' + a + ';' + (a + .05) + ';' + (a + .14) + ';.95;1') + '</circle></g>' + K.pic('verificar', { x: x - 50, y: 420, s: 100, pos: 'none', step: 8 });
+  const sh = escudo(530, .52) + escudo(670, .6) + escudo(810, .68);
+  const final = '<g transform="translate(1320 470)"><circle r="64" fill="#fff" filter="url(#s3g)" opacity="0">' + an('opacity', '0;0;0;.9;.35;0', '0;.8;.84;.9;.97;1') + '</circle><circle r="64" fill="url(#s3w)" stroke="#fff" stroke-width="2"/></g>';
+  const l2 = K.lane({ x: 0, y: 340, w: 1600, h: 270, t: 'IA neurossimbólica', size: 36, step: 7 }) + sh + K.text({ x: 670, y: 575, t: 'Verificações', size: 34, anchor: 'middle', step: 11 }) +
+    S(12, draw('M890 470H1220', .74, .84, '#4db3ea') + head(1230, 470, '#4db3ea', .84)) + S(13, final) + K.text({ x: 1320, y: 585, t: 'Decisão', size: 34, anchor: 'middle', step: 13 });
+  return K.svg(1600, 720, defs + OG('<g data-open="s3-tab1" aria-label="Explicar depois: decisão, dano, explicação tardia. Ver a Tabela 1 do artigo">', HIT(0, 0, 1600, 290) + l1) +
+    OG('<g data-open="s3-rudin" aria-label="Verificar antes: portões antes da decisão. Ver Rudin 2019">', HIT(0, 330, 1600, 290) + l2), 'Duas linhas do tempo: explicar depois do dano ou verificar antes da decisão');
 };
 
 const PINOS = { E: '<g data-open="s4-pinoE" aria-label="Teste de evidência: ver o exemplo">', N: '<g data-open="s4-pinoN" aria-label="Teste de normas: ver o exemplo">', T: '<g data-open="s4-pinoT" aria-label="Teste de rastro: ver o exemplo">', H: '<g data-open="s4-pinoH" aria-label="Teste do humano: ver o exemplo">' };

@@ -159,5 +159,14 @@
   "prompt": "Ultra-realistic photograph of four parallel laboratory test lanes, growing from empty bench to five linked stations, no people, dark calm center, cool blue with orange accents, no text",
   "data": "2026-10-28",
   "slide": "10"
+ },
+ {
+  "arquivo": "duas_esteiras.jpg",
+  "tipo": "gerada",
+  "titulo": "Duas esteiras: explicar depois x verificar antes",
+  "ferramenta": "Canva generate-image (MCP)",
+  "prompt": "Ultra-realistic photograph of a dark industrial logistics hall with two parallel conveyor belts, upper ends at cracked parcel, lower passes three scanner arches to sealed package; LANDSCAPE_2_1",
+  "data": "2026-10-28",
+  "slide": "3"
  }
 ]
