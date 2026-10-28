@@ -3,6 +3,9 @@ web/img/*
 !web/img/artigo/
 !web/img/capa_servidores.jpg
 !web/img/hipotese_especialistas.jpg
+!web/img/triagem.jpg
+!web/img/linha_producao.jpg
+!web/img/harness.jpg
 !web/img/creditos.json
 dados/legendas/
 *.tmp
