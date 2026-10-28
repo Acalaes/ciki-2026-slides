@@ -389,11 +389,11 @@ function zoomMundo(s, step) {
 }
 
 HEROES.s3 = K => {
-  const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'Depois', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
+  const l1 = K.lane({ x: 0, y: 10, w: 1600, h: 270, t: 'IA explicável (XAI)', size: 36, step: 1 }) + K.node({ cx: 520, cy: 120, r: 44, step: 2 }) + K.text({ x: 520, y: 215, t: 'Decisão', size: 34, anchor: 'middle' }) +
     K.arrow({ pts: [[574, 120], [790, 120]], step: 3 }) + K.node({ cx: 880, cy: 120, r: 80, t: 'Dano', size: 36, tone: 'err', fill: true, step: 4 }) +
-    K.arrow({ pts: [[970, 120], [1230, 120]], tone: 'late', dash: true, step: 5 }) + K.ring({ cx: 1320, cy: 120, r: 80, dash: true, tone: 'late', step: 6 }) + K.text({ x: 1320, y: 240, t: 'IA explicável (XAI)', size: 34, anchor: 'middle', tone: 'late' });
+    K.arrow({ pts: [[970, 120], [1230, 120]], tone: 'late', dash: true, step: 5 }) + K.ring({ cx: 1320, cy: 120, r: 80, dash: true, tone: 'late', step: 6 }) + K.text({ x: 1320, y: 240, t: 'Explicação tardia', size: 34, anchor: 'middle', tone: 'late' });
   const sh = [480, 620, 760].map((x, i) => K.pic('verificar', { x, y: 420, s: 100, pos: 'none', step: 8 + i })).join('');
-  const l2 = K.lane({ x: 0, y: 340, w: 1600, h: 270, t: 'Antes', size: 36, step: 7 }) + sh + K.text({ x: 660, y: 575, t: 'Verificações', size: 34, anchor: 'middle', step: 11 }) +
+  const l2 = K.lane({ x: 0, y: 340, w: 1600, h: 270, t: 'IA neurossimbólica', size: 36, step: 7 }) + sh + K.text({ x: 660, y: 575, t: 'Verificações', size: 34, anchor: 'middle', step: 11 }) +
     K.arrow({ pts: [[890, 470], [1230, 470]], step: 12 }) + K.node({ cx: 1320, cy: 470, r: 64, fill: 'solid', step: 13 }) + K.text({ x: 1320, y: 585, t: 'Decisão', size: 34, anchor: 'middle', step: 13 });
   return K.svg(1600, 720, OG('<g data-open=\"s3-tab1\" aria-label=\"Explicar depois: decisão, dano, explicação tardia. Ver a Tabela 1 do artigo\">', HIT(0, 0, 1600, 290) + l1) +
     OG('<g data-open=\"s3-rudin\" aria-label=\"Verificar antes: portões antes da decisão. Ver Rudin 2019\">', HIT(0, 330, 1600, 290) + l2), 'Duas linhas do tempo: explicar depois do dano ou verificar antes da decisão');
