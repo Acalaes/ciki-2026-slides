@@ -333,6 +333,8 @@ const PIC2 = (n, o) => KT().pic2 ? KT().pic2(n, o) : '';
 const CNT = (x, y, to, size, o) => '<text class="cnt" data-count="' + to + '"' + (o && o.prefix ? ' data-prefix="' + o.prefix + '"' : '') + ' x="' + x + '" y="' + y + '" text-anchor="' + ((o && o.anchor) || 'middle') + '" style="font-size:' + size + 'px;font-weight:800;fill:#fff;stroke:none">' + fmtBR(to) + '</text>';
 const TRACK = (d, n, dur, red) => '<path class="trk" d="' + d + '"/>' + (red ? '' : Array.from({ length: n }, (_, i) => '<circle class="prt" r="7"><animateMotion dur="' + dur + 's" begin="' + (i * dur / n).toFixed(2) + 's" repeatCount="indefinite" path="' + d + '"/></circle>').join(''));
 const HEROES = {};
+/* fontes com imagem de comprovação na camada 2: qualquer clique em data-src dessas chaves abre a página do PDF ou a captura */
+const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh', charlotin: 'fonte-charlotin' };
 
 HEROES.s2 = K => {
   const cards = [[2225, 'casos em tribunais', 20], [41, 'no Brasil', 560], [1514, 'nos Estados Unidos', 1100]];
@@ -476,8 +478,6 @@ function renderHero(i) {
 }
 function buildDynamic() {
   const ticks = $('#ticks'); if (ticks) for (let i = 0; i < 22; i++) { const x = 240 + i * 52; el('line', { x1: x, x2: x, y1: 850, y2: i === 0 || i === 21 ? 930 : 900, class: 'tick' }, ticks); }
-  /* fontes com página do PDF na camada 2 (clique no nome do rodapé abre a página) */
-  const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh', charlotin: 'fonte-charlotin' };
   slides.forEach((s, i) => {
     const b = s.dataset.block || ''; const n = ['INTRODUÇÃO', 'PROBLEMA', 'SOLUÇÃO', 'PROVAS', 'FUTURO', 'CONCLUSÃO'].indexOf(b);
     s.dataset.cap = n >= 0 ? n : 6; s.style.setProperty('--cap', CAPCOR[n >= 0 ? n : 6]);
@@ -547,7 +547,7 @@ function activate(target, ev) {
   const a = target.closest('[data-src]'), b = target.closest('[data-open]');
   let pick = null;
   if (a && b) pick = b.contains(a) ? 'src' : (a.contains(b) ? 'open' : 'src'); else if (a) pick = 'src'; else if (b) pick = 'open';
-  if (pick === 'src') { openDrawer(a.dataset.src, a); return true; }
+  if (pick === 'src') { const pg = FONTE_PAGINA[a.dataset.src]; if (pg) openPanel(pg, a); else openDrawer(a.dataset.src, a); return true; }
   if (pick === 'open') {
     if (b.classList.contains('pin')) { b.classList.add('drop'); setTimeout(() => openPanel(b.dataset.open, b), 420); } else openPanel(b.dataset.open, b);
     return true;
