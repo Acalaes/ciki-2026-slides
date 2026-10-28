@@ -463,16 +463,35 @@ HEROES.s7 = K => {
 };
 
 HEROES.s10 = K => {
-  const cx = 1060, cy = 380;
-  const aneis = OG('<g data-open=\"s10-aneis\" aria-label=\"Anéis em volta do modelo: guias, regras duras e ontologia do especialista. Ver a tabela\">', HIT(cx - 320, cy - 320, 640, 640) +
-    K.ring({ cx, cy, r: 150, dash: true, step: 2 }) + K.ring({ cx, cy, r: 215, step: 3 }) + K.ring({ cx, cy, r: 280, dash: true, tone: 'nevoa', step: 4 }) +
-    Array.from({ length: 12 }, (_, i) => i === 9 ? '' : K.dot({ cx: cx + Math.cos(i / 12 * 6.2832) * 280, cy: cy + Math.sin(i / 12 * 6.2832) * 280, r: 9, tone: 'nevoa', step: 5 })).join('') +
-    '<rect x="' + (cx - 60) + '" y="' + (cy - 196) + '" width="120" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 164, t: 'Guias', size: 32, anchor: 'middle', step: 2 }) + '<rect x="' + (cx - 130) + '" y="' + (cy - 261) + '" width="260" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 229, t: 'Regras duras', size: 32, anchor: 'middle', step: 3 }) +
-    '<rect x="' + (cx - 255) + '" y="' + (cy - 326) + '" width="510" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' + K.text({ x: cx, y: cy - 294, t: 'Ontologia do especialista', size: 32, anchor: 'middle', step: 4 }) +
-    K.arrow({ pts: [[cx, cy], [cx + 152, cy - 152]], tone: 'block', step: 8 }) + K.dot({ cx: cx + 152, cy: cy - 152, r: 14, tone: 'block', step: 8 }));
-  const nucleo = OG('<g data-open=\"s10-nucleo\" aria-label=\"Modelo no centro: ver a camada de regras sobre ele\">', HIT(cx - 80, cy - 80, 160, 160) + K.node({ cx, cy, r: 70, t: 'Modelo', size: 32, fill: true, step: 1 }));
-  const humano = OG('<g data-open=\"s10-portao\" aria-label=\"Aprovação humana: ver os domínios candidatos\">', HIT(cx + 250, cy - 120, 150, 240) + '<g transform=\"rotate(40 ' + cx + ' ' + cy + ')\">' + K.ring({ cx, cy, r: 320, v: 22, step: 6 }) + '</g>' + K.text({ x: cx + 345, y: cy + 60, t: 'Humano', size: 32, step: 6 }));
-  return K.svg(1600, 720, aneis + nucleo + humano, 'Modelo no centro, guias, regras duras e ontologia em anéis, aprovação humana na saída');
+  // v1.15: diagrama centralizado no vão entre os especialistas; camadas em "vidro"; resposta errada animada e barrada
+  const cx = 800, cy = 305, r1 = 125, r2 = 190, r3 = 255, ra = 290, ang = -Math.PI / 4;
+  const px = cx + Math.cos(ang) * r2, py = cy + Math.sin(ang) * r2;
+  const defs = '<defs>' +
+    '<radialGradient id="s10c1"><stop offset="55%" stop-color="#4db3ea" stop-opacity="0"/><stop offset="100%" stop-color="#4db3ea" stop-opacity=".16"/></radialGradient>' +
+    '<radialGradient id="s10c2"><stop offset="70%" stop-color="#2b9bdc" stop-opacity="0"/><stop offset="100%" stop-color="#2b9bdc" stop-opacity=".30"/></radialGradient>' +
+    '<radialGradient id="s10c3"><stop offset="80%" stop-color="#0a6aa1" stop-opacity="0"/><stop offset="100%" stop-color="#4db3ea" stop-opacity=".18"/></radialGradient>' +
+    '<filter id="s10glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  const pill = (x, y, w, t, cor) => '<rect x="' + (x - w / 2) + '" y="' + y + '" width="' + w + '" height="44" rx="8" fill="#0b0c10" fill-opacity=".92"/>' +
+    K.text({ x: x, y: y + 32, t: t, size: 32, anchor: 'middle' });
+  const camadas = OG('<g data-open=\"s10-aneis\" aria-label=\"Camadas em volta do modelo: guias, regras duras e ontologia do especialista. Ver a tabela\">', HIT(cx - ra, cy - ra, ra * 2, ra * 2) +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r3 + '" fill="url(#s10c3)" stroke="#4db3ea" stroke-opacity=".55" stroke-width="2" stroke-dasharray="3 9" stroke-linecap="round"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r2 + '" fill="url(#s10c2)" stroke="#4db3ea" stroke-width="5" filter="url(#s10glow)"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r1 + '" fill="url(#s10c1)" stroke="#4db3ea" stroke-opacity=".7" stroke-width="2" stroke-dasharray="10 8"/>' +
+    pill(cx, cy - r1 - 46, 130, 'Guias') + pill(cx, cy - r2 - 46, 270, 'Regras duras') + pill(cx, cy - r3 - 46, 520, 'Ontologia do especialista'));
+  const nucleo = OG('<g data-open=\"s10-nucleo\" aria-label=\"Modelo no centro: ver a camada de regras sobre ele\">', HIT(cx - 80, cy - 80, 160, 160) + K.node({ cx, cy, r: 66, t: 'Modelo', size: 32, fill: true, step: 1 }));
+  const humano = OG('<g data-open=\"s10-portao\" aria-label=\"Aprovação humana: ver os domínios candidatos\">', HIT(cx + 230, cy + 20, 150, 240) + '<g transform=\"rotate(40 ' + cx + ' ' + cy + ')\">' + K.ring({ cx, cy, r: ra, v: 22, step: 6 }) + '</g>' + pill(cx + 300, cy + 175, 170, 'Humano'));
+  // resposta errada: sai do modelo, atravessa as guias e é barrada nas regras duras (ciclo de 6 s)
+  const anim = '<g pointer-events="none">' +
+    '<circle r="15" fill="#f87171" filter="url(#s10glow)"><animateMotion dur="6s" repeatCount="indefinite" path="M' + cx + ' ' + cy + ' L' + px.toFixed(1) + ' ' + py.toFixed(1) + '" keyPoints="0;1;1" keyTimes="0;.5;1" calcMode="linear"/>' +
+    '<animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.06;.52;.6;1" dur="6s" repeatCount="indefinite"/></circle>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r2 + '" fill="none" stroke="#f87171" stroke-width="7" opacity="0"><animate attributeName="opacity" values="0;0;.9;0;0" keyTimes="0;.5;.56;.8;1" dur="6s" repeatCount="indefinite"/></circle>' +
+    '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="10" fill="none" stroke="#f87171" stroke-width="4" opacity="0"><animate attributeName="r" values="10;10;46;46" keyTimes="0;.5;.75;1" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.5;.55;.78;1" dur="6s" repeatCount="indefinite"/></circle>' +
+    '<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.52;.58;.9;.97;1" dur="6s" repeatCount="indefinite"/>' +
+    '<path d="M' + (px - 11).toFixed(1) + ' ' + (py - 11).toFixed(1) + ' l22 22 m0 -22 l-22 22" stroke="#f87171" stroke-width="6" stroke-linecap="round"/></g></g>';
+  const legenda = '<rect x="' + (cx - 330) + '" y="612" width="660" height="46" rx="8" fill="#0b0c10" fill-opacity=".92"/>' +
+    '<circle cx="' + (cx - 300) + '" cy="635" r="9" fill="#f87171"/>' +
+    K.text({ x: cx + 10, y: 646, t: 'Resposta errada tenta sair e é barrada', size: 28, anchor: 'middle' });
+  return K.svg(1600, 720, defs + camadas + nucleo + humano + anim + legenda, 'Modelo no centro; guias, regras duras e ontologia em camadas; uma resposta errada tenta sair e é barrada; aprovação humana na saída');
 };
 
 HEROES.s11 = K => {
