@@ -1,7 +1,7 @@
 /* gerado por auditar_deck.py --gerar a partir de fontes.json; não editar à mão */
 window.HNV_FONTES = {
  "charlotin": {
-  "afirmacao": "2.217 casos de alucinação em tribunais; Brasil 41; EUA 1.514 (25/10/2026)",
+  "afirmacao": "2.225 casos de alucinação em tribunais; Brasil 41; EUA 1.514 (27/10/2026)",
   "fonte": "Charlotin, AI Hallucination Cases Database",
   "url": "https://www.damiencharlotin.com/hallucinations/",
   "status": "confirmado",

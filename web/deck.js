@@ -335,7 +335,7 @@ const TRACK = (d, n, dur, red) => '<path class="trk" d="' + d + '"/>' + (red ? '
 const HEROES = {};
 
 HEROES.s2 = K => {
-  const cards = [[2217, 'casos em tribunais', 20], [41, 'no Brasil', 560], [1514, 'nos Estados Unidos', 1100]];
+  const cards = [[2225, 'casos em tribunais', 20], [41, 'no Brasil', 560], [1514, 'nos Estados Unidos', 1100]];
   let g = '';
   cards.forEach((c, i) => { g += SRC('charlotin', K.box({ x: c[2], y: 40, w: 480, h: 340, t: '', fill: i === 0, step: 1 + i }) + CNT(c[2] + 240, 240, c[0], i === 0 ? 120 : 104) + K.text({ x: c[2] + 240, y: 330, t: c[1], size: 38, anchor: 'middle', step: 1 + i })); });
   return K.svg(1600, 720,
@@ -343,6 +343,23 @@ HEROES.s2 = K => {
     OG('<g data-open="s2-softmax" aria-label="Por que o modelo alucina: ver a explicação">', K.box({ x: 20, y: 450, w: 760, h: 130, t: 'Por que o modelo alucina', size: 38, step: 4 })) +
     OG('<g data-open="s2-citacoes" aria-label="Exemplo real de citação inexistente: ver a checagem manual">', K.box({ x: 820, y: 450, w: 760, h: 130, t: ['Exemplo real: cita o inciso 33', 'do artigo 37, que não existe'], size: 34, tone: 'err', step: 5 })),
     'Três números de casos de alucinação em tribunais e dois exemplos para explorar');
+};
+
+/* Prova 3: fila de citações com portão de regras. SIMULAÇÃO ILUSTRATIVA (não é saída do Citāre): as três citações são exemplos, e a lista de referências é de fontes reais. */
+HEROES.s8 = K => {
+  const cites = [
+    { t: ['Huang et al. (2025)', 'ACM TOIS 43(2)'], ok: true },
+    { t: ['Almeida, J. (2019)', 'Revista Brasileira de Teste 9(2)'], ok: false },
+    { t: ['Dahl et al. (2024)', 'arXiv 2401.01301'], ok: true }
+  ];
+  let g = K.text({ x: 40, y: 40, t: '1. O modelo propõe', size: 36, step: 1 });
+  cites.forEach((c, i) => { g += K.box({ x: 40, y: 80 + i * 150, w: 500, h: 120, t: c.t, size: 28, step: 1 }); });
+  g += K.text({ x: 580, y: 40, t: '2. O portão confere', size: 36, step: 2 });
+  g += K.box({ x: 580, y: 80, w: 480, h: 390, t: ['Portão de regras', 'lista de referências:', 'Huang et al. (2025)', 'Dahl et al. (2024)', 'Magesh et al. (2025)'], size: 28, step: 2 });
+  g += K.text({ x: 1100, y: 40, t: '3. Resultado', size: 36, step: 3 });
+  cites.forEach((c, i) => { g += K.box({ x: 1100, y: 80 + i * 150, w: 460, h: 120, t: c.ok ? ['Passa'] : ['Bloqueada', 'não está na lista'], size: 32, tone: c.ok ? undefined : 'err', step: 3 }); });
+  g += K.text({ x: 800, y: 660, t: 'Simulação ilustrativa: citações de exemplo, não saída do Citāre', size: 28, anchor: 'middle', tone: 'nevoa' });
+  return K.svg(1600, 720, g, 'Simulação: uma citação falsa é bloqueada pelo portão de regras');
 };
 
 HEROES.s3 = K => {

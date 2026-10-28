@@ -262,10 +262,12 @@ for pid, conteudo in PAINEIS.items():
         erro(f"painel {pid}: {palavras} palavras fora do diagrama (limite 30)")
     if re.search(r"<(table|ul|ol|dl|pre)\b", conteudo):
         erro(f"painel {pid}: tabela/lista/código na camada 2 (vai para HNV_DETALHES)")
-    if pid not in DETALHES:
-        erro(f"painel {pid} sem HNV_DETALHES (camada 3)")
-    if "<svg" not in conteudo and pid != "s8-replay":
-        erro(f"painel {pid} sem diagrama SVG do kit")
+    # painel de página de PDF (fonte): a própria página é a prova; não exige HNV_DETALHES nem SVG
+    if '<img class="pdfp"' not in conteudo:
+        if pid not in DETALHES:
+            erro(f"painel {pid} sem HNV_DETALHES (camada 3)")
+        if "<svg" not in conteudo and pid != "s8-replay":
+            erro(f"painel {pid} sem diagrama SVG do kit")
 
 # paleta fixa (FUNDO_NEUTRO_v3g): fundo grafite #0b0c10 a #14161c, cartões #15181f, texto #f4f4f5, zinc #a1a1aa / #71717a,
 # teal #14b8a6 / #5eead4 só como acento, vermelho #f87171 só em erro; verde só no slide 8 (matrix8.css) e em demo\.

@@ -132,26 +132,26 @@
      SLIDE 2
      ========================================================= */
   (function () {
-    var tot = 2217, us = 1514, br = 41, rest = tot - us - br;
-    var g = K.text({ x: 0, y: 110, t: '2.217', size: 120, weight: 'b' }) + K.text({ x: 400, y: 70, t: 'casos em tribunais', size: 32 }) + K.text({ x: 400, y: 108, t: '25/10/2026', size: 28, tone: 'nevoa' });
+    var tot = 2225, us = 1514, br = 41, rest = tot - us - br;
+    var g = K.text({ x: 0, y: 110, t: '2.225', size: 120, weight: 'b' }) + K.text({ x: 400, y: 70, t: 'casos em tribunais', size: 32 }) + K.text({ x: 400, y: 108, t: '27/10/2026', size: 28, tone: 'nevoa' });
     g += K.bar({ x: 240, y: 150, w: 520, h: 44, v: us, max: tot, t: 'EUA', val: '1.514', step: 1 }) +
       K.bar({ x: 240, y: 224, w: 520, h: 44, v: br, max: tot, t: 'Brasil', val: '41', step: 2 }) +
-      K.bar({ x: 240, y: 298, w: 520, h: 44, v: rest, max: tot, t: 'Demais', val: '662', step: 3, tone: 'nevoa' });
+      K.bar({ x: 240, y: 298, w: 520, h: 44, v: rest, max: tot, t: 'Demais', val: '670', step: 3, tone: 'nevoa' });
     g += K.text({ x: 1000, y: 100, t: 'erro em perguntas jurídicas', size: 32 }) +
       K.bar({ x: 1180, y: 150, w: 400, h: 44, v: 88, v0: 69, max: 100, t: 'LLM geral', val: '69–88%', step: 4 }) +
       K.bar({ x: 1180, y: 224, w: 400, h: 44, v: 33, v0: 17, max: 100, t: 'RAG jurídico', val: '17–33%', step: 5 }) +
       K.text({ x: 1180, y: 318, t: '0', size: 26, tone: 'nevoa' }) + K.text({ x: 1380, y: 318, t: '50%', size: 26, tone: 'nevoa', anchor: 'middle' }) + K.text({ x: 1580, y: 318, t: '100%', size: 26, tone: 'nevoa', anchor: 'end' });
-    panel('s2-casos', '2.217 casos; erro em testes', K.svg(W, 380, g, 'Casos de alucinação em tribunais e taxas de erro em testes'),
+    panel('s2-casos', '2.225 casos; erro em testes', K.svg(W, 380, g, 'Casos de alucinação em tribunais e taxas de erro em testes'),
       'Casos em tribunais (Brasil: 41) e taxas de erro de dois testes publicados como preprint.',
       [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')], { selos: [sel('preprint')], cred: 'Demais = total − EUA − Brasil (cálculo do autor).' });
   })();
   det('s2-casos', 'Casos e taxas: detalhes',
-    tbl(['1fr', '200px', '200px'], ['País', 'Casos', 'Parcela'], [['EUA', '1.514', '68,3%'], ['Brasil', '41', '1,8%'], ['Demais países (total − EUA − Brasil)', '662', '29,9%']]) +
+    tbl(['1fr', '200px', '200px'], ['País', 'Casos', 'Parcela'], [['EUA', '1.514', '68,0%'], ['Brasil', '41', '1,8%'], ['Demais países (total − EUA − Brasil)', '670', '30,1%']]) +
     '<p class="nota">Cada faixa vai da menor à maior taxa entre os sistemas testados. Os valores são dos preprints arXiv (Dahl v1: 69–88%; Magesh v1: 17–33%). Versões publicadas podem diferir.</p>',
     [F('charlotin', 'Charlotin (2026)'), F('dahl', 'Dahl et al. (2024)'), F('magesh', 'Magesh et al. (2025)')]);
-  panel('fonte-dahl', 'Dahl et al. (2024): de onde vem 69–88%', '<img class="pdfp" src="fontes_pdf/img/dahl-resumo-01.png" alt="Primeira página do preprint de Dahl et al. (2024), com o trecho de 69% a 88%">',
+  panel('fonte-dahl', 'Dahl (2024): de onde vem 69–88%', '<img class="pdfp" src="fontes_pdf/img/dahl-resumo-01.png" alt="Primeira página do preprint de Dahl et al. (2024), com o trecho de 69% a 88%">',
     'Página 1 do preprint arXiv 2401.01301v1: "occurring between 69% of the time with ChatGPT 3.5 and 88% with Llama 2".', [F('dahl', 'Dahl et al. (2024)')], { selos: [sel('preprint')] });
-  panel('fonte-magesh', 'Magesh et al. (2025): de onde vem 17–33%', '<img class="pdfp" src="fontes_pdf/img/magesh-resumo-01.png" alt="Primeira página do preprint de Magesh et al. (2025), com o trecho de 17% a 33%">',
+  panel('fonte-magesh', 'Magesh (2025): de onde vem 17–33%', '<img class="pdfp" src="fontes_pdf/img/magesh-resumo-01.png" alt="Primeira página do preprint de Magesh et al. (2025), com o trecho de 17% a 33%">',
     'Página 1 do preprint arXiv 2405.20362v1: "each hallucinate between 17% and 33% of the time".', [F('magesh', 'Magesh et al. (2025)')], { selos: [sel('preprint')] });
 
   (function () {

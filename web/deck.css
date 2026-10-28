@@ -216,6 +216,9 @@ body.reduzir-movimento *{animation:none!important;transition:none!important}
 
 .k .k-rg{fill:none!important}
 
+/* prova 3: simulação da fila de citações no lugar da cena de matriz e do trecho de código */
+.s8 .fxslot,.s8 pre.code,.s8 svg.art,.s8 .selo,.s8 .stepw{display:none}
+.s8 .hero{top:300px}
 /* resposta à pergunta-guia, à direita da imagem (formato da capa) */
 .s2 .hero{top:352px}
 .s2 .resp{position:absolute;z-index:8;left:130px;top:306px;margin:0;padding-left:20px;border-left:3px solid var(--teal);white-space:nowrap;font:400 24px/1.1 var(--fd);color:var(--texto)}

@@ -38,7 +38,7 @@
 <p class="guia">O que acontece quando ninguém confere?</p>
 <div class="hero" data-hero="s2"></div>
 <p class="resp">Ninguém confere, e a citação falsa passa sem aviso.</p>
-<aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Os três números mostram a escala do problema. A base de Damien Charlotin, em 25 de outubro, registra 2.217 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
+<aside class="notes" data-t="50">Primeiro, o problema. Modelos de linguagem alucinam. Eles escolhem a próxima palavra mais provável, e provável não significa verdadeiro. Os três números mostram a escala do problema. A base de Damien Charlotin, em 27 de outubro, registra 2.225 casos de decisões em tribunais com conteúdo alucinado por inteligência artificial: 1.514 nos Estados Unidos e 41 no Brasil. No nosso teste, um modelo local citou o artigo 37, inciso 33, da Constituição. Esse inciso não existe: o artigo vai só até o 22. Pôr documentos na frente do modelo ajuda, mas não basta: em preprints, ferramentas jurídicas com RAG ainda erram de 17 a 33 por cento.</aside>
 </section>
 
 <!-- 3 -->
@@ -113,12 +113,13 @@
 </section>
 
 <!-- 9 DEMO (matriz) -->
-<section class="slide s8 matrix" data-title="Prova 3: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" data-fontes="hnv-cena1,hnv-cena2b,hnv-laco,cf-art37" aria-label="Demonstração em três passos">
+<section class="slide s8 matrix" data-title="Prova 3: o sistema barra a citação falsa" data-t="90" data-steps="3" data-block="PROVAS" data-fontes="art-citare,ont-citare" aria-label="Demonstração em três passos">
 <div class="fxslot" data-fx="s8"></div>
 <h1 class="ttl"><span class="w">PROVA 3</span></h1>
 <p class="sub">O Sistema Barra a Citação Falsa</p>
 <p class="guia">O que acontece quando a IA erra?</p>
 <p class="stepw"><span class="wd w1 err">Alucina.</span> <span class="wd w2 block">Bloqueia.</span> <span class="wd w3">Corrige.</span></p>
+<div class="hero" data-hero="s8"></div>
 <pre class="code st st1" data-open="s8-replay" aria-label="Código do hook que verifica as citações: ver o replay da execução real"><span class="cm"># harness/verificar_citacoes.py</span>
 <span class="kw">bloq</span> = [r <span class="kw">for</span> r <span class="kw">in</span> resultados <span class="kw">if</span> r["status"] != "ok"]
 <span class="kw">evidencia</span> = bool(resultados) <span class="kw">and not</span> bloq
