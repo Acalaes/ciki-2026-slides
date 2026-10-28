@@ -477,7 +477,7 @@ function renderHero(i) {
 function buildDynamic() {
   const ticks = $('#ticks'); if (ticks) for (let i = 0; i < 22; i++) { const x = 240 + i * 52; el('line', { x1: x, x2: x, y1: 850, y2: i === 0 || i === 21 ? 930 : 900, class: 'tick' }, ticks); }
   /* fontes com página do PDF na camada 2 (clique no nome do rodapé abre a página) */
-  const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh' };
+  const FONTE_PAGINA = { dahl: 'fonte-dahl', magesh: 'fonte-magesh', charlotin: 'fonte-charlotin' };
   slides.forEach((s, i) => {
     const b = s.dataset.block || ''; const n = ['INTRODUÇÃO', 'PROBLEMA', 'SOLUÇÃO', 'PROVAS', 'FUTURO', 'CONCLUSÃO'].indexOf(b);
     s.dataset.cap = n >= 0 ? n : 6; s.style.setProperty('--cap', CAPCOR[n >= 0 ? n : 6]);

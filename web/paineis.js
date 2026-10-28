@@ -153,6 +153,8 @@
     'Página 1 do preprint arXiv 2401.01301v1: "occurring between 69% of the time with ChatGPT 3.5 and 88% with Llama 2".', [F('dahl', 'Dahl et al. (2024)')], { selos: [sel('preprint')] });
   panel('fonte-magesh', 'Magesh (2025): de onde vem 17–33%', '<img class="pdfp" src="fontes_pdf/img/magesh-resumo-01.png" alt="Primeira página do preprint de Magesh et al. (2025), com o trecho de 17% a 33%">',
     'Página 1 do preprint arXiv 2405.20362v1: "each hallucinate between 17% and 33% of the time".', [F('magesh', 'Magesh et al. (2025)')], { selos: [sel('preprint')] });
+  panel('fonte-charlotin', 'Charlotin (2026): capturas de 27/10', '<img class="pdfp" src="fontes_pdf/img/charlotin-captura-27-10-2026.jpg" alt="Página da base de Charlotin com 2225 casos e atualização de 27 de outubro de 2026"><img class="pdfp" src="fontes_pdf/img/charlotin-brasil-41-27-10-2026.jpg" alt="Filtro da base de Charlotin: Brazil (41)"><img class="pdfp" src="fontes_pdf/img/charlotin-usa-1514-27-10-2026.jpg" alt="Filtro da base de Charlotin: USA (1514)">',
+    'Capturas da base online em 27/10/2026: total 2.225; Brasil 41; EUA 1.514.', [F('charlotin', 'Charlotin (2026)')]);
 
   (function () {
     var z = [['XXXIII', 3.0], ['XXI', 2.2], ['II', 1.6], ['V', 1.1], ['caput', 0.6]];
