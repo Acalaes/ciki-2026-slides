@@ -612,9 +612,9 @@ function show(st, opts) {
   opts = opts || {}; const prev = state.i, changed = st.i !== prev; const old = state; state = st;
   const apply = () => {
     if (opts.jump) { JUMP = true; slides[st.i].classList.add('nofx'); }
-    if (changed) { leaveSlide(prev); if (prev >= 0) slides[prev].classList.remove('active'); slides[st.i].classList.add('active'); enterSlide(st.i); }
+    if (changed) { leaveSlide(prev); if (prev >= 0) { slides[prev].classList.remove('active'); slides[prev].classList.remove('nofx'); } slides[st.i].classList.add('active'); enterSlide(st.i); }
     setStep(st.i, st.step); updateChrome();
-    if (opts.jump) requestAnimationFrame(() => requestAnimationFrame(() => { JUMP = false; slides[st.i].classList.remove('nofx'); }));
+    JUMP = false; // o nofx fica no slide até sair dele: tirar antes faria as animações de CSS recomeçarem
   };
   if (changed && started && !opts.instant && !opts.jump && !STATIC && !LITE && document.startViewTransition) {
     html.dataset.vt = isDemo(st.i) ? 'matrix-in' : isDemo(prev) ? 'matrix-out' : '';
