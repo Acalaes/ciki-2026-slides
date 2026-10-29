@@ -14,3 +14,10 @@ dados/legendas/
 *.tmp
 /img/
 web/fontes_pdf/img/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
