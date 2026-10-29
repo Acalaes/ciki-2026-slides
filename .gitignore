@@ -10,3 +10,4 @@ web/fontes_pdf/img/
 !.dev.vars.example
 .env*
 !.env.example
+web/qa*/
