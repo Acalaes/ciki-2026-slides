@@ -7,3 +7,5 @@ Fonte dos slides da apresentação do artigo #160 (CIKI-ICKM-GFIC 2026, 28/10/20
 - Fotos (Wikimedia Commons, CC) e legendas de vídeos ficam só no PC/Drive.
 
 Autor: Alexandre Pinto Calaes (PPGEGC/UFSC).
+
+<!-- publicacao automatica ligada em 29/10/2026 -->
