@@ -1,0 +1,9 @@
+.assetsignore
+qa*/
+__pycache__/
+*.md
+*.py
+*.cmd
+paineis_teste.html
+img/originais/
+img/alt/
